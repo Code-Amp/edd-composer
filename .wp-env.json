@@ -1,0 +1,14 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "WordPress/WordPress#6.9",
+	"phpVersion": "8.0",
+	"testsEnvironment": false,
+	"plugins": [
+		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
+		"."
+	],
+	"config": {
+		"WP_DEBUG": true,
+		"SCRIPT_DEBUG": true
+	}
+}

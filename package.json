@@ -1,0 +1,39 @@
+{
+	"name": "edd-composer",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Expose eligible Easy Digital Downloads products as authenticated Composer packages.",
+	"author": "Code Amp",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"composer",
+		"easy-digital-downloads",
+		"wordpress"
+	],
+	"homepage": "https://github.com/Code-Amp/edd-composer",
+	"repository": "git+https://github.com/Code-Amp/edd-composer.git",
+	"bugs": {
+		"url": "https://github.com/Code-Amp/edd-composer/issues"
+	},
+	"engines": {
+		"node": "^20.19.0 || >=22.13.0",
+		"npm": ">=8.19.2"
+	},
+	"devDependencies": {
+		"@wordpress/env": "11.15.0",
+		"@wordpress/scripts": "35.0.0"
+	},
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"format": "wp-scripts format",
+		"lint:js": "wp-scripts lint-js",
+		"lint:package": "wp-scripts lint-pkg-json",
+		"test:unit": "wp-scripts test-unit-js --passWithNoTests",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"env:start": "wp-env start",
+		"env:stop": "wp-env stop",
+		"env:clean": "wp-env clean all",
+		"env:destroy": "wp-env destroy"
+	}
+}

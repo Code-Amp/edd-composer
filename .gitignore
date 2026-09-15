@@ -1,0 +1,8 @@
+node_modules/
+.wp-env.override.json
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+edd-composer.zip
