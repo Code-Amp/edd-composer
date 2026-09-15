@@ -1,6 +1,7 @@
 {
 	"name": "edd-composer",
 	"version": "1.0.0",
+	"packageManager": "pnpm@12.4.2",
 	"private": true,
 	"description": "Expose eligible Easy Digital Downloads products as authenticated Composer packages.",
 	"author": "Code Amp",
@@ -17,11 +18,13 @@
 	},
 	"engines": {
 		"node": "^20.19.0 || >=22.13.0",
-		"npm": ">=8.19.2"
+		"pnpm": "12.4.2"
 	},
 	"devDependencies": {
 		"@wordpress/env": "11.15.0",
-		"@wordpress/scripts": "35.0.0"
+		"@wordpress/scripts": "35.0.0",
+		"react": "18.3.1",
+		"react-dom": "18.3.1"
 	},
 	"scripts": {
 		"build": "wp-scripts build",
