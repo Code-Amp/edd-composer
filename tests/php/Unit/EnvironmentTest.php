@@ -26,4 +26,18 @@ final class EnvironmentTest extends WP_UnitTestCase {
 			get_included_files()
 		);
 	}
+
+	/**
+	 * Confirms missing Software Licensing leaves only the admin gate active.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_missing_software_licensing_does_not_signal_readiness() {
+		$dependencies = EDD_Composer\Plugin::instance()->get_dependencies();
+
+		$this->assertInstanceOf( EDD_Composer\Dependencies::class, $dependencies );
+		$this->assertFalse( $dependencies->are_met() );
+		$this->assertSame( 0, did_action( 'edd_composer_ready' ) );
+	}
 }

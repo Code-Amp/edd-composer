@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ruleset name="EDD Composer Extension">
+	<description>WordPress coding standards for EDD Composer Extension.</description>
+
+	<file>edd-composer</file>
+	<file>tests/php</file>
+
+	<exclude-pattern>edd-composer/assets/*</exclude-pattern>
+	<exclude-pattern>tests/php/.phpunit.result.cache</exclude-pattern>
+
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+	<arg name="extensions" value="php"/>
+
+	<config name="minimum_supported_wp_version" value="6.9"/>
+	<config name="text_domain" value="edd-composer"/>
+
+	<rule ref="WordPress"/>
+	<rule ref="WordPress-Docs"/>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="edd_composer"/>
+				<element value="EDD_COMPOSER"/>
+				<element value="EDD_Composer"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

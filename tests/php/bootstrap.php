@@ -5,26 +5,28 @@
  * @package EDD_Composer
  */
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
+$edd_composer_tests_dir = getenv( 'WP_TESTS_DIR' );
 
-if ( false === $_tests_dir || '' === $_tests_dir ) {
-	$_tests_dir = '/wordpress-phpunit';
+if ( false === $edd_composer_tests_dir || '' === $edd_composer_tests_dir ) {
+	$edd_composer_tests_dir = '/wordpress-phpunit';
 }
 
-$_phpunit_polyfills_path = getenv( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' );
+$edd_composer_phpunit_polyfills_path = getenv( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' );
 
-if ( false !== $_phpunit_polyfills_path ) {
-	define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $_phpunit_polyfills_path );
+if ( false !== $edd_composer_phpunit_polyfills_path ) {
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Required by the WordPress test library.
+	define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $edd_composer_phpunit_polyfills_path );
 }
 
 require_once dirname( __DIR__ ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
-if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
-	echo "Could not find the WordPress test library at {$_tests_dir}.\n";
+if ( ! file_exists( $edd_composer_tests_dir . '/includes/functions.php' ) ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress is not loaded and this is CLI-only test output.
+	echo "Could not find the WordPress test library at {$edd_composer_tests_dir}.\n";
 	exit( 1 );
 }
 
-require_once $_tests_dir . '/includes/functions.php';
+require_once $edd_composer_tests_dir . '/includes/functions.php';
 
 /**
  * Load the plugins required by the test suite.
@@ -50,4 +52,4 @@ function edd_composer_tests_install_edd_tables() {
 
 tests_add_filter( 'muplugins_loaded', 'edd_composer_tests_load_plugins' );
 
-require $_tests_dir . '/includes/bootstrap.php';
+require $edd_composer_tests_dir . '/includes/bootstrap.php';
