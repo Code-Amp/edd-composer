@@ -3,6 +3,6 @@
 	"plugins": [
 		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
 		"/absolute/path/to/edd-software-licensing",
-		"."
+		"./edd-composer"
 	]
 }

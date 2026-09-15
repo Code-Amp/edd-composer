@@ -5,7 +5,7 @@
 	"testsEnvironment": false,
 	"plugins": [
 		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
-		"."
+		"./edd-composer"
 	],
 	"config": {
 		"WP_DEBUG": true,

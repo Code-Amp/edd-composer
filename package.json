@@ -27,13 +27,13 @@
 		"react-dom": "18.3.1"
 	},
 	"scripts": {
-		"build": "wp-scripts build",
-		"start": "wp-scripts start",
+		"build": "wp-scripts build --output-path=edd-composer/assets",
+		"start": "wp-scripts start --output-path=edd-composer/assets",
 		"format": "wp-scripts format",
 		"lint:js": "wp-scripts lint-js",
 		"lint:package": "wp-scripts lint-pkg-json",
 		"test:unit": "wp-scripts test-unit-js --passWithNoTests",
-		"plugin-zip": "wp-scripts plugin-zip",
+		"plugin-zip": "pnpm run build && zip -rFS edd-composer.zip edd-composer -x '*/.DS_Store'",
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
 		"env:clean": "wp-env clean all",
