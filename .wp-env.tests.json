@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "WordPress/WordPress#6.9",
+	"port": 8889,
+	"phpVersion": "8.0",
+	"testsEnvironment": false,
+	"plugins": [
+		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
+		"./edd-composer"
+	],
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_DISPLAY": true,
+		"SCRIPT_DEBUG": true
+	},
+	"lifecycleScripts": {
+		"afterStart": "pnpm run wp-env:provision:tests",
+		"afterReset": "pnpm run wp-env:provision:tests"
+	},
+	"mappings": {
+		"composer.json": "./wp-env/phpunit/composer.json",
+		"composer.lock": "./wp-env/phpunit/composer.lock",
+		"tests": "./tests/php"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "code-amp/edd-composer-wp-env-phpunit",
+	"description": "Pinned PHPUnit dependencies for the EDD Composer wp-env test profile.",
+	"type": "project",
+	"license": "GPL-2.0-or-later",
+	"require-dev": {
+		"wp-phpunit/wp-phpunit": "6.9.0",
+		"yoast/phpunit-polyfills": "4.0.0"
+	},
+	"config": {
+		"platform": {
+			"php": "8.0.0"
+		}
+	}
+}
