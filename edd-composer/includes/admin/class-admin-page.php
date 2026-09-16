@@ -26,6 +26,14 @@ final class Admin_Page {
 	public const SCRIPT_HANDLE = 'edd-composer-admin';
 
 	/**
+	 * Admin stylesheet handle.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	public const STYLE_HANDLE = 'edd-composer-admin';
+
+	/**
 	 * Admin page slug.
 	 *
 	 * @since 1.0.0
@@ -157,6 +165,17 @@ final class Admin_Page {
 			'edd-composer',
 			EDD_COMPOSER_PATH . 'languages'
 		);
+
+		$style_path = EDD_COMPOSER_PATH . 'assets/style-index.css';
+
+		if ( is_readable( $style_path ) ) {
+			wp_enqueue_style(
+				self::STYLE_HANDLE,
+				EDD_COMPOSER_URL . 'assets/style-index.css',
+				array( 'wp-components' ),
+				$asset['version']
+			);
+		}
 	}
 
 	/**

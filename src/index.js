@@ -1,5 +1,10 @@
-/**
- * EDD Composer Extension admin application entry point.
- *
- * The application will be added after the project structure is finalized.
- */
+import { createRoot } from '@wordpress/element';
+
+import App from './components/App';
+import './style.scss';
+
+const rootElement = document.getElementById( 'edd-composer-admin' );
+
+if ( rootElement ) {
+	createRoot( rootElement ).render( <App /> );
+}

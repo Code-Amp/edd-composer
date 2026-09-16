@@ -26,7 +26,15 @@
 		]
 	},
 	"devDependencies": {
+		"@wordpress/api-fetch": "7.55.0",
+		"@wordpress/babel-preset-default": "8.55.0",
+		"@wordpress/components": "40.1.0",
+		"@wordpress/data": "10.55.0",
+		"@wordpress/dataviews": "10.1.7",
+		"@wordpress/element": "8.7.0",
 		"@wordpress/env": "11.15.0",
+		"@wordpress/i18n": "6.28.0",
+		"@wordpress/notices": "5.55.0",
 		"@wordpress/scripts": "35.0.0",
 		"react": "18.3.1",
 		"react-dom": "18.3.1"
@@ -34,9 +42,10 @@
 	"scripts": {
 		"build": "wp-scripts build --output-path=edd-composer/assets",
 		"start": "wp-scripts start --output-path=edd-composer/assets",
-		"format": "wp-scripts format src scripts",
-		"lint": "pnpm run lint:js && pnpm run lint:package && pnpm run lint:php",
+		"format": "wp-scripts format src tests/js scripts/test-environment.mjs",
+		"lint": "pnpm run lint:js && pnpm run lint:style && pnpm run lint:package && pnpm run lint:php",
 		"lint:js": "wp-scripts lint-js src scripts",
+		"lint:style": "wp-scripts lint-style 'src/**/*.scss'",
 		"lint:package": "wp-scripts lint-pkg-json",
 		"lint:php": "composer run phpcs",
 		"test": "wp-scripts test-unit-js --passWithNoTests && node scripts/test-environment.mjs test",

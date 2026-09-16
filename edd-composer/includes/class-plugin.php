@@ -8,6 +8,8 @@
 namespace EDD_Composer;
 
 use EDD_Composer\Admin\Admin_Page;
+use EDD_Composer\Repository\Versioned_Files;
+use EDD_Composer\REST_API\Products_Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -75,6 +77,17 @@ final class Plugin {
 		if ( ! $this->dependencies->are_met() ) {
 			return;
 		}
+
+		$settings = new Settings();
+		$products = new Products( new Versioned_Files() );
+		$settings->register_hooks();
+
+		$rest_controller = new Products_Controller(
+			$settings,
+			$products,
+			array( $admin_page, 'get_management_capability' )
+		);
+		$rest_controller->register_hooks();
 
 		/**
 		 * Fires when every supported runtime dependency is available.

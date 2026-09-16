@@ -1,0 +1,196 @@
+@use "../node_modules/@wordpress/dataviews/build-style/style.css";
+
+#edd-composer-admin {
+	--edd-composer-border: #dcdcde;
+	--edd-composer-muted: #646970;
+	--edd-composer-surface: #fff;
+
+	box-sizing: border-box;
+	max-width: 1440px;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: inherit;
+	}
+}
+
+.edd-composer-app {
+	display: grid;
+	gap: 20px;
+}
+
+.edd-composer-card {
+	padding: 24px;
+	border: 1px solid var(--edd-composer-border);
+	border-radius: 4px;
+	background: var(--edd-composer-surface);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+
+	h2 {
+		margin: 0 0 4px;
+		font-size: 1.25rem;
+	}
+
+	p {
+		margin-top: 0;
+		color: var(--edd-composer-muted);
+	}
+
+	details {
+		margin-top: 16px;
+	}
+
+	summary {
+		width: fit-content;
+		cursor: pointer;
+		font-weight: 600;
+	}
+}
+
+.edd-composer-card__heading {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 32px;
+	margin-bottom: 20px;
+}
+
+.edd-composer-summary {
+	display: flex;
+	gap: 28px;
+	margin: 0;
+
+	div {
+		min-width: 90px;
+	}
+
+	dt {
+		color: var(--edd-composer-muted);
+		font-size: 12px;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	dd {
+		margin: 2px 0 0;
+		font-size: 16px;
+		font-weight: 600;
+	}
+}
+
+.edd-composer-command {
+	display: flex;
+	align-items: stretch;
+	margin-top: 8px;
+
+	code {
+		display: block;
+		flex: 1;
+		overflow-x: auto;
+		padding: 9px 12px;
+		border: 1px solid var(--edd-composer-border);
+		border-right: 0;
+		border-radius: 3px 0 0 3px;
+		background: #f6f7f7;
+		white-space: nowrap;
+	}
+
+	.components-button {
+		border-radius: 0 3px 3px 0;
+	}
+}
+
+.edd-composer-vendor {
+	width: min(100%, 320px);
+
+	.has-error .components-base-control__help {
+		color: #b32d2e;
+	}
+}
+
+.edd-composer-status {
+	display: inline-block;
+	max-width: 280px;
+	font-weight: 600;
+
+	&.is-valid {
+		color: #008a20;
+	}
+
+	&.is-invalid {
+		color: #b32d2e;
+	}
+}
+
+.edd-composer-package-preview {
+	padding: 10px 12px;
+	border-radius: 3px;
+	background: #f6f7f7;
+	font-family: monospace;
+}
+
+.edd-composer-product-settings {
+	min-width: min(520px, 80vw);
+}
+
+.edd-composer-modal-actions,
+.edd-composer-save-bar,
+.edd-composer-save-bar > div {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.edd-composer-modal-actions {
+	justify-content: flex-end;
+	margin-top: 24px;
+}
+
+.edd-composer-save-bar {
+	position: sticky;
+	z-index: 10;
+	bottom: 0;
+	justify-content: space-between;
+	padding: 14px 18px;
+	border: 1px solid var(--edd-composer-border);
+	background: var(--edd-composer-surface);
+	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.edd-composer-loading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 120px;
+}
+
+#edd-composer-admin .dataviews-wrapper {
+	border: 1px solid var(--edd-composer-border);
+}
+
+@media (max-width: 782px) {
+
+	.edd-composer-card {
+		padding: 16px;
+	}
+
+	.edd-composer-card__heading,
+	.edd-composer-save-bar {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.edd-composer-summary {
+		justify-content: space-between;
+	}
+
+	.edd-composer-vendor {
+		width: 100%;
+	}
+
+	.edd-composer-command code {
+		white-space: normal;
+		word-break: break-all;
+	}
+}

@@ -37,6 +37,8 @@ final class AdminPageTest extends WP_UnitTestCase {
 
 		wp_dequeue_script( Admin_Page::SCRIPT_HANDLE );
 		wp_deregister_script( Admin_Page::SCRIPT_HANDLE );
+		wp_dequeue_style( Admin_Page::STYLE_HANDLE );
+		wp_deregister_style( Admin_Page::STYLE_HANDLE );
 		wp_set_current_user( 0 );
 
 		parent::tear_down();
@@ -289,6 +291,12 @@ final class AdminPageTest extends WP_UnitTestCase {
 		}
 		$this->assertContains( 'wp-i18n', $script->deps );
 		$this->assertSame( $asset['version'], $script->ver );
+		$this->assertTrue( wp_style_is( Admin_Page::STYLE_HANDLE, 'enqueued' ) );
+		$this->assertSame(
+			EDD_COMPOSER_URL . 'assets/style-index.css',
+			wp_styles()->registered[ Admin_Page::STYLE_HANDLE ]->src
+		);
+		$this->assertContains( 'wp-components', wp_styles()->registered[ Admin_Page::STYLE_HANDLE ]->deps );
 	}
 
 	/**
@@ -306,6 +314,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 
 		$this->assertFalse( wp_script_is( Admin_Page::SCRIPT_HANDLE, 'registered' ) );
 		$this->assertFalse( wp_script_is( Admin_Page::SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertFalse( wp_style_is( Admin_Page::STYLE_HANDLE, 'enqueued' ) );
 	}
 
 	/**
