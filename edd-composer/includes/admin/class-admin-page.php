@@ -18,6 +18,14 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Admin_Page {
 	/**
+	 * Admin script handle.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	public const SCRIPT_HANDLE = 'edd-composer-admin';
+
+	/**
 	 * Admin page slug.
 	 *
 	 * @since 1.0.0
@@ -32,6 +40,14 @@ final class Admin_Page {
 	 * @var Dependencies
 	 */
 	private $dependencies;
+
+	/**
+	 * Registered WordPress admin page hook.
+	 *
+	 * @since 1.0.0
+	 * @var string|false|null
+	 */
+	private $page_hook;
 
 	/**
 	 * Creates the admin page service.
@@ -56,7 +72,10 @@ final class Admin_Page {
 
 		if ( ! $this->dependencies->are_met() ) {
 			add_action( 'admin_notices', array( $this, 'render_dependency_notice' ) );
+			return;
 		}
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
 	/**
@@ -72,7 +91,7 @@ final class Admin_Page {
 		$capability = $this->get_management_capability();
 
 		if ( $this->dependencies->has_edd() ) {
-			add_submenu_page(
+			$this->page_hook = add_submenu_page(
 				'edit.php?post_type=download',
 				$page_title,
 				$menu_title,
@@ -83,12 +102,60 @@ final class Admin_Page {
 			return;
 		}
 
-		add_options_page(
+		$this->page_hook = add_options_page(
 			$page_title,
 			$menu_title,
 			$capability,
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
+		);
+	}
+
+	/**
+	 * Enqueues the admin application only on the plugin screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $hook_suffix Current WordPress admin page hook.
+	 * @return void
+	 */
+	public function enqueue_assets( $hook_suffix ) {
+		if (
+			! $this->dependencies->are_met()
+			|| ! is_string( $this->page_hook )
+			|| $this->page_hook !== $hook_suffix
+		) {
+			return;
+		}
+
+		$asset_path = EDD_COMPOSER_PATH . 'assets/index.asset.php';
+
+		if ( ! is_readable( $asset_path ) ) {
+			return;
+		}
+
+		$asset = require $asset_path;
+
+		if (
+			! is_array( $asset )
+			|| ! isset( $asset['dependencies'], $asset['version'] )
+			|| ! is_array( $asset['dependencies'] )
+			|| ! is_string( $asset['version'] )
+		) {
+			return;
+		}
+
+		wp_enqueue_script(
+			self::SCRIPT_HANDLE,
+			EDD_COMPOSER_URL . 'assets/index.js',
+			$asset['dependencies'],
+			$asset['version'],
+			true
+		);
+		wp_set_script_translations(
+			self::SCRIPT_HANDLE,
+			'edd-composer',
+			EDD_COMPOSER_PATH . 'languages'
 		);
 	}
 
