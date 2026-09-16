@@ -134,6 +134,58 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Confirms duplicate detection is independent of file ordering and pricing.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_detects_duplicate_after_an_invalid_price_assignment() {
+		$download_id = $this->create_download_with_files(
+			array(
+				array(
+					'version'   => 'v1.2.3',
+					'file'      => 'https://example.org/price-specific.zip',
+					'condition' => '1',
+				),
+				array(
+					'version'   => '1.2.3',
+					'file'      => 'https://example.org/all-prices.zip',
+					'condition' => 'all',
+				),
+			)
+		);
+		update_post_meta( $download_id, '_variable_pricing', 1 );
+
+		$analysis = ( new Versioned_Files() )->analyze( $download_id );
+
+		$this->assertFalse( $analysis['valid'] );
+		$this->assertStringContainsString( 'duplicated', implode( ' ', $analysis['messages'] ) );
+	}
+
+	/**
+	 * Confirms a version cannot publish without an actual EDD file.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_rejects_version_without_a_download_file() {
+		$download_id = $this->create_download_with_files(
+			array(
+				array(
+					'name'    => 'Package',
+					'version' => '1.2.3',
+					'file'    => '',
+				),
+			)
+		);
+
+		$analysis = ( new Versioned_Files() )->analyze( $download_id );
+
+		$this->assertFalse( $analysis['valid'] );
+		$this->assertStringContainsString( 'does not have a download file', implode( ' ', $analysis['messages'] ) );
+	}
+
+	/**
 	 * Confirms variable-price files must apply to every price variation.
 	 *
 	 * @since 1.0.0

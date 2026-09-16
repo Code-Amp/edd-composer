@@ -60,6 +60,7 @@ final class Versioned_Files {
 		$files = is_array( $files ) ? $files : array();
 
 		$versions        = array();
+		$seen_versions   = array();
 		$messages        = array();
 		$variable_prices = function_exists( 'edd_has_variable_prices' )
 			&& edd_has_variable_prices( absint( $download_id ) );
@@ -81,10 +82,21 @@ final class Versioned_Files {
 				continue;
 			}
 
-			if ( isset( $versions[ $canonical ] ) ) {
+			if ( isset( $seen_versions[ $canonical ] ) ) {
 				$messages[] = sprintf(
 					/* translators: %s: Duplicate canonical file version. */
 					__( 'File version “%s” is duplicated.', 'edd-composer' ),
+					$canonical
+				);
+				continue;
+			}
+
+			$seen_versions[ $canonical ] = true;
+
+			if ( empty( $file['file'] ) ) {
+				$messages[] = sprintf(
+					/* translators: %s: Canonical file version. */
+					__( 'File version “%s” does not have a download file.', 'edd-composer' ),
 					$canonical
 				);
 				continue;

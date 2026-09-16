@@ -22,4 +22,7 @@ define( 'EDD_COMPOSER_URL', plugin_dir_url( __FILE__ ) );
 
 require_once EDD_COMPOSER_PATH . 'autoload.php';
 
+register_activation_hook( EDD_COMPOSER_FILE, array( 'EDD_Composer\\Activator', 'activate' ) );
+register_deactivation_hook( EDD_COMPOSER_FILE, array( 'EDD_Composer\\Deactivator', 'deactivate' ) );
+
 EDD_Composer\Plugin::instance()->register_hooks();

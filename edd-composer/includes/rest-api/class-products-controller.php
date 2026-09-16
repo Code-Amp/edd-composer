@@ -8,6 +8,7 @@
 namespace EDD_Composer\REST_API;
 
 use EDD_Composer\Products;
+use EDD_Composer\Repository\Router;
 use EDD_Composer\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -379,7 +380,7 @@ final class Products_Controller extends \WP_REST_Controller {
 		return array(
 			'settings'   => $settings,
 			'repository' => array(
-				'url'           => home_url( '/composer' ),
+				'url'           => Router::get_base_url(),
 				'package_count' => $package_count,
 				'cache_state'   => false === get_transient( Settings::PACKAGE_INDEX_TRANSIENT )
 					? __( 'Not cached', 'edd-composer' )

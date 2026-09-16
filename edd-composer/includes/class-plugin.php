@@ -8,6 +8,10 @@
 namespace EDD_Composer;
 
 use EDD_Composer\Admin\Admin_Page;
+use EDD_Composer\Admin\File_Version_Field;
+use EDD_Composer\Repository\Package_Index;
+use EDD_Composer\Repository\Responses;
+use EDD_Composer\Repository\Router;
 use EDD_Composer\Repository\Versioned_Files;
 use EDD_Composer\REST_API\Products_Controller;
 
@@ -78,9 +82,15 @@ final class Plugin {
 			return;
 		}
 
-		$settings = new Settings();
-		$products = new Products( new Versioned_Files() );
+		$settings      = new Settings();
+		$versioned     = new Versioned_Files();
+		$products      = new Products( $versioned );
+		$package_index = new Package_Index( $settings, $products );
+
 		$settings->register_hooks();
+		$package_index->register_hooks();
+		( new File_Version_Field() )->register_hooks();
+		( new Router( $package_index, new Responses() ) )->register_hooks();
 
 		$rest_controller = new Products_Controller(
 			$settings,

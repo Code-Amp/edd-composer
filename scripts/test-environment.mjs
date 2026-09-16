@@ -161,7 +161,7 @@ const getEnvironmentStatus = async () => {
 
 const getSetupVersion = () =>
 	createHash( 'sha256' )
-		.update( 'edd-composer-test-setup-v1\0' )
+		.update( 'edd-composer-test-setup-v2\0' )
 		.update( readFileSync( configPath ) )
 		.update(
 			readFileSync(
@@ -204,6 +204,14 @@ const provisionEnvironment = async ( expectedVersion ) => {
 	await runWpEnv( [
 		'run',
 		'cli',
+		'wp',
+		'rewrite',
+		'structure',
+		'/%postname%/',
+	] );
+	await runWpEnv( [
+		'run',
+		'cli',
 		'php',
 		'-r',
 		`file_put_contents( '${ setupMarker }', '${ expectedVersion }' );`,
@@ -234,23 +242,81 @@ const ensurePluginsActive = async () => {
 		'edd-composer',
 	];
 
-	if (
-		requiredPluginNames.every( ( pluginName ) =>
-			activePluginNames.has( pluginName )
-		)
-	) {
+	for ( const pluginName of requiredPluginNames ) {
+		if ( activePluginNames.has( pluginName ) ) {
+			continue;
+		}
+
+		console.log( `Activating the required test plugin ${ pluginName }...` );
+		await runWpEnv( [
+			'run',
+			'cli',
+			'wp',
+			'plugin',
+			'activate',
+			pluginName,
+		] );
+		activePluginNames.add( pluginName );
+	}
+};
+
+const ensurePrettyPermalinks = async () => {
+	const permalinkStructure = await runWpEnv(
+		[ 'run', 'cli', 'wp', 'option', 'get', 'permalink_structure' ],
+		{ allowFailure: true, capture: true }
+	);
+
+	if ( permalinkStructure.stdout.trim() === '/%postname%/' ) {
 		return;
 	}
 
-	console.log( 'Activating the required test plugins...' );
+	console.log( 'Configuring pretty permalinks for repository routes...' );
 	await runWpEnv( [
 		'run',
 		'cli',
 		'wp',
-		'plugin',
-		'activate',
-		...requiredPluginNames,
+		'rewrite',
+		'structure',
+		'/%postname%/',
 	] );
+};
+
+const verifyRepositoryRoute = async () => {
+	const config = JSON.parse( readFileSync( configPath, 'utf8' ) );
+	const port = config.port ?? 8888;
+	const response = await fetch(
+		`http://localhost:${ port }/composer/packages.json`
+	);
+	const responseBody = await response.text();
+	let payload;
+
+	try {
+		payload = JSON.parse( responseBody );
+	} catch {
+		throw new Error(
+			`The live Composer package-index route returned invalid JSON (HTTP ${ response.status }): ${ responseBody.slice(
+				0,
+				200
+			) }`
+		);
+	}
+
+	const cacheControl = response.headers.get( 'cache-control' ) ?? '';
+
+	if (
+		! response.ok ||
+		! payload ||
+		typeof payload.packages !== 'object' ||
+		Array.isArray( payload.packages ) ||
+		! cacheControl.includes( 'public' ) ||
+		! cacheControl.includes( 'max-age=' )
+	) {
+		throw new Error(
+			`The live Composer package-index route failed validation (HTTP ${ response.status }, Cache-Control: ${ cacheControl }).`
+		);
+	}
+
+	console.log( 'The live Composer package-index route is available.' );
 };
 
 const ensureEnvironment = async () => {
@@ -280,6 +346,7 @@ const ensureEnvironment = async () => {
 		await provisionEnvironment( expectedVersion );
 	}
 
+	await ensurePrettyPermalinks();
 	await ensurePluginsActive();
 };
 
@@ -301,7 +368,9 @@ try {
 				'--env-cwd=tests',
 			] );
 		} finally {
+			await ensurePrettyPermalinks();
 			await ensurePluginsActive();
+			await verifyRepositoryRoute();
 		}
 	}
 } catch ( error ) {

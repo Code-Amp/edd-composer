@@ -42,10 +42,10 @@
 	"scripts": {
 		"build": "wp-scripts build --output-path=edd-composer/assets",
 		"start": "wp-scripts start --output-path=edd-composer/assets",
-		"format": "wp-scripts format src tests/js scripts/test-environment.mjs",
+		"format": "wp-scripts format src tests/js scripts/test-environment.mjs webpack.config.js",
 		"lint": "pnpm run lint:js && pnpm run lint:style && pnpm run lint:package && pnpm run lint:php",
-		"lint:js": "wp-scripts lint-js src scripts",
-		"lint:style": "wp-scripts lint-style 'src/**/*.scss'",
+		"lint:js": "wp-scripts lint-js src scripts webpack.config.js",
+		"lint:style": "wp-scripts lint-style 'src/**/*.scss' 'edd-composer/assets/css/**/*.css'",
 		"lint:package": "wp-scripts lint-pkg-json",
 		"lint:php": "composer run phpcs",
 		"test": "wp-scripts test-unit-js --passWithNoTests && node scripts/test-environment.mjs test",
