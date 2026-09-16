@@ -1,4 +1,4 @@
-import { TextControl, ToggleControl } from '@wordpress/components';
+import { Modal, TextControl, ToggleControl } from '@wordpress/components';
 import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews/wp';
 import { useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
@@ -12,6 +12,7 @@ const ProductList = ( {
 	onBulkEnabled,
 } ) => {
 	const [ selection, setSelection ] = useState( [] );
+	const [ editingProduct, setEditingProduct ] = useState( null );
 	const [ view, setView ] = useState( {
 		type: 'table',
 		search: '',
@@ -33,10 +34,17 @@ const ProductList = ( {
 			density: 'balanced',
 			enableMoving: true,
 			styles: {
-				id: { width: '70px' },
-				enabled: { width: '90px' },
-				versioned_file_count: { width: '90px', align: 'end' },
-				validation: { minWidth: '180px' },
+				id: { width: '70px', minWidth: '70px', maxWidth: '70px' },
+				status: { width: '110px', minWidth: '110px' },
+				enabled: { width: '90px', minWidth: '90px' },
+				package_slug: { width: '220px', minWidth: '220px' },
+				package_name: { width: '240px', minWidth: '240px' },
+				versioned_file_count: {
+					width: '90px',
+					minWidth: '90px',
+					align: 'end',
+				},
+				validation: { width: '220px', minWidth: '220px' },
 			},
 		},
 	} );
@@ -92,6 +100,7 @@ const ProductList = ( {
 				filterBy: { operators: [ 'is' ] },
 				render: ( { item } ) => (
 					<ToggleControl
+						className="edd-composer-enable-toggle"
 						label={ sprintf(
 							/* translators: %s: EDD product title. */
 							__(
@@ -170,24 +179,10 @@ const ProductList = ( {
 			{
 				id: 'configure',
 				label: __( 'Configure', 'edd-composer' ),
-				modalHeader: ( items ) =>
-					sprintf(
-						/* translators: %s: EDD product title. */
-						__( 'Configure %s', 'edd-composer' ),
-						items[ 0 ].title
-					),
-				RenderModal: ( { items, closeModal, onActionPerformed } ) => (
-					<ProductSettings
-						product={ items[ 0 ] }
-						vendor={ vendor }
-						onCancel={ closeModal }
-						onApply={ ( edits ) => {
-							onUpdateProduct( items[ 0 ], edits );
-							onActionPerformed?.( items );
-							closeModal?.();
-						} }
-					/>
-				),
+				callback: ( items, context ) => {
+					setEditingProduct( items[ 0 ] );
+					context.onActionPerformed?.( items );
+				},
 			},
 			{
 				id: 'enable',
@@ -210,7 +205,7 @@ const ProductList = ( {
 				},
 			},
 		],
-		[ onBulkEnabled, onUpdateProduct, vendor ]
+		[ onBulkEnabled ]
 	);
 	const { data, paginationInfo } = useMemo(
 		() => filterSortAndPaginate( products, view, fields ),
@@ -218,27 +213,51 @@ const ProductList = ( {
 	);
 
 	return (
-		<DataViews
-			data={ data }
-			fields={ fields }
-			view={ view }
-			onChangeView={ setView }
-			defaultLayouts={ { table: {} } }
-			actions={ actions }
-			paginationInfo={ paginationInfo }
-			selection={ selection }
-			onChangeSelection={ setSelection }
-			searchLabel={ __( 'Search downloads', 'edd-composer' ) }
-			config={ { perPageSizes: [ 10, 20, 50, 100 ] } }
-			empty={
-				<p>
-					{ __(
-						'No EDD Downloads match the current view.',
-						'edd-composer'
+		<>
+			<DataViews
+				data={ data }
+				fields={ fields }
+				view={ view }
+				onChangeView={ setView }
+				defaultLayouts={ { table: {} } }
+				actions={ actions }
+				paginationInfo={ paginationInfo }
+				selection={ selection }
+				onChangeSelection={ setSelection }
+				searchLabel={ __( 'Search downloads', 'edd-composer' ) }
+				config={ { perPageSizes: [ 10, 20, 50, 100 ] } }
+				empty={
+					<p>
+						{ __(
+							'No EDD Downloads match the current view.',
+							'edd-composer'
+						) }
+					</p>
+				}
+			/>
+
+			{ editingProduct && (
+				<Modal
+					title={ sprintf(
+						/* translators: %s: EDD product title. */
+						__( 'Configure %s', 'edd-composer' ),
+						editingProduct.title
 					) }
-				</p>
-			}
-		/>
+					onRequestClose={ () => setEditingProduct( null ) }
+					size="medium"
+				>
+					<ProductSettings
+						product={ editingProduct }
+						vendor={ vendor }
+						onCancel={ () => setEditingProduct( null ) }
+						onApply={ ( edits ) => {
+							onUpdateProduct( editingProduct, edits );
+							setEditingProduct( null );
+						} }
+					/>
+				</Modal>
+			) }
+		</>
 	);
 };
 

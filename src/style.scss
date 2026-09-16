@@ -17,10 +17,12 @@
 
 .edd-composer-app {
 	display: grid;
+	min-width: 0;
 	gap: 20px;
 }
 
 .edd-composer-card {
+	min-width: 0;
 	padding: 24px;
 	border: 1px solid var(--edd-composer-border);
 	border-radius: 4px;
@@ -87,6 +89,7 @@
 	code {
 		display: block;
 		flex: 1;
+		min-width: 0;
 		overflow-x: auto;
 		padding: 9px 12px;
 		border: 1px solid var(--edd-composer-border);
@@ -97,6 +100,9 @@
 	}
 
 	.components-button {
+		// Override the component's generated content-box rule inside stacked rows.
+		box-sizing: border-box !important;
+		flex-shrink: 0;
 		border-radius: 0 3px 3px 0;
 	}
 }
@@ -124,6 +130,7 @@
 }
 
 .edd-composer-package-preview {
+	overflow-wrap: anywhere;
 	padding: 10px 12px;
 	border-radius: 3px;
 	background: #f6f7f7;
@@ -148,9 +155,6 @@
 }
 
 .edd-composer-save-bar {
-	position: sticky;
-	z-index: 10;
-	bottom: 0;
 	justify-content: space-between;
 	padding: 14px 18px;
 	border: 1px solid var(--edd-composer-border);
@@ -166,7 +170,28 @@
 }
 
 #edd-composer-admin .dataviews-wrapper {
+	height: auto;
+	min-height: 240px;
 	border: 1px solid var(--edd-composer-border);
+}
+
+#edd-composer-admin .dataviews-view-table__cell-content-wrapper {
+	min-width: 0;
+}
+
+#edd-composer-admin .dataviews-view-table__primary-column-content {
+	min-width: 220px;
+	max-width: 320px;
+}
+
+.edd-composer-enable-toggle .components-toggle-control__label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
 }
 
 @media (max-width: 782px) {
@@ -192,5 +217,25 @@
 	.edd-composer-command code {
 		white-space: normal;
 		word-break: break-all;
+	}
+}
+
+@media (max-width: 480px) {
+
+	.edd-composer-command {
+		flex-wrap: wrap;
+
+		code {
+			width: 100%;
+			border-right: 1px solid var(--edd-composer-border);
+			border-radius: 3px 3px 0 0;
+		}
+
+		.components-button {
+			width: 100%;
+			margin-top: -1px;
+			border-radius: 0 0 3px 3px;
+			justify-content: center;
+		}
 	}
 }
