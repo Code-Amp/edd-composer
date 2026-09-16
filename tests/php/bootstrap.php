@@ -35,7 +35,11 @@ require_once $edd_composer_tests_dir . '/includes/functions.php';
  * @return void
  */
 function edd_composer_tests_load_plugins() {
-	require dirname( __DIR__ ) . '/wp-content/plugins/easy-digital-downloads/easy-digital-downloads.php';
+	$plugins_directory = dirname( __DIR__ ) . '/wp-content/plugins/';
+
+	require $plugins_directory . 'easy-digital-downloads-pro/easy-digital-downloads.php';
+	require $plugins_directory . 'edd-software-licensing/edd-software-licenses.php';
+
 	add_action( 'plugins_loaded', 'edd_composer_tests_install_edd_tables', 101 );
 	require dirname( __DIR__ ) . '/wp-content/plugins/edd-composer/edd-composer.php';
 }

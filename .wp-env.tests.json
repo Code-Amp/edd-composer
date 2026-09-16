@@ -5,17 +5,14 @@
 	"phpVersion": "8.0",
 	"testsEnvironment": false,
 	"plugins": [
-		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
+		"./wp-env/plugins/easy-digital-downloads-pro",
+		"./wp-env/plugins/edd-software-licensing",
 		"./edd-composer"
 	],
 	"config": {
 		"WP_DEBUG": true,
 		"WP_DEBUG_DISPLAY": true,
 		"SCRIPT_DEBUG": true
-	},
-	"lifecycleScripts": {
-		"afterStart": "pnpm run wp-env:provision:tests",
-		"afterReset": "pnpm run wp-env:provision:tests"
 	},
 	"mappings": {
 		"composer.json": "./wp-env/phpunit/composer.json",

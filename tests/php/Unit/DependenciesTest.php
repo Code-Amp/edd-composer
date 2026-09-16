@@ -94,7 +94,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Confirms the test runtime detects EDD and gates the missing extension.
+	 * Confirms the test runtime detects both required EDD plugins.
 	 *
 	 * @since 1.0.0
 	 * @return void
@@ -104,7 +104,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 		$requirements = $dependencies->get_requirements();
 
 		$this->assertSame( '3.7.0', $requirements['edd']['current'] );
-		$this->assertNull( $requirements['software_licensing']['current'] );
-		$this->assertFalse( $dependencies->are_met() );
+		$this->assertSame( '3.9.7', $requirements['software_licensing']['current'] );
+		$this->assertTrue( $dependencies->are_met() );
 	}
 }

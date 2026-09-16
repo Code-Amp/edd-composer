@@ -20,6 +20,11 @@
 		"node": "^20.19.0 || >=22.13.0",
 		"pnpm": "12.4.2"
 	},
+	"jest": {
+		"testPathIgnorePatterns": [
+			"<rootDir>/wp-env/plugins/"
+		]
+	},
 	"devDependencies": {
 		"@wordpress/env": "11.15.0",
 		"@wordpress/scripts": "35.0.0",
@@ -29,20 +34,13 @@
 	"scripts": {
 		"build": "wp-scripts build --output-path=edd-composer/assets",
 		"start": "wp-scripts start --output-path=edd-composer/assets",
-		"format": "wp-scripts format",
+		"format": "wp-scripts format src scripts",
 		"lint": "pnpm run lint:js && pnpm run lint:package && pnpm run lint:php",
-		"lint:js": "wp-scripts lint-js",
+		"lint:js": "wp-scripts lint-js src scripts",
 		"lint:package": "wp-scripts lint-pkg-json",
 		"lint:php": "composer run phpcs",
-		"test": "pnpm run test:unit:js && pnpm run test:unit",
-		"test:unit:js": "wp-scripts test-unit-js --passWithNoTests",
-		"test:unit": "wp-env --config=.wp-env.tests.json reset && wp-env --config=.wp-env.tests.json run cli ../vendor/bin/phpunit --env-cwd=tests",
-		"test:start": "wp-env --config=.wp-env.tests.json start",
-		"test:clean": "wp-env --config=.wp-env.tests.json reset",
-		"test:stop": "wp-env --config=.wp-env.tests.json stop",
-		"test:destroy": "wp-env --config=.wp-env.tests.json destroy",
-		"test:bash": "pnpm run test:start && wp-env --config=.wp-env.tests.json run cli bash",
-		"wp-env:provision:tests": "wp-env --config=.wp-env.tests.json run cli composer install --no-interaction --no-progress --prefer-dist",
+		"test": "wp-scripts test-unit-js --passWithNoTests && node scripts/test-environment.mjs test",
+		"test:start": "node scripts/test-environment.mjs start",
 		"plugin-zip": "pnpm run build && zip -rFS edd-composer.zip edd-composer -x '*/.DS_Store'",
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
