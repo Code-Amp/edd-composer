@@ -319,6 +319,33 @@ const verifyRepositoryRoute = async () => {
 	console.log( 'The live Composer package-index route is available.' );
 };
 
+const verifyProtectedRoute = async () => {
+	const config = JSON.parse( readFileSync( configPath, 'utf8' ) );
+	const port = config.port ?? 8888;
+	const response = await fetch(
+		`http://localhost:${ port }/composer/download/integration-check/1.0.0`
+	);
+	const payload = await response.json();
+	const cacheControl = response.headers.get( 'cache-control' ) ?? '';
+	const challenge = response.headers.get( 'www-authenticate' ) ?? '';
+
+	if (
+		response.status !== 401 ||
+		payload.code !== 'edd_composer_missing_credentials' ||
+		! cacheControl.includes( 'private' ) ||
+		! cacheControl.includes( 'no-store' ) ||
+		! challenge.startsWith( 'Basic ' )
+	) {
+		throw new Error(
+			`The protected Composer route failed validation (HTTP ${ response.status }, Cache-Control: ${ cacheControl }, WWW-Authenticate: ${ challenge }).`
+		);
+	}
+
+	console.log(
+		'The protected Composer route requires uncached HTTP Basic authentication.'
+	);
+};
+
 const ensureEnvironment = async () => {
 	validateDependencies();
 
@@ -371,6 +398,7 @@ try {
 			await ensurePrettyPermalinks();
 			await ensurePluginsActive();
 			await verifyRepositoryRoute();
+			await verifyProtectedRoute();
 		}
 	}
 } catch ( error ) {

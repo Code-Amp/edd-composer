@@ -75,8 +75,11 @@ final class Responses {
 	 * @return void
 	 */
 	public function serve_error( $status, $code, $message ) {
-		nocache_headers();
-		header( 'Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0', true );
+		$this->send_private_headers();
+
+		if ( 401 === absint( $status ) ) {
+			header( 'WWW-Authenticate: Basic realm="EDD Composer Repository", charset="UTF-8"', true );
+		}
 
 		$this->send_json(
 			array(
@@ -86,6 +89,59 @@ final class Responses {
 			absint( $status ),
 			'private, no-store, no-cache, must-revalidate, max-age=0'
 		);
+	}
+
+	/**
+	 * Serves an HTTP-aware WordPress error.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \WP_Error $error Repository error.
+	 * @return void
+	 */
+	public function serve_wp_error( \WP_Error $error ) {
+		$data   = $error->get_error_data();
+		$status = is_array( $data ) && isset( $data['status'] ) ? absint( $data['status'] ) : 500;
+
+		$this->serve_error(
+			$status >= 400 && $status <= 599 ? $status : 500,
+			$error->get_error_code(),
+			$error->get_error_message()
+		);
+	}
+
+	/**
+	 * Redirects to an EDD-signed URL with protected-response headers.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url Same-origin EDD download-handler URL.
+	 * @return void
+	 */
+	public function serve_redirect( $url ) {
+		$this->send_private_headers();
+
+		if ( ! wp_safe_redirect( $url, 302, 'EDD Composer Extension' ) ) {
+			$this->serve_error(
+				500,
+				'edd_composer_redirect_failed',
+				__( 'The secure package redirect could not be sent.', 'edd-composer' )
+			);
+		}
+
+		exit;
+	}
+
+	/**
+	 * Applies the cache policy shared by protected redirects and errors.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	private function send_private_headers() {
+		nocache_headers();
+		header( 'Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0', true );
 	}
 
 	/**

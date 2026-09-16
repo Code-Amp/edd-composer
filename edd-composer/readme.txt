@@ -30,6 +30,22 @@ When a dependency is unavailable or outdated, repository features remain disable
 3. Activate EDD Composer Extension through the Plugins screen.
 4. Open Downloads > Composer and review the requirements.
 
+== Composer Setup ==
+
+Add the public package repository to your project, replacing the example store URL:
+
+`composer config repositories.edd-composer composer https://store.example/composer`
+
+Configure HTTP Basic authentication outside the project's `composer.json`. The username is the EDD Software Licensing key and the password is the site URL activated against that license:
+
+`composer config --global --auth http-basic.store.example LICENSE-KEY https://activated-site.example`
+
+For automated environments, provide the same per-domain credentials through Composer's `COMPOSER_AUTH` environment variable or another secure secret store. Do not commit license credentials to the project repository.
+
+Composer can then install any enabled package covered by that activated license:
+
+`composer require vendor/package-slug`
+
 == Frequently Asked Questions ==
 
 = Does this plugin include Easy Digital Downloads or Software Licensing? =

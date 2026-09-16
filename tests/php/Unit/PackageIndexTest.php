@@ -185,6 +185,10 @@ final class PackageIndexTest extends WP_UnitTestCase {
 		$this->assertFalse( get_transient( Package_Index::TRANSIENT_NAME ) );
 
 		set_transient( Package_Index::TRANSIENT_NAME, array( 'cached' ), HOUR_IN_SECONDS );
+		update_post_meta( $download_id, '_edd_sl_enabled', 0 );
+		$this->assertFalse( get_transient( Package_Index::TRANSIENT_NAME ) );
+
+		set_transient( Package_Index::TRANSIENT_NAME, array( 'cached' ), HOUR_IN_SECONDS );
 		$settings           = get_option( Settings::OPTION_NAME );
 		$settings['vendor'] = 'new-vendor';
 		update_option( Settings::OPTION_NAME, $settings );
@@ -237,6 +241,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 			)
 		);
 		update_post_meta( $download_id, 'edd_download_files', $files );
+		update_post_meta( $download_id, '_edd_sl_enabled', 1 );
 
 		return $download_id;
 	}

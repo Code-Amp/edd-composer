@@ -186,6 +186,53 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Confirms protected lookup uses the same canonical version policy.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_finds_exact_canonical_versioned_file() {
+		$download_id = $this->create_download_with_files(
+			array(
+				'stable-file' => array(
+					'version' => 'v1.2.3',
+					'file'    => 'https://example.org/package.zip',
+				),
+			)
+		);
+		$versioned   = new Versioned_Files();
+
+		$file = $versioned->find( $download_id, '1.2.3' );
+
+		$this->assertSame( 'stable-file', $file['filekey'] );
+		$this->assertSame( 'https://example.org/package.zip', $file['file']['file'] );
+		$this->assertNull( $versioned->find( $download_id, '1.2.4' ) );
+	}
+
+	/**
+	 * Confirms duplicate metadata blocks protected lookup as well as publication.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_find_rejects_product_with_duplicate_versions() {
+		$download_id = $this->create_download_with_files(
+			array(
+				array(
+					'version' => '1.2.3',
+					'file'    => 'https://example.org/one.zip',
+				),
+				array(
+					'version' => 'v1.2.3',
+					'file'    => 'https://example.org/two.zip',
+				),
+			)
+		);
+
+		$this->assertNull( ( new Versioned_Files() )->find( $download_id, '1.2.3' ) );
+	}
+
+	/**
 	 * Confirms variable-price files must apply to every price variation.
 	 *
 	 * @since 1.0.0

@@ -82,9 +82,9 @@ final class Package_Index {
 		add_action( 'add_option_' . Settings::OPTION_NAME, array( $this, 'invalidate' ), 10, 0 );
 		add_action( 'update_option_' . Settings::OPTION_NAME, array( $this, 'invalidate' ), 10, 0 );
 		add_action( 'save_post_download', array( $this, 'invalidate_for_download' ), 100, 3 );
-		add_action( 'added_post_meta', array( $this, 'invalidate_for_file_meta' ), 10, 4 );
-		add_action( 'updated_post_meta', array( $this, 'invalidate_for_file_meta' ), 10, 4 );
-		add_action( 'deleted_post_meta', array( $this, 'invalidate_for_file_meta' ), 10, 4 );
+		add_action( 'added_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
+		add_action( 'updated_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
+		add_action( 'deleted_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
 		add_action( 'init', array( $this, 'maybe_invalidate_for_plugin_version' ), 100 );
 	}
 
@@ -176,7 +176,7 @@ final class Package_Index {
 	}
 
 	/**
-	 * Invalidates metadata when an enabled Download's file data changes.
+	 * Invalidates metadata when enabled Download files or licensing state change.
 	 *
 	 * @since 1.0.0
 	 *
@@ -186,10 +186,13 @@ final class Package_Index {
 	 * @param mixed  $meta_value Metadata value.
 	 * @return void
 	 */
-	public function invalidate_for_file_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
+	public function invalidate_for_product_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
 		unset( $meta_id, $meta_value );
 
-		if ( 'edd_download_files' === $meta_key && $this->is_enabled_download( $object_id ) ) {
+		if (
+			in_array( $meta_key, array( 'edd_download_files', '_edd_sl_enabled' ), true )
+			&& $this->is_enabled_download( $object_id )
+		) {
 			$this->invalidate();
 		}
 	}

@@ -54,18 +54,73 @@ final class Versioned_Files {
 	 * @return array{valid: bool, versions: array<int, string>, count: int, messages: array<int, string>}
 	 */
 	public function analyze( $download_id ) {
+		$inspection = $this->inspect( $download_id );
+		$versions   = array_keys( $inspection['files'] );
+
+		usort(
+			$versions,
+			static function ( $first, $second ) {
+				return version_compare( $second, $first );
+			}
+		);
+
+		return array(
+			'valid'    => empty( $inspection['messages'] ),
+			'versions' => $versions,
+			'count'    => count( $versions ),
+			'messages' => array_values( array_unique( $inspection['messages'] ) ),
+		);
+	}
+
+	/**
+	 * Resolves one exact canonical version to its protected EDD file row.
+	 *
+	 * Invalid products, duplicate versions, and price-specific files are never
+	 * returned, keeping download resolution consistent with package discovery.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $download_id Download ID.
+	 * @param string $version     Canonical Composer version.
+	 * @return array{filekey: int|string, file: array<string, mixed>}|null
+	 */
+	public function find( $download_id, $version ) {
+		$canonical = $this->canonicalize( $version );
+
+		if ( null === $canonical ) {
+			return null;
+		}
+
+		$inspection = $this->inspect( $download_id );
+
+		if ( ! empty( $inspection['messages'] ) || ! isset( $inspection['files'][ $canonical ] ) ) {
+			return null;
+		}
+
+		return $inspection['files'][ $canonical ];
+	}
+
+	/**
+	 * Inspects raw EDD file rows once for both publication and download lookup.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $download_id Download ID.
+	 * @return array{files: array<string, array{filekey: int|string, file: array<string, mixed>}>, messages: array<int, string>}
+	 */
+	private function inspect( $download_id ) {
 		$files = function_exists( 'edd_get_download_files' )
 			? edd_get_download_files( absint( $download_id ) )
 			: false;
 		$files = is_array( $files ) ? $files : array();
 
-		$versions        = array();
+		$versioned_files = array();
 		$seen_versions   = array();
 		$messages        = array();
 		$variable_prices = function_exists( 'edd_has_variable_prices' )
 			&& edd_has_variable_prices( absint( $download_id ) );
 
-		foreach ( $files as $file ) {
+		foreach ( $files as $filekey => $file ) {
 			if ( ! is_array( $file ) || empty( $file['version'] ) ) {
 				continue;
 			}
@@ -111,26 +166,19 @@ final class Versioned_Files {
 				continue;
 			}
 
-			$versions[ $canonical ] = true;
+			$versioned_files[ $canonical ] = array(
+				'filekey' => $filekey,
+				'file'    => $file,
+			);
 		}
 
-		if ( empty( $versions ) ) {
+		if ( empty( $versioned_files ) ) {
 			$messages[] = __( 'Add at least one valid versioned download file.', 'edd-composer' );
 		}
 
-		$versions = array_keys( $versions );
-		usort(
-			$versions,
-			static function ( $first, $second ) {
-				return version_compare( $second, $first );
-			}
-		);
-
 		return array(
-			'valid'    => empty( $messages ),
-			'versions' => $versions,
-			'count'    => count( $versions ),
-			'messages' => array_values( array_unique( $messages ) ),
+			'files'    => $versioned_files,
+			'messages' => $messages,
 		);
 	}
 }

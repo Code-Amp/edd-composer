@@ -6,6 +6,10 @@
  */
 
 use EDD_Composer\Products;
+use EDD_Composer\Licensing\Authenticator;
+use EDD_Composer\Licensing\Entitlements;
+use EDD_Composer\Licensing\Order_Resolver;
+use EDD_Composer\Repository\Download;
 use EDD_Composer\Repository\Package_Index;
 use EDD_Composer\Repository\Responses;
 use EDD_Composer\Repository\Router;
@@ -128,9 +132,17 @@ final class RouterTest extends WP_UnitTestCase {
 	 * @return Router
 	 */
 	private function router() {
-		$settings = new Settings();
-		$products = new Products( new Versioned_Files() );
+		$settings  = new Settings();
+		$versioned = new Versioned_Files();
+		$products  = new Products( $versioned );
+		$download  = new Download(
+			$settings,
+			$versioned,
+			new Authenticator(),
+			new Entitlements(),
+			new Order_Resolver()
+		);
 
-		return new Router( new Package_Index( $settings, $products ), new Responses() );
+		return new Router( new Package_Index( $settings, $products ), new Responses(), $download );
 	}
 }

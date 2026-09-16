@@ -98,6 +98,14 @@ final class Products {
 			$messages[] = __( 'The Download must be published.', 'edd-composer' );
 		}
 
+		$licensed_product = class_exists( '\EDD\SoftwareLicensing\Downloads\LicensedProduct' )
+			? new \EDD\SoftwareLicensing\Downloads\LicensedProduct( $post->ID )
+			: null;
+
+		if ( ! $licensed_product || ! $licensed_product->licensing_enabled() ) {
+			$messages[] = __( 'Enable Software Licensing for this Download.', 'edd-composer' );
+		}
+
 		return array(
 			'id'                       => $post->ID,
 			'title'                    => get_the_title( $post ),

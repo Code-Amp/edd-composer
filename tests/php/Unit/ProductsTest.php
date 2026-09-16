@@ -40,6 +40,7 @@ final class ProductsTest extends WP_UnitTestCase {
 				),
 			)
 		);
+		update_post_meta( $download_id, '_edd_sl_enabled', 1 );
 
 		$catalogue = ( new Products( new Versioned_Files() ) )->get_catalogue(
 			array(
@@ -81,6 +82,7 @@ final class ProductsTest extends WP_UnitTestCase {
 				),
 			)
 		);
+		update_post_meta( $download_id, '_edd_sl_enabled', 1 );
 		$settings = array(
 			'vendor'   => 'vendor',
 			'products' => array(
@@ -104,6 +106,45 @@ final class ProductsTest extends WP_UnitTestCase {
 		$this->assertSame( '^8.1', $product['require_php'] );
 		$this->assertFalse( $product['can_enable'] );
 		$this->assertStringContainsString( 'published', implode( ' ', $product['file_validation_messages'] ) );
+	}
+
+	/**
+	 * Confirms products without Software Licensing cannot be published.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_catalogue_requires_software_licensing_for_product() {
+		$download_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'download',
+				'post_status' => 'publish',
+				'post_title'  => 'Unlicensed Package',
+			)
+		);
+		update_post_meta(
+			$download_id,
+			'edd_download_files',
+			array(
+				array(
+					'version' => '1.0.0',
+					'file'    => 'https://example.org/package.zip',
+				),
+			)
+		);
+
+		$product = $this->find_product(
+			( new Products( new Versioned_Files() ) )->get_catalogue(
+				array(
+					'vendor'   => 'vendor',
+					'products' => array(),
+				)
+			),
+			$download_id
+		);
+
+		$this->assertFalse( $product['can_enable'] );
+		$this->assertStringContainsString( 'Software Licensing', implode( ' ', $product['file_validation_messages'] ) );
 	}
 
 	/**

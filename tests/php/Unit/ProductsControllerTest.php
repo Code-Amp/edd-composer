@@ -246,6 +246,7 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 				),
 			)
 		);
+		update_post_meta( $download_id, '_edd_sl_enabled', 1 );
 
 		return $download_id;
 	}

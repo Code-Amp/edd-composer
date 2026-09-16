@@ -9,6 +9,10 @@ namespace EDD_Composer;
 
 use EDD_Composer\Admin\Admin_Page;
 use EDD_Composer\Admin\File_Version_Field;
+use EDD_Composer\Licensing\Authenticator;
+use EDD_Composer\Licensing\Entitlements;
+use EDD_Composer\Licensing\Order_Resolver;
+use EDD_Composer\Repository\Download;
 use EDD_Composer\Repository\Package_Index;
 use EDD_Composer\Repository\Responses;
 use EDD_Composer\Repository\Router;
@@ -86,11 +90,18 @@ final class Plugin {
 		$versioned     = new Versioned_Files();
 		$products      = new Products( $versioned );
 		$package_index = new Package_Index( $settings, $products );
+		$download      = new Download(
+			$settings,
+			$versioned,
+			new Authenticator(),
+			new Entitlements(),
+			new Order_Resolver()
+		);
 
 		$settings->register_hooks();
 		$package_index->register_hooks();
 		( new File_Version_Field() )->register_hooks();
-		( new Router( $package_index, new Responses() ) )->register_hooks();
+		( new Router( $package_index, new Responses(), $download ) )->register_hooks();
 
 		$rest_controller = new Products_Controller(
 			$settings,

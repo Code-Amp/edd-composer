@@ -195,7 +195,7 @@ final class Settings {
 				? trim( $config['package_slug'] )
 				: '';
 
-			if ( 1 !== preg_match( self::PACKAGE_PATTERN, $package_slug ) ) {
+			if ( ! $this->is_valid_package_slug( $package_slug ) ) {
 				return new \WP_Error( 'edd_composer_invalid_package_slug', __( 'Package slugs must be lowercase Composer package segments.', 'edd-composer' ) );
 			}
 
@@ -241,6 +241,18 @@ final class Settings {
 			'vendor'         => $vendor,
 			'products'       => $sanitized,
 		);
+	}
+
+	/**
+	 * Validates one Composer package-name segment without rewriting it.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $package_slug Candidate package slug.
+	 * @return bool
+	 */
+	public function is_valid_package_slug( $package_slug ) {
+		return is_string( $package_slug ) && 1 === preg_match( self::PACKAGE_PATTERN, $package_slug );
 	}
 
 	/**

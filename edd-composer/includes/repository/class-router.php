@@ -72,16 +72,26 @@ final class Router {
 	private $responses;
 
 	/**
+	 * Protected-download service.
+	 *
+	 * @since 1.0.0
+	 * @var Download
+	 */
+	private $download;
+
+	/**
 	 * Creates the repository router.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param Package_Index $package_index Package-index service.
 	 * @param Responses     $responses     Response service.
+	 * @param Download      $download      Protected-download service.
 	 */
-	public function __construct( Package_Index $package_index, Responses $responses ) {
+	public function __construct( Package_Index $package_index, Responses $responses, Download $download ) {
 		$this->package_index = $package_index;
 		$this->responses     = $responses;
+		$this->download      = $download;
 	}
 
 	/**
@@ -141,7 +151,7 @@ final class Router {
 		 * Filters the public Composer repository base URL.
 		 *
 		 * The rewrite path remains `/composer` in v1. This filter supports URL
-		 * generation at the current origin, not a proxy or alternate route.
+		 * generation at the current origin, not an alternate route.
 		 *
 		 * @since 1.0.0
 		 *
@@ -219,11 +229,40 @@ final class Router {
 				break;
 
 			case 'download':
-				$this->responses->serve_error(
-					501,
-					'edd_composer_download_not_implemented',
-					__( 'Authenticated package downloads are not available yet.', 'edd-composer' )
+				$result = $this->download->prepare(
+					(string) get_query_var( self::PRODUCT_QUERY_VAR ),
+					(string) get_query_var( self::VERSION_QUERY_VAR )
 				);
+
+				if ( is_wp_error( $result ) ) {
+					$this->responses->serve_wp_error( $result );
+				}
+
+				/**
+				 * Fires after a Composer download is authorized and signed.
+				 *
+				 * Arguments intentionally contain only internal IDs and public package
+				 * metadata. License keys, customer data, and activated site URLs are
+				 * never exposed to the hook.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param int    $download_id EDD Download ID.
+				 * @param string $version Canonical Composer version.
+				 * @param string $product_slug Public configured package slug.
+				 * @param int    $license_id Target EDD SL license ID.
+				 * @param int    $order_id EDD order ID used to sign the URL.
+				 */
+				do_action(
+					'edd_composer_download',
+					$result['download_id'],
+					$result['version'],
+					$result['product_slug'],
+					$result['license_id'],
+					$result['order_id']
+				);
+
+				$this->responses->serve_redirect( $result['redirect_url'] );
 				break;
 
 			default:
