@@ -138,7 +138,8 @@
 }
 
 .edd-composer-product-settings {
-	min-width: min(520px, 80vw);
+	width: 100%;
+	min-width: 0;
 }
 
 .edd-composer-modal-actions,
@@ -172,7 +173,25 @@
 #edd-composer-admin .dataviews-wrapper {
 	height: auto;
 	min-height: 240px;
+	overflow-x: auto;
 	border: 1px solid var(--edd-composer-border);
+	scrollbar-color: #787c82 #f0f0f1;
+	scrollbar-gutter: stable;
+}
+
+#edd-composer-admin .dataviews-wrapper::-webkit-scrollbar {
+	-webkit-appearance: none;
+	height: 12px;
+}
+
+#edd-composer-admin .dataviews-wrapper::-webkit-scrollbar-track {
+	background: #f0f0f1;
+}
+
+#edd-composer-admin .dataviews-wrapper::-webkit-scrollbar-thumb {
+	border: 3px solid #f0f0f1;
+	border-radius: 6px;
+	background: #787c82;
 }
 
 #edd-composer-admin .dataviews-view-table__cell-content-wrapper {
