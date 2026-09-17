@@ -8,6 +8,7 @@
 namespace EDD_Composer\Admin;
 
 use EDD_Composer\Dependencies;
+use EDD_Composer\Repository\URL_Policy;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,6 +51,14 @@ final class Admin_Page {
 	private $dependencies;
 
 	/**
+	 * Public repository URL policy.
+	 *
+	 * @since 1.0.0
+	 * @var URL_Policy
+	 */
+	private $url_policy;
+
+	/**
 	 * Registered WordPress admin page hook.
 	 *
 	 * @since 1.0.0
@@ -62,10 +71,12 @@ final class Admin_Page {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Dependencies $dependencies Runtime dependency evaluator.
+	 * @param Dependencies    $dependencies Runtime dependency evaluator.
+	 * @param URL_Policy|null $url_policy   Optional URL policy.
 	 */
-	public function __construct( Dependencies $dependencies ) {
+	public function __construct( Dependencies $dependencies, ?URL_Policy $url_policy = null ) {
 		$this->dependencies = $dependencies;
+		$this->url_policy   = $url_policy ? $url_policy : new URL_Policy();
 	}
 
 	/**
@@ -78,7 +89,7 @@ final class Admin_Page {
 	public function register_hooks() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
-		if ( ! $this->dependencies->are_met() ) {
+		if ( ! $this->requirements_are_met() ) {
 			add_action( 'admin_notices', array( $this, 'render_dependency_notice' ) );
 			return;
 		}
@@ -129,7 +140,7 @@ final class Admin_Page {
 	 */
 	public function enqueue_assets( $hook_suffix ) {
 		if (
-			! $this->dependencies->are_met()
+			! $this->requirements_are_met()
 			|| ! is_string( $this->page_hook )
 			|| $this->page_hook !== $hook_suffix
 		) {
@@ -214,7 +225,7 @@ final class Admin_Page {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'EDD Composer Extension', 'edd-composer' ); ?></h1>
-			<?php if ( ! $this->dependencies->are_met() ) : ?>
+			<?php if ( ! $this->requirements_are_met() ) : ?>
 				<p><?php esc_html_e( 'The following minimum requirements must be met before Composer repository features can be enabled.', 'edd-composer' ); ?></p>
 				<?php $this->render_requirements_table(); ?>
 			<?php else : ?>
@@ -273,7 +284,7 @@ final class Admin_Page {
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $this->dependencies->get_requirements() as $requirement ) : ?>
+				<?php foreach ( array_merge( $this->dependencies->get_requirements(), array( $this->url_policy->get_requirement() ) ) as $requirement ) : ?>
 					<tr>
 						<th scope="row"><?php echo esc_html( $requirement['label'] ); ?></th>
 						<td><?php echo esc_html( $requirement['minimum'] ); ?></td>
@@ -299,7 +310,18 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<p><?php esc_html_e( 'Install or update Easy Digital Downloads and its Software Licensing extension, then reload this page.', 'edd-composer' ); ?></p>
+		<p><?php esc_html_e( 'Resolve each required dependency or transport setting, then reload this page.', 'edd-composer' ); ?></p>
 		<?php
+	}
+
+	/**
+	 * Reports whether dependencies and public transport configuration are ready.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	private function requirements_are_met() {
+		return $this->dependencies->are_met() && $this->url_policy->is_ready();
 	}
 }

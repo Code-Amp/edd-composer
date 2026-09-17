@@ -205,13 +205,20 @@ final class Products_Controller extends \WP_REST_Controller {
 			}
 		}
 
-		$this->settings->save( $validated );
+		if ( ! $this->settings->save( $validated ) ) {
+			return new \WP_Error(
+				'edd_composer_settings_save_failed',
+				__( 'The Composer package settings could not be saved.', 'edd-composer' ),
+				array( 'status' => 500 )
+			);
+		}
+
 		delete_transient( Settings::PACKAGE_INDEX_TRANSIENT );
 
 		return rest_ensure_response(
 			array_merge(
-				$this->prepare_settings_response( $validated ),
-				array( 'products' => $this->products->get_catalogue( $validated ) )
+				$this->prepare_settings_response( $validated, $catalogue ),
+				array( 'products' => $catalogue )
 			)
 		);
 	}
@@ -369,11 +376,12 @@ final class Products_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array<string, mixed> $settings Current settings.
+	 * @param array<string, mixed>                  $settings  Current settings.
+	 * @param array<int, array<string, mixed>>|null $catalogue Optional prebuilt catalogue.
 	 * @return array<string, mixed>
 	 */
-	private function prepare_settings_response( array $settings ) {
-		$catalogue     = $this->products->get_catalogue( $settings );
+	private function prepare_settings_response( array $settings, ?array $catalogue = null ) {
+		$catalogue     = null === $catalogue ? $this->products->get_catalogue( $settings ) : $catalogue;
 		$package_count = 0;
 
 		foreach ( $catalogue as $product ) {

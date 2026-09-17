@@ -131,6 +131,44 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Confirms failed option persistence produces an explicit server error.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_failed_settings_persistence_returns_server_error() {
+		$this->set_manager_user();
+		$download_id = $this->create_download_with_version();
+		$request     = new WP_REST_Request( 'POST', '/edd-composer/v1/settings' );
+		$request->set_header( 'content-type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'repository_name' => 'Blocked write',
+					'vendor'          => 'code-amp',
+					'products'        => array(
+						(string) $download_id => array(
+							'enabled'      => true,
+							'package_slug' => 'example-package',
+							'type'         => 'wordpress-plugin',
+							'description'  => 'Example package.',
+							'require_php'  => '>=8.0',
+						),
+					),
+				)
+			)
+		);
+		$block_write = static fn( $new_value, $old_value ) => $old_value;
+		add_filter( 'pre_update_option_' . Settings::OPTION_NAME, $block_write, 10, 2 );
+
+		$response = $this->server->dispatch( $request );
+
+		remove_filter( 'pre_update_option_' . Settings::OPTION_NAME, $block_write, 10 );
+		$this->assertSame( 500, $response->get_status() );
+		$this->assertSame( 'edd_composer_settings_save_failed', $response->get_data()['code'] );
+	}
+
+	/**
 	 * Confirms malformed settings are rejected without changing the option.
 	 *
 	 * @since 1.0.0

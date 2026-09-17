@@ -97,6 +97,56 @@ final class SettingsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Confirms repository title limits count Unicode characters, not UTF-8 bytes.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_repository_name_length_counts_unicode_characters() {
+		$value                    = $this->settings_payload( $this->create_download(), 'code-amp', 'package' );
+		$value['repository_name'] = str_repeat( '界', 100 );
+
+		$this->assertNotWPError( ( new Settings() )->validate( $value ) );
+
+		$value['repository_name'] .= '界';
+		$this->assertSame(
+			'edd_composer_invalid_repository_name',
+			( new Settings() )->validate( $value )->get_error_code()
+		);
+	}
+
+	/**
+	 * Confirms unchanged valid settings count as a successful persisted save.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_save_succeeds_when_settings_are_unchanged() {
+		$settings_service = new Settings();
+		$value            = $this->settings_payload( $this->create_download(), 'code-amp', 'package' );
+		$validated        = $settings_service->validate( $value );
+
+		$this->assertTrue( $settings_service->save( $validated ) );
+		$this->assertTrue( $settings_service->save( $validated ) );
+	}
+
+	/**
+	 * Confirms permanently deleted Downloads cannot poison future settings reads.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_permanent_download_deletion_removes_product_settings() {
+		$download_id = $this->create_download();
+		$settings    = $this->settings_payload( $download_id, 'code-amp', 'package' );
+		update_option( Settings::OPTION_NAME, $settings );
+
+		wp_delete_post( $download_id, true );
+
+		$this->assertSame( array(), ( new Settings() )->get()['products'] );
+	}
+
+	/**
 	 * Supplies invalid repository titles.
 	 *
 	 * @since 1.0.0

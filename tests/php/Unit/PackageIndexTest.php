@@ -189,6 +189,16 @@ final class PackageIndexTest extends WP_UnitTestCase {
 		$this->assertFalse( get_transient( Package_Index::TRANSIENT_NAME ) );
 
 		set_transient( Package_Index::TRANSIENT_NAME, array( 'cached' ), HOUR_IN_SECONDS );
+		update_post_meta( $download_id, '_variable_pricing', 1 );
+		$this->assertFalse( get_transient( Package_Index::TRANSIENT_NAME ) );
+
+		set_transient( Package_Index::TRANSIENT_NAME, array( 'cached' ), HOUR_IN_SECONDS );
+		wp_trash_post( $download_id );
+		$this->assertFalse( get_transient( Package_Index::TRANSIENT_NAME ) );
+
+		wp_untrash_post( $download_id );
+
+		set_transient( Package_Index::TRANSIENT_NAME, array( 'cached' ), HOUR_IN_SECONDS );
 		$settings           = get_option( Settings::OPTION_NAME );
 		$settings['vendor'] = 'new-vendor';
 		update_option( Settings::OPTION_NAME, $settings );

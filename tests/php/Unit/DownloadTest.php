@@ -9,6 +9,7 @@ use EDD_Composer\Licensing\Authenticator;
 use EDD_Composer\Licensing\Entitlements;
 use EDD_Composer\Licensing\Order_Resolver;
 use EDD_Composer\Repository\Download;
+use EDD_Composer\Repository\URL_Policy;
 use EDD_Composer\Repository\Versioned_Files;
 use EDD_Composer\Settings;
 
@@ -26,6 +27,8 @@ final class DownloadTest extends WP_UnitTestCase {
 	 */
 	public function tear_down() {
 		delete_option( Settings::OPTION_NAME );
+		remove_all_filters( 'edd_composer_download_proxy_origin' );
+		remove_all_filters( 'edd_composer_allowed_repository_origins' );
 		parent::tear_down();
 	}
 
@@ -196,6 +199,45 @@ final class DownloadTest extends WP_UnitTestCase {
 		$this->assertWPError( $result );
 		$this->assertSame( 'edd_composer_download_url_failed', $result->get_error_code() );
 		$this->assertSame( 500, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * Confirms the authorized flow can redirect through an explicit proxy origin.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_rewrites_signed_download_to_allowlisted_proxy_origin() {
+		$download_id = $this->create_enabled_download();
+		$license     = $this->license( $download_id );
+		$order       = $this->order( $this->item( $download_id ) );
+
+		add_filter( 'edd_composer_download_proxy_origin', static fn() => 'https://downloads.example.com' );
+		add_filter(
+			'edd_composer_allowed_repository_origins',
+			static function ( $origins ) {
+				$origins[] = 'https://downloads.example.com';
+				return $origins;
+			}
+		);
+
+		$service = new Download(
+			new Settings(),
+			new Versioned_Files(),
+			new Authenticator( static fn() => $license, static fn() => 'example.org' ),
+			new Entitlements(),
+			new Order_Resolver( static fn() => $order ),
+			static fn() => home_url( '/index.php?eddfile=77%3A123%3A0&token=a%2Bb%3D' ),
+			new URL_Policy( false )
+		);
+
+		$result = $service->prepare( 'example-package', '1.2.3', $this->credentials() );
+
+		$this->assertNotWPError( $result );
+		$this->assertSame(
+			'https://downloads.example.com/index.php?eddfile=77%3A123%3A0&token=a%2Bb%3D',
+			$result['redirect_url']
+		);
 	}
 
 	/**

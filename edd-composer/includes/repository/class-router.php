@@ -145,22 +145,7 @@ final class Router {
 	 * @return string
 	 */
 	public static function get_base_url() {
-		$default = home_url( '/composer' );
-
-		/**
-		 * Filters the public Composer repository base URL.
-		 *
-		 * The rewrite path remains `/composer` in v1. This filter supports URL
-		 * generation at the current origin, not an alternate route.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $url Default repository URL.
-		 */
-		$url = apply_filters( 'edd_composer_repository_base_url', $default );
-		$url = is_string( $url ) ? esc_url_raw( $url ) : '';
-
-		return untrailingslashit( '' !== $url ? $url : $default );
+		return ( new URL_Policy() )->get_repository_base_url();
 	}
 
 	/**

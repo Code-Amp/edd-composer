@@ -85,6 +85,9 @@ final class Package_Index {
 		add_action( 'added_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
 		add_action( 'updated_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
 		add_action( 'deleted_post_meta', array( $this, 'invalidate_for_product_meta' ), 10, 4 );
+		add_action( 'trashed_post', array( $this, 'invalidate_for_download_lifecycle' ) );
+		add_action( 'untrashed_post', array( $this, 'invalidate_for_download_lifecycle' ) );
+		add_action( 'before_delete_post', array( $this, 'invalidate_for_download_lifecycle' ) );
 		add_action( 'init', array( $this, 'maybe_invalidate_for_plugin_version' ), 100 );
 	}
 
@@ -190,9 +193,23 @@ final class Package_Index {
 		unset( $meta_id, $meta_value );
 
 		if (
-			in_array( $meta_key, array( 'edd_download_files', '_edd_sl_enabled' ), true )
+			in_array( $meta_key, array( 'edd_download_files', '_edd_sl_enabled', '_variable_pricing', 'edd_variable_prices', '_edd_price_options_mode' ), true )
 			&& $this->is_enabled_download( $object_id )
 		) {
+			$this->invalidate();
+		}
+	}
+
+	/**
+	 * Invalidates metadata when an enabled Download is trashed or deleted.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return void
+	 */
+	public function invalidate_for_download_lifecycle( $post_id ) {
+		if ( 'download' === get_post_type( $post_id ) && $this->is_enabled_download( $post_id ) ) {
 			$this->invalidate();
 		}
 	}

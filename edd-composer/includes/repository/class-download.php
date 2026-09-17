@@ -15,7 +15,7 @@ use EDD_Composer\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Authorizes a package request and produces an EDD-signed same-origin URL.
+ * Authorizes a package request and produces a safe EDD-signed redirect URL.
  *
  * @since 1.0.0
  */
@@ -69,6 +69,14 @@ final class Download {
 	private $url_signer;
 
 	/**
+	 * Public and signed-download URL policy.
+	 *
+	 * @since 1.0.0
+	 * @var URL_Policy
+	 */
+	private $url_policy;
+
+	/**
 	 * Creates the protected-download service.
 	 *
 	 * @since 1.0.0
@@ -79,6 +87,7 @@ final class Download {
 	 * @param Entitlements    $entitlements    Entitlement resolver.
 	 * @param Order_Resolver  $order_resolver  Order resolver.
 	 * @param callable|null   $url_signer      Optional signed-URL callback.
+	 * @param URL_Policy|null $url_policy      Optional URL policy.
 	 */
 	public function __construct(
 		Settings $settings,
@@ -86,7 +95,8 @@ final class Download {
 		Authenticator $authenticator,
 		Entitlements $entitlements,
 		Order_Resolver $order_resolver,
-		$url_signer = null
+		$url_signer = null,
+		?URL_Policy $url_policy = null
 	) {
 		$this->settings        = $settings;
 		$this->versioned_files = $versioned_files;
@@ -98,6 +108,7 @@ final class Download {
 			: static function ( $order_item, $email, $filekey, $download_id, $price_id ) {
 				return edd_get_download_file_url( $order_item, $email, $filekey, $download_id, $price_id );
 			};
+		$this->url_policy      = $url_policy ? $url_policy : new URL_Policy();
 	}
 
 	/**
@@ -178,12 +189,10 @@ final class Download {
 			$order_context['price_id']
 		);
 
-		if ( ! is_string( $redirect_url ) || ! $this->is_same_origin_url( $redirect_url ) ) {
-			return $this->error(
-				'edd_composer_download_url_failed',
-				__( 'A secure package download URL could not be generated.', 'edd-composer' ),
-				500
-			);
+		$redirect_url = $this->url_policy->prepare_signed_download_url( $redirect_url );
+
+		if ( is_wp_error( $redirect_url ) ) {
+			return $redirect_url;
 		}
 
 		return array(
@@ -205,19 +214,7 @@ final class Download {
 	 * @return bool
 	 */
 	public function is_same_origin_url( $url ) {
-		$candidate = $this->get_origin( $url );
-
-		if ( null === $candidate ) {
-			return false;
-		}
-
-		foreach ( array_unique( array( home_url(), site_url() ) ) as $allowed_url ) {
-			if ( $candidate === $this->get_origin( $allowed_url ) ) {
-				return true;
-			}
-		}
-
-		return false;
+		return $this->url_policy->is_store_origin_url( $url );
 	}
 
 	/**
@@ -265,38 +262,6 @@ final class Download {
 			__( 'The requested package is not available.', 'edd-composer' ),
 			404
 		);
-	}
-
-	/**
-	 * Normalizes a URL to a strict scheme, host, and effective port tuple.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $url URL to inspect.
-	 * @return string|null
-	 */
-	private function get_origin( $url ) {
-		$parts = is_string( $url ) ? wp_parse_url( $url ) : false;
-
-		if (
-			! is_array( $parts )
-			|| empty( $parts['scheme'] )
-			|| empty( $parts['host'] )
-			|| isset( $parts['user'] )
-			|| isset( $parts['pass'] )
-		) {
-			return null;
-		}
-
-		$scheme = strtolower( $parts['scheme'] );
-
-		if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
-			return null;
-		}
-
-		$port = isset( $parts['port'] ) ? absint( $parts['port'] ) : ( 'https' === $scheme ? 443 : 80 );
-
-		return $scheme . '://' . strtolower( $parts['host'] ) . ':' . $port;
 	}
 
 	/**

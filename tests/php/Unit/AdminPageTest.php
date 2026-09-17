@@ -7,6 +7,7 @@
 
 use EDD_Composer\Admin\Admin_Page;
 use EDD_Composer\Dependencies;
+use EDD_Composer\Repository\URL_Policy;
 
 /**
  * Verifies administration access decisions.
@@ -40,6 +41,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 		wp_dequeue_style( Admin_Page::STYLE_HANDLE );
 		wp_deregister_style( Admin_Page::STYLE_HANDLE );
 		wp_set_current_user( 0 );
+		remove_all_filters( 'edd_composer_repository_base_url' );
 
 		parent::tear_down();
 	}
@@ -126,6 +128,40 @@ final class AdminPageTest extends WP_UnitTestCase {
 		$this->assertSame( 10, has_action( 'admin_menu', array( $page, 'register_menu' ) ) );
 		$this->assertSame( 10, has_action( 'admin_notices', array( $page, 'render_dependency_notice' ) ) );
 		$this->assertFalse( has_action( 'admin_enqueue_scripts', array( $page, 'enqueue_assets' ) ) );
+	}
+
+	/**
+	 * Confirms unsafe public transport uses the same requirements-only pathway.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_insecure_transport_registers_notice_instead_of_assets() {
+		$page                 = new Admin_Page( $this->ready_dependencies(), new URL_Policy( false ) );
+		$this->hooked_pages[] = $page;
+		$page->register_hooks();
+
+		$this->assertSame( 10, has_action( 'admin_notices', array( $page, 'render_dependency_notice' ) ) );
+		$this->assertFalse( has_action( 'admin_enqueue_scripts', array( $page, 'enqueue_assets' ) ) );
+	}
+
+	/**
+	 * Confirms the requirements page explains a failed transport policy.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_insecure_transport_is_shown_in_requirements_table() {
+		$this->set_manager_user();
+		$page = new Admin_Page( $this->ready_dependencies(), new URL_Policy( false ) );
+
+		ob_start();
+		$page->render_page();
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'Public repository transport', $output );
+		$this->assertStringContainsString( 'public Composer repository URL must use HTTPS', $output );
+		$this->assertStringNotContainsString( 'id="edd-composer-admin"', $output );
 	}
 
 	/**

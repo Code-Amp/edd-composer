@@ -16,6 +16,7 @@ use EDD_Composer\Repository\Download;
 use EDD_Composer\Repository\Package_Index;
 use EDD_Composer\Repository\Responses;
 use EDD_Composer\Repository\Router;
+use EDD_Composer\Repository\URL_Policy;
 use EDD_Composer\Repository\Versioned_Files;
 use EDD_Composer\REST_API\Products_Controller;
 
@@ -78,11 +79,12 @@ final class Plugin {
 	 */
 	public function boot() {
 		$this->dependencies = Dependencies::from_environment();
+		$url_policy         = new URL_Policy();
 
-		$admin_page = new Admin_Page( $this->dependencies );
+		$admin_page = new Admin_Page( $this->dependencies, $url_policy );
 		$admin_page->register_hooks();
 
-		if ( ! $this->dependencies->are_met() ) {
+		if ( ! $this->dependencies->are_met() || ! $url_policy->is_ready() ) {
 			return;
 		}
 
@@ -95,13 +97,15 @@ final class Plugin {
 			$versioned,
 			new Authenticator(),
 			new Entitlements(),
-			new Order_Resolver()
+			new Order_Resolver(),
+			null,
+			$url_policy
 		);
 
 		$settings->register_hooks();
 		$package_index->register_hooks();
 		( new File_Version_Field() )->register_hooks();
-		( new Router( $package_index, new Responses( $settings ), $download ) )->register_hooks();
+		( new Router( $package_index, new Responses( $settings, $url_policy ), $download ) )->register_hooks();
 
 		$rest_controller = new Products_Controller(
 			$settings,

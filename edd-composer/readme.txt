@@ -23,6 +23,8 @@ Version 1 requires:
 
 When a dependency is unavailable or outdated, repository features remain disabled and administrators see a requirements-only screen. The plugin does not expose partially configured routes.
 
+Production repository and download URLs must use HTTPS so Composer credentials are never sent over cleartext transport.
+
 == Installation ==
 
 1. Install and activate Easy Digital Downloads and EDD Software Licensing.
@@ -45,6 +47,22 @@ For automated environments, provide the same per-domain credentials through Comp
 Composer can then install any enabled package covered by that activated license:
 
 `composer require vendor/package-slug`
+
+== Advanced Proxy Deployment ==
+
+The default repository and signed downloads use the WordPress site origin. A reverse proxy can be used when its public origins are explicitly allowlisted. The proxy remains responsible for forwarding both Composer routes and the unchanged EDD signed-download path and query string.
+
+The following example advertises a repository path on one HTTPS origin and sends final EDD-signed redirects through another:
+
+`add_filter( 'edd_composer_allowed_repository_origins', function ( $origins ) { $origins[] = 'https://composer.example.com'; $origins[] = 'https://downloads.example.com'; return $origins; } );`
+
+`add_filter( 'edd_composer_repository_base_url', function () { return 'https://composer.example.com/private-repository'; } );`
+
+`add_filter( 'edd_composer_download_proxy_origin', function () { return 'https://downloads.example.com'; } );`
+
+The download proxy setting accepts an origin only, without a path. EDD Composer Extension first validates the signed URL against the WordPress origin and then replaces only its scheme, host, and port. It does not provide proxy server, firewall, or shared-secret configuration.
+
+Local HTTP environments whose WordPress environment type is `local` or `development` can define `EDD_COMPOSER_ALLOW_INSECURE_HTTP` as `true`. The override is ignored in production.
 
 == Frequently Asked Questions ==
 

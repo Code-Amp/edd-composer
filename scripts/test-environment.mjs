@@ -490,6 +490,52 @@ const ensureEnvironment = async () => {
 	await ensurePluginsActive();
 };
 
+const runTestSuite = async () => {
+	const failures = [];
+	const checks = [
+		{
+			name: 'PHPUnit',
+			run: () =>
+				runWpEnv( [
+					'run',
+					'cli',
+					'../vendor/bin/phpunit',
+					'--env-cwd=tests',
+				] ),
+		},
+		{ name: 'permalink verification', run: ensurePrettyPermalinks },
+		{ name: 'plugin activation verification', run: ensurePluginsActive },
+		{ name: 'repository route verification', run: verifyRepositoryRoute },
+		{ name: 'protected route verification', run: verifyProtectedRoute },
+		{
+			name: 'successful download verification',
+			run: verifySuccessfulDownload,
+		},
+	];
+
+	for ( const check of checks ) {
+		try {
+			await check.run();
+		} catch ( error ) {
+			failures.push(
+				new Error(
+					`${ check.name } failed: ${
+						error instanceof Error ? error.message : error
+					}`,
+					{ cause: error }
+				)
+			);
+		}
+	}
+
+	if ( failures.length > 0 ) {
+		throw new AggregateError(
+			failures,
+			failures.map( ( failure ) => failure.message ).join( '\n' )
+		);
+	}
+};
+
 const command = process.argv[ 2 ] ?? 'test';
 
 try {
@@ -500,20 +546,7 @@ try {
 	await ensureEnvironment();
 
 	if ( command === 'test' ) {
-		try {
-			await runWpEnv( [
-				'run',
-				'cli',
-				'../vendor/bin/phpunit',
-				'--env-cwd=tests',
-			] );
-		} finally {
-			await ensurePrettyPermalinks();
-			await ensurePluginsActive();
-			await verifyRepositoryRoute();
-			await verifyProtectedRoute();
-			await verifySuccessfulDownload();
-		}
+		await runTestSuite();
 	}
 } catch ( error ) {
 	console.error( error instanceof Error ? error.message : error );

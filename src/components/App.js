@@ -14,6 +14,7 @@ import { fetchAdminData, saveSettings } from '../api';
 import {
 	applyBulkEnabled,
 	cloneSettings,
+	getDraftAfterSave,
 	getRepositoryNameError,
 	getVendorError,
 	hasBlockingErrors,
@@ -126,14 +127,17 @@ const App = () => {
 	);
 
 	const save = async () => {
+		const submittedSettings = cloneSettings( settings );
 		setIsSaving( true );
 
 		try {
-			const response = await saveSettings( settings );
+			const response = await saveSettings( submittedSettings );
 			const updatedSettings = cloneSettings( response.settings );
 
 			setSavedSettings( updatedSettings );
-			setSettings( cloneSettings( updatedSettings ) );
+			setSettings( ( current ) =>
+				getDraftAfterSave( current, submittedSettings, updatedSettings )
+			);
 			setRepository( response.repository );
 			setProducts( response.products );
 			createSuccessNotice(

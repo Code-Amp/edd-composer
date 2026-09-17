@@ -11,8 +11,15 @@ export const cloneSettings = ( settings ) => clone( settings );
 export const isSettingsDirty = ( saved, draft ) =>
 	JSON.stringify( saved ) !== JSON.stringify( draft );
 
+export const getDraftAfterSave = ( current, submitted, saved ) =>
+	isSettingsDirty( submitted, current ) ? current : cloneSettings( saved );
+
 export const getRepositoryNameError = ( name ) => {
-	if ( typeof name !== 'string' || ! name.trim() || name.length > 100 ) {
+	if (
+		typeof name !== 'string' ||
+		! name.trim() ||
+		Array.from( name ).length > 100
+	) {
 		return __(
 			'Enter a repository title containing no more than 100 characters.',
 			'edd-composer'

@@ -8,6 +8,7 @@
 namespace EDD_Composer;
 
 use EDD_Composer\Repository\Router;
+use EDD_Composer\Repository\URL_Policy;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +26,7 @@ final class Activator {
 	 * @return void
 	 */
 	public static function activate() {
-		if ( ! Dependencies::from_environment()->are_met() ) {
+		if ( ! Dependencies::from_environment()->are_met() || ! ( new URL_Policy() )->is_ready() ) {
 			return;
 		}
 

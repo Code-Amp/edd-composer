@@ -1,5 +1,6 @@
 import {
 	applyBulkEnabled,
+	getDraftAfterSave,
 	getPackageSlugError,
 	getPhpConstraintError,
 	getRepositoryNameError,
@@ -44,12 +45,27 @@ describe( 'settings utilities', () => {
 	test( 'validates Composer vendor, package, and PHP inputs', () => {
 		expect( getRepositoryNameError( 'Code Amp Packages' ) ).toBeNull();
 		expect( getRepositoryNameError( '' ) ).not.toBeNull();
+		expect( getRepositoryNameError( '📦'.repeat( 100 ) ) ).toBeNull();
+		expect( getRepositoryNameError( '📦'.repeat( 101 ) ) ).not.toBeNull();
 		expect( getVendorError( 'code-amp' ) ).toBeNull();
 		expect( getVendorError( 'Code Amp' ) ).not.toBeNull();
 		expect( getPackageSlugError( 'sample-plugin' ) ).toBeNull();
 		expect( getPackageSlugError( 'Sample Plugin' ) ).not.toBeNull();
 		expect( getPhpConstraintError( '^8.1 || ^8.2' ) ).toBeNull();
 		expect( getPhpConstraintError( 'latest' ) ).not.toBeNull();
+	} );
+
+	test( 'preserves edits made while an earlier save is pending', () => {
+		const submitted = { ...settings, repository_name: 'Submitted title' };
+		const laterDraft = { ...submitted, repository_name: 'Later edit' };
+		const saved = { ...submitted, repository_name: 'Submitted title' };
+
+		expect( getDraftAfterSave( laterDraft, submitted, saved ) ).toBe(
+			laterDraft
+		);
+		expect( getDraftAfterSave( submitted, submitted, saved ) ).toEqual(
+			saved
+		);
 	} );
 
 	test( 'merges product defaults without mutating saved settings', () => {

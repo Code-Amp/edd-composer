@@ -26,14 +26,24 @@ final class Responses {
 	private $settings;
 
 	/**
+	 * Public and signed-download URL policy.
+	 *
+	 * @since 1.0.0
+	 * @var URL_Policy
+	 */
+	private $url_policy;
+
+	/**
 	 * Creates the response service.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Settings $settings Settings service.
+	 * @param Settings        $settings   Settings service.
+	 * @param URL_Policy|null $url_policy Optional URL policy.
 	 */
-	public function __construct( Settings $settings ) {
-		$this->settings = $settings;
+	public function __construct( Settings $settings, ?URL_Policy $url_policy = null ) {
+		$this->settings   = $settings;
+		$this->url_policy = $url_policy ? $url_policy : new URL_Policy();
 	}
 
 	/**
@@ -58,7 +68,7 @@ final class Responses {
 
 		return array(
 			'name'     => $name,
-			'host'     => (string) wp_parse_url( home_url(), PHP_URL_HOST ),
+			'host'     => (string) wp_parse_url( Router::get_base_url(), PHP_URL_HOST ),
 			'packages' => Router::get_packages_url(),
 		);
 	}
@@ -139,13 +149,16 @@ final class Responses {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $url Same-origin EDD download-handler URL.
+	 * @param string $url Validated EDD download-handler URL.
 	 * @return void
 	 */
 	public function serve_redirect( $url ) {
 		$this->send_private_headers();
+		add_filter( 'allowed_redirect_hosts', array( $this->url_policy, 'allow_download_proxy_host' ) );
+		$redirected = wp_safe_redirect( $url, 302, 'EDD Composer Extension' );
+		remove_filter( 'allowed_redirect_hosts', array( $this->url_policy, 'allow_download_proxy_host' ) );
 
-		if ( ! wp_safe_redirect( $url, 302, 'EDD Composer Extension' ) ) {
+		if ( ! $redirected ) {
 			$this->serve_error(
 				500,
 				'edd_composer_redirect_failed',

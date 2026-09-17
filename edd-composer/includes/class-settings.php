@@ -72,6 +72,8 @@ final class Settings {
 	 */
 	public function register_hooks() {
 		add_action( 'init', array( $this, 'register' ) );
+		add_action( 'init', array( $this, 'prune_missing_products' ), 20 );
+		add_action( 'before_delete_post', array( $this, 'remove_deleted_download' ), 10, 2 );
 	}
 
 	/**
@@ -132,7 +134,48 @@ final class Settings {
 	 * @return bool
 	 */
 	public function save( array $settings ) {
-		return update_option( self::OPTION_NAME, $settings, false );
+		update_option( self::OPTION_NAME, $settings, false );
+
+		return get_option( self::OPTION_NAME ) === $settings;
+	}
+
+	/**
+	 * Removes a Download from settings immediately before permanent deletion.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int      $post_id Download ID.
+	 * @param \WP_Post $post    Post being deleted.
+	 * @return void
+	 */
+	public function remove_deleted_download( $post_id, $post ) {
+		if ( ! $post instanceof \WP_Post || 'download' !== $post->post_type ) {
+			return;
+		}
+
+		$this->remove_product( $post_id );
+	}
+
+	/**
+	 * Repairs settings left behind when a Download was deleted while inactive.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function prune_missing_products() {
+		$settings = $this->get();
+		$original = $settings;
+
+		foreach ( array_keys( $settings['products'] ) as $product_id ) {
+			if ( 'download' !== get_post_type( absint( $product_id ) ) ) {
+				unset( $settings['products'][ $product_id ] );
+			}
+		}
+
+		if ( $settings !== $original && ! is_wp_error( $this->validate( $settings ) ) ) {
+			$this->save( $settings );
+		}
 	}
 
 	/**
@@ -176,7 +219,7 @@ final class Settings {
 			? trim( sanitize_text_field( $value['repository_name'] ) )
 			: '';
 
-		if ( '' === $repository_name || strlen( $repository_name ) > self::REPOSITORY_NAME_MAX_LENGTH ) {
+		if ( '' === $repository_name || $this->get_string_length( $repository_name ) > self::REPOSITORY_NAME_MAX_LENGTH ) {
 			return new \WP_Error( 'edd_composer_invalid_repository_name', __( 'Enter a repository title containing no more than 100 characters.', 'edd-composer' ) );
 		}
 
@@ -286,5 +329,43 @@ final class Settings {
 			&& strlen( $constraint ) <= 100
 			&& 1 === preg_match( '/^[0-9A-Za-z.*<>=!~^|, +\-]+$/', $constraint )
 			&& 1 === preg_match( '/[0-9]/', $constraint );
+	}
+
+	/**
+	 * Removes one configured product while preserving the remaining document.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $product_id EDD Download ID.
+	 * @return void
+	 */
+	private function remove_product( $product_id ) {
+		$settings = $this->get();
+		$key      = (string) absint( $product_id );
+
+		if ( ! isset( $settings['products'][ $key ] ) ) {
+			return;
+		}
+
+		unset( $settings['products'][ $key ] );
+		$this->save( $settings );
+	}
+
+	/**
+	 * Counts Unicode code points consistently with JavaScript's Array.from().
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Text to measure.
+	 * @return int
+	 */
+	private function get_string_length( $value ) {
+		if ( function_exists( 'mb_strlen' ) ) {
+			return mb_strlen( $value, 'UTF-8' );
+		}
+
+		$count = preg_match_all( '/./us', $value, $matches );
+
+		return false === $count ? strlen( $value ) : $count;
 	}
 }

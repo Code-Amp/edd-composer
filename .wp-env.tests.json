@@ -10,6 +10,8 @@
 		"./edd-composer"
 	],
 	"config": {
+		"EDD_COMPOSER_ALLOW_INSECURE_HTTP": true,
+		"WP_ENVIRONMENT_TYPE": "local",
 		"WP_DEBUG": true,
 		"WP_DEBUG_DISPLAY": true,
 		"SCRIPT_DEBUG": true
