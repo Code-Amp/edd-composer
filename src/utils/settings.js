@@ -11,6 +11,17 @@ export const cloneSettings = ( settings ) => clone( settings );
 export const isSettingsDirty = ( saved, draft ) =>
 	JSON.stringify( saved ) !== JSON.stringify( draft );
 
+export const getRepositoryNameError = ( name ) => {
+	if ( typeof name !== 'string' || ! name.trim() || name.length > 100 ) {
+		return __(
+			'Enter a repository title containing no more than 100 characters.',
+			'edd-composer'
+		);
+	}
+
+	return null;
+};
+
 export const getVendorError = ( vendor ) => {
 	if ( ! VENDOR_PATTERN.test( vendor ) ) {
 		return __(

@@ -29,6 +29,7 @@ describe( 'admin REST transport', () => {
 	test( 'sends the complete settings document when saving', async () => {
 		const settings = {
 			schema_version: 1,
+			repository_name: 'Code Amp Packages',
 			vendor: 'code-amp',
 			products: {},
 		};

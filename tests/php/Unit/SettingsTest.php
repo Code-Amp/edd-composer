@@ -33,9 +33,10 @@ final class SettingsTest extends WP_UnitTestCase {
 	public function test_returns_versioned_defaults() {
 		$this->assertSame(
 			array(
-				'schema_version' => 1,
-				'vendor'         => 'vendor',
-				'products'       => array(),
+				'schema_version'  => 1,
+				'repository_name' => 'EDD Composer Repository',
+				'vendor'          => 'vendor',
+				'products'        => array(),
 			),
 			( new Settings() )->get()
 		);
@@ -51,9 +52,10 @@ final class SettingsTest extends WP_UnitTestCase {
 		$download_id = $this->create_download();
 		$validated   = ( new Settings() )->validate(
 			array(
-				'schema_version' => 99,
-				'vendor'         => 'code-amp',
-				'products'       => array(
+				'schema_version'  => 99,
+				'repository_name' => '  Code Amp <em>Packages</em>  ',
+				'vendor'          => 'code-amp',
+				'products'        => array(
 					(string) $download_id => array(
 						'enabled'      => 'true',
 						'package_slug' => 'sample-plugin',
@@ -67,10 +69,45 @@ final class SettingsTest extends WP_UnitTestCase {
 
 		$this->assertNotWPError( $validated );
 		$this->assertSame( 1, $validated['schema_version'] );
+		$this->assertSame( 'Code Amp Packages', $validated['repository_name'] );
 		$this->assertSame( 'code-amp', $validated['vendor'] );
 		$this->assertTrue( $validated['products'][ (string) $download_id ]['enabled'] );
 		$this->assertSame( 'sample-plugin', $validated['products'][ (string) $download_id ]['package_slug'] );
 		$this->assertStringNotContainsString( '<script>', $validated['products'][ (string) $download_id ]['description'] );
+	}
+
+	/**
+	 * Confirms repository titles must be present and reasonably sized.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @dataProvider provide_invalid_repository_names
+	 *
+	 * @param mixed $repository_name Repository title.
+	 * @return void
+	 */
+	public function test_rejects_invalid_repository_names( $repository_name ) {
+		$value                    = $this->settings_payload( $this->create_download(), 'code-amp', 'package' );
+		$value['repository_name'] = $repository_name;
+
+		$validated = ( new Settings() )->validate( $value );
+
+		$this->assertWPError( $validated );
+		$this->assertSame( 'edd_composer_invalid_repository_name', $validated->get_error_code() );
+	}
+
+	/**
+	 * Supplies invalid repository titles.
+	 *
+	 * @since 1.0.0
+	 * @return array<string, array{mixed}>
+	 */
+	public function provide_invalid_repository_names() {
+		return array(
+			'missing'  => array( null ),
+			'blank'    => array( '   ' ),
+			'too long' => array( str_repeat( 'a', 101 ) ),
+		);
 	}
 
 	/**
@@ -171,9 +208,10 @@ final class SettingsTest extends WP_UnitTestCase {
 	 */
 	private function settings_payload( $download_id, $vendor, $slug ) {
 		return array(
-			'schema_version' => 1,
-			'vendor'         => $vendor,
-			'products'       => array(
+			'schema_version'  => 1,
+			'repository_name' => 'Code Amp Packages',
+			'vendor'          => $vendor,
+			'products'        => array(
 				(string) $download_id => array(
 					'enabled'      => true,
 					'package_slug' => $slug,

@@ -14,6 +14,7 @@ import { fetchAdminData, saveSettings } from '../api';
 import {
 	applyBulkEnabled,
 	cloneSettings,
+	getRepositoryNameError,
 	getVendorError,
 	hasBlockingErrors,
 	isSettingsDirty,
@@ -78,10 +79,14 @@ const App = () => {
 	const isDirty = Boolean(
 		savedSettings && settings && isSettingsDirty( savedSettings, settings )
 	);
+	const repositoryNameError = settings
+		? getRepositoryNameError( settings.repository_name )
+		: null;
 	const isBlocked = Boolean(
-		savedSettings &&
-		settings &&
-		hasBlockingErrors( catalogue, savedSettings, settings )
+		repositoryNameError ||
+		( savedSettings &&
+			settings &&
+			hasBlockingErrors( catalogue, savedSettings, settings ) )
 	);
 	const vendorError = settings ? getVendorError( settings.vendor ) : null;
 
@@ -191,7 +196,26 @@ const App = () => {
 							) }
 						</p>
 					</div>
-					<div className="edd-composer-vendor">
+					<div className="edd-composer-repository-settings">
+						<TextControl
+							label={ __( 'Repository title', 'edd-composer' ) }
+							value={ settings.repository_name }
+							onChange={ ( repositoryName ) =>
+								setSettings( ( current ) => ( {
+									...current,
+									repository_name: repositoryName,
+								} ) )
+							}
+							help={
+								repositoryNameError ||
+								__(
+									'Displayed at the public Composer repository URL.',
+									'edd-composer'
+								)
+							}
+							className={ repositoryNameError ? 'has-error' : '' }
+							__nextHasNoMarginBottom
+						/>
 						<TextControl
 							label={ __( 'Composer vendor', 'edd-composer' ) }
 							value={ settings.vendor }

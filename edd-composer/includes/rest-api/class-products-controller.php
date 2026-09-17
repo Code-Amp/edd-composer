@@ -233,15 +233,20 @@ final class Products_Controller extends \WP_REST_Controller {
 			'properties'           => array(
 				'settings'   => array(
 					'type'                 => 'object',
-					'required'             => array( 'schema_version', 'vendor', 'products' ),
+					'required'             => array( 'schema_version', 'repository_name', 'vendor', 'products' ),
 					'additionalProperties' => false,
 					'properties'           => array(
-						'schema_version' => array(
+						'schema_version'  => array(
 							'type'    => 'integer',
 							'minimum' => 1,
 						),
-						'vendor'         => array( 'type' => 'string' ),
-						'products'       => array(
+						'repository_name' => array(
+							'type'      => 'string',
+							'minLength' => 1,
+							'maxLength' => 100,
+						),
+						'vendor'          => array( 'type' => 'string' ),
+						'products'        => array(
 							'type'                 => 'object',
 							'additionalProperties' => $this->get_product_settings_schema(),
 						),

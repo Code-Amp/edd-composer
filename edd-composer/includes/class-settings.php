@@ -56,6 +56,14 @@ final class Settings {
 	private const PACKAGE_PATTERN = '/^[a-z0-9](([_.]|-{1,2})?[a-z0-9]+)*$/';
 
 	/**
+	 * Maximum public repository-name length.
+	 *
+	 * @since 1.0.0
+	 * @var int
+	 */
+	private const REPOSITORY_NAME_MAX_LENGTH = 100;
+
+	/**
 	 * Registers settings with WordPress.
 	 *
 	 * @since 1.0.0
@@ -104,13 +112,14 @@ final class Settings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array{schema_version: int, vendor: string, products: array<string, array<string, mixed>>}
+	 * @return array{schema_version: int, repository_name: string, vendor: string, products: array<string, array<string, mixed>>}
 	 */
 	public function get_defaults() {
 		return array(
-			'schema_version' => self::SCHEMA_VERSION,
-			'vendor'         => 'vendor',
-			'products'       => array(),
+			'schema_version'  => self::SCHEMA_VERSION,
+			'repository_name' => __( 'EDD Composer Repository', 'edd-composer' ),
+			'vendor'          => 'vendor',
+			'products'        => array(),
 		);
 	}
 
@@ -161,6 +170,14 @@ final class Settings {
 	public function validate( $value ) {
 		if ( ! is_array( $value ) ) {
 			return new \WP_Error( 'edd_composer_invalid_settings', __( 'Settings must be an object.', 'edd-composer' ) );
+		}
+
+		$repository_name = isset( $value['repository_name'] ) && is_string( $value['repository_name'] )
+			? trim( sanitize_text_field( $value['repository_name'] ) )
+			: '';
+
+		if ( '' === $repository_name || strlen( $repository_name ) > self::REPOSITORY_NAME_MAX_LENGTH ) {
+			return new \WP_Error( 'edd_composer_invalid_repository_name', __( 'Enter a repository title containing no more than 100 characters.', 'edd-composer' ) );
 		}
 
 		$vendor = isset( $value['vendor'] ) && is_string( $value['vendor'] )
@@ -237,9 +254,10 @@ final class Settings {
 		}
 
 		return array(
-			'schema_version' => self::SCHEMA_VERSION,
-			'vendor'         => $vendor,
-			'products'       => $sanitized,
+			'schema_version'  => self::SCHEMA_VERSION,
+			'repository_name' => $repository_name,
+			'vendor'          => $vendor,
+			'products'        => $sanitized,
 		);
 	}
 

@@ -7,6 +7,8 @@
 
 namespace EDD_Composer\Repository;
 
+use EDD_Composer\Settings;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -15,6 +17,25 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  */
 final class Responses {
+	/**
+	 * Settings service.
+	 *
+	 * @since 1.0.0
+	 * @var Settings
+	 */
+	private $settings;
+
+	/**
+	 * Creates the response service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Settings $settings Settings service.
+	 */
+	public function __construct( Settings $settings ) {
+		$this->settings = $settings;
+	}
+
 	/**
 	 * Returns public repository information.
 	 *
@@ -30,10 +51,13 @@ final class Responses {
 		 *
 		 * @param string $name Repository name.
 		 */
-		$name = apply_filters( 'edd_composer_repository_name', __( 'EDD Composer Repository', 'edd-composer' ) );
+		$settings = $this->settings->get();
+		$default  = $settings['repository_name'];
+		$name     = apply_filters( 'edd_composer_repository_name', $default );
+		$name     = is_string( $name ) && '' !== trim( $name ) ? trim( $name ) : $default;
 
 		return array(
-			'name'     => is_string( $name ) ? $name : __( 'EDD Composer Repository', 'edd-composer' ),
+			'name'     => $name,
 			'host'     => (string) wp_parse_url( home_url(), PHP_URL_HOST ),
 			'packages' => Router::get_packages_url(),
 		);

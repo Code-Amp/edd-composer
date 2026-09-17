@@ -78,6 +78,7 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$products_response = $this->server->dispatch( new WP_REST_Request( 'GET', '/edd-composer/v1/products' ) );
 
 		$this->assertSame( 200, $settings_response->get_status() );
+		$this->assertSame( 'EDD Composer Repository', $settings_response->get_data()['settings']['repository_name'] );
 		$this->assertSame( 'vendor', $settings_response->get_data()['settings']['vendor'] );
 		$this->assertStringEndsWith( '/composer', $settings_response->get_data()['repository']['url'] );
 		$this->assertSame( 200, $products_response->get_status() );
@@ -102,9 +103,10 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$request->set_body(
 			wp_json_encode(
 				array(
-					'schema_version' => 1,
-					'vendor'         => 'code-amp',
-					'products'       => array(
+					'schema_version'  => 1,
+					'repository_name' => 'Code Amp Packages',
+					'vendor'          => 'code-amp',
+					'products'        => array(
 						(string) $download_id => array(
 							'enabled'      => true,
 							'package_slug' => 'example-package',
@@ -121,6 +123,7 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$saved    = get_option( Settings::OPTION_NAME );
 
 		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 'Code Amp Packages', $saved['repository_name'] );
 		$this->assertSame( 'code-amp', $saved['vendor'] );
 		$this->assertTrue( $saved['products'][ (string) $download_id ]['enabled'] );
 		$this->assertFalse( get_transient( Settings::PACKAGE_INDEX_TRANSIENT ) );
@@ -140,8 +143,9 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$request->set_body(
 			wp_json_encode(
 				array(
-					'vendor'   => 'Invalid Vendor',
-					'products' => array(),
+					'repository_name' => 'Code Amp Packages',
+					'vendor'          => 'Invalid Vendor',
+					'products'        => array(),
 				)
 			)
 		);
@@ -152,9 +156,10 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$this->assertSame( 'edd_composer_invalid_vendor', $response->get_data()['code'] );
 		$this->assertSame(
 			array(
-				'schema_version' => 1,
-				'vendor'         => 'vendor',
-				'products'       => array(),
+				'schema_version'  => 1,
+				'repository_name' => 'EDD Composer Repository',
+				'vendor'          => 'vendor',
+				'products'        => array(),
 			),
 			get_option( Settings::OPTION_NAME )
 		);
@@ -180,8 +185,9 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$request->set_body(
 			wp_json_encode(
 				array(
-					'vendor'   => 'vendor',
-					'products' => array(
+					'repository_name' => 'EDD Composer Repository',
+					'vendor'          => 'vendor',
+					'products'        => array(
 						(string) $download_id => array(
 							'enabled'      => true,
 							'package_slug' => 'unversioned-package',
@@ -200,9 +206,10 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$this->assertSame( 'edd_composer_product_cannot_be_enabled', $response->get_data()['code'] );
 		$this->assertSame(
 			array(
-				'schema_version' => 1,
-				'vendor'         => 'vendor',
-				'products'       => array(),
+				'schema_version'  => 1,
+				'repository_name' => 'EDD Composer Repository',
+				'vendor'          => 'vendor',
+				'products'        => array(),
 			),
 			get_option( Settings::OPTION_NAME )
 		);

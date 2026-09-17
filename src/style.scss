@@ -107,8 +107,10 @@
 	}
 }
 
-.edd-composer-vendor {
+.edd-composer-repository-settings {
+	display: grid;
 	width: min(100%, 320px);
+	gap: 16px;
 
 	.has-error .components-base-control__help {
 		color: #b32d2e;
@@ -229,7 +231,7 @@
 		justify-content: space-between;
 	}
 
-	.edd-composer-vendor {
+	.edd-composer-repository-settings {
 		width: 100%;
 	}
 

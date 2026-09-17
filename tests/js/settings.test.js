@@ -2,6 +2,7 @@ import {
 	applyBulkEnabled,
 	getPackageSlugError,
 	getPhpConstraintError,
+	getRepositoryNameError,
 	getVendorError,
 	hasBlockingErrors,
 	isSettingsDirty,
@@ -34,12 +35,15 @@ const products = [
 
 const settings = {
 	schema_version: 1,
+	repository_name: 'Code Amp Packages',
 	vendor: 'code-amp',
 	products: {},
 };
 
 describe( 'settings utilities', () => {
 	test( 'validates Composer vendor, package, and PHP inputs', () => {
+		expect( getRepositoryNameError( 'Code Amp Packages' ) ).toBeNull();
+		expect( getRepositoryNameError( '' ) ).not.toBeNull();
 		expect( getVendorError( 'code-amp' ) ).toBeNull();
 		expect( getVendorError( 'Code Amp' ) ).not.toBeNull();
 		expect( getPackageSlugError( 'sample-plugin' ) ).toBeNull();

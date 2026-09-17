@@ -30,6 +30,7 @@ final class RouterTest extends WP_UnitTestCase {
 	 */
 	public function tear_down() {
 		delete_option( Router::REWRITE_VERSION_OPTION );
+		delete_option( Settings::OPTION_NAME );
 		remove_all_filters( 'edd_composer_repository_base_url' );
 		remove_all_filters( 'edd_composer_repository_name' );
 		parent::tear_down();
@@ -117,12 +118,27 @@ final class RouterTest extends WP_UnitTestCase {
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public function test_repository_information_is_generic() {
-		$data = ( new Responses() )->get_info_data();
+	public function test_repository_information_uses_the_configured_title() {
+		$settings  = new Settings();
+		$responses = new Responses( $settings );
+		$data      = $responses->get_info_data();
 
 		$this->assertSame( 'EDD Composer Repository', $data['name'] );
 		$this->assertSame( wp_parse_url( home_url(), PHP_URL_HOST ), $data['host'] );
 		$this->assertSame( home_url( '/composer/packages.json' ), $data['packages'] );
+
+		update_option(
+			Settings::OPTION_NAME,
+			array(
+				'schema_version'  => 1,
+				'repository_name' => 'Code Amp Packages',
+				'vendor'          => 'code-amp',
+				'products'        => array(),
+			),
+			false
+		);
+
+		$this->assertSame( 'Code Amp Packages', $responses->get_info_data()['name'] );
 	}
 
 	/**
@@ -143,6 +159,6 @@ final class RouterTest extends WP_UnitTestCase {
 			new Order_Resolver()
 		);
 
-		return new Router( new Package_Index( $settings, $products ), new Responses(), $download );
+		return new Router( new Package_Index( $settings, $products ), new Responses( $settings ), $download );
 	}
 }

@@ -101,7 +101,7 @@ final class Plugin {
 		$settings->register_hooks();
 		$package_index->register_hooks();
 		( new File_Version_Field() )->register_hooks();
-		( new Router( $package_index, new Responses(), $download ) )->register_hooks();
+		( new Router( $package_index, new Responses( $settings ), $download ) )->register_hooks();
 
 		$rest_controller = new Products_Controller(
 			$settings,

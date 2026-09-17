@@ -130,9 +130,10 @@ final class EDD_Composer_Successful_Download_Fixture {
 			update_option(
 				Settings::OPTION_NAME,
 				array(
-					'schema_version' => Settings::SCHEMA_VERSION,
-					'vendor'         => 'integration-test',
-					'products'       => array(
+					'schema_version'  => Settings::SCHEMA_VERSION,
+					'repository_name' => 'EDD Composer Integration Repository',
+					'vendor'          => 'integration-test',
+					'products'        => array(
 						(string) $download_id => array(
 							'enabled'      => true,
 							'package_slug' => $package_slug,

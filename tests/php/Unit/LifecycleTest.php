@@ -55,9 +55,10 @@ final class LifecycleTest extends WP_UnitTestCase {
 		global $wp_rewrite;
 
 		$settings = array(
-			'schema_version' => 1,
-			'vendor'         => 'example',
-			'products'       => array(),
+			'schema_version'  => 1,
+			'repository_name' => 'Example Packages',
+			'vendor'          => 'example',
+			'products'        => array(),
 		);
 		update_option( Settings::OPTION_NAME, $settings );
 		Router::register_rewrite_rules();

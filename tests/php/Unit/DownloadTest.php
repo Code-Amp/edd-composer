@@ -276,9 +276,10 @@ final class DownloadTest extends WP_UnitTestCase {
 		update_option(
 			Settings::OPTION_NAME,
 			array(
-				'schema_version' => 1,
-				'vendor'         => 'vendor',
-				'products'       => array(
+				'schema_version'  => 1,
+				'repository_name' => 'EDD Composer Repository',
+				'vendor'          => 'vendor',
+				'products'        => array(
 					(string) $download_id => array(
 						'enabled'      => true,
 						'package_slug' => 'example-package',

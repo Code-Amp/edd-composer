@@ -294,9 +294,10 @@ final class PackageIndexTest extends WP_UnitTestCase {
 		update_option(
 			Settings::OPTION_NAME,
 			array(
-				'schema_version' => 1,
-				'vendor'         => 'code-amp',
-				'products'       => $products,
+				'schema_version'  => 1,
+				'repository_name' => 'Code Amp Packages',
+				'vendor'          => 'code-amp',
+				'products'        => $products,
 			)
 		);
 	}
