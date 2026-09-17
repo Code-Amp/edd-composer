@@ -346,6 +346,119 @@ const verifyProtectedRoute = async () => {
 	);
 };
 
+const runSuccessfulDownloadFixture = async ( action ) => {
+	const result = await runWpEnv(
+		[
+			'run',
+			'cli',
+			'wp',
+			'eval-file',
+			'tests/Integration/class-edd-composer-successful-download-fixture.php',
+			action,
+		],
+		{ capture: true }
+	);
+
+	if ( action !== 'setup' ) {
+		return null;
+	}
+
+	const jsonLine = result.stdout
+		.split( /\r?\n/ )
+		.find( ( line ) => line.trim().startsWith( '{' ) );
+
+	if ( ! jsonLine ) {
+		throw new Error(
+			'The successful-download fixture did not return its setup data.'
+		);
+	}
+
+	return JSON.parse( jsonLine );
+};
+
+const verifySuccessfulDownload = async () => {
+	const config = JSON.parse( readFileSync( configPath, 'utf8' ) );
+	const port = config.port ?? 8888;
+	const baseUrl = `http://localhost:${ port }`;
+	let failure = null;
+
+	try {
+		const fixture = await runSuccessfulDownloadFixture( 'setup' );
+		const credentials = Buffer.from(
+			`${ fixture.license_key }:${ fixture.site_url }`
+		).toString( 'base64' );
+		const response = await fetch(
+			`${ baseUrl }/composer/download/${ encodeURIComponent(
+				fixture.package_slug
+			) }/${ encodeURIComponent( fixture.version ) }`,
+			{
+				headers: { authorization: `Basic ${ credentials }` },
+				redirect: 'manual',
+			}
+		);
+		const location = response.headers.get( 'location' ) ?? '';
+		const cacheControl = response.headers.get( 'cache-control' ) ?? '';
+		const signedUrl = location ? new URL( location, baseUrl ) : null;
+
+		if (
+			response.status !== 302 ||
+			! signedUrl ||
+			signedUrl.origin !== baseUrl ||
+			signedUrl.pathname !== '/index.php' ||
+			! signedUrl.searchParams.has( 'eddfile' ) ||
+			! signedUrl.searchParams.has( 'ttl' ) ||
+			! signedUrl.searchParams.has( 'token' ) ||
+			! cacheControl.includes( 'private' ) ||
+			! cacheControl.includes( 'no-store' )
+		) {
+			throw new Error(
+				`The authenticated Composer download did not return a valid private EDD redirect (HTTP ${ response.status }, Location: ${ location }, Cache-Control: ${ cacheControl }).`
+			);
+		}
+
+		const downloadResponse = await fetch( signedUrl );
+		const file = Buffer.from( await downloadResponse.arrayBuffer() );
+		const fileHash = createHash( 'sha256' ).update( file ).digest( 'hex' );
+		const disposition =
+			downloadResponse.headers.get( 'content-disposition' ) ?? '';
+
+		if (
+			! downloadResponse.ok ||
+			file.length !== fixture.file_size ||
+			fileHash !== fixture.file_sha256 ||
+			! disposition.includes( 'attachment' ) ||
+			! disposition.includes( '.zip' )
+		) {
+			throw new Error(
+				`The EDD signed URL did not deliver the expected ZIP fixture (HTTP ${ downloadResponse.status }, bytes: ${ file.length }, Content-Disposition: ${ disposition }).`
+			);
+		}
+
+		console.log(
+			'The authenticated Composer route redirects to a signed EDD URL that delivers the expected ZIP.'
+		);
+	} catch ( error ) {
+		failure = error;
+	}
+
+	try {
+		await runSuccessfulDownloadFixture( 'cleanup' );
+	} catch ( cleanupError ) {
+		if ( failure ) {
+			throw new AggregateError(
+				[ failure, cleanupError ],
+				'The successful-download check and fixture cleanup both failed.'
+			);
+		}
+
+		throw cleanupError;
+	}
+
+	if ( failure ) {
+		throw failure;
+	}
+};
+
 const ensureEnvironment = async () => {
 	validateDependencies();
 
@@ -399,6 +512,7 @@ try {
 			await ensurePluginsActive();
 			await verifyRepositoryRoute();
 			await verifyProtectedRoute();
+			await verifySuccessfulDownload();
 		}
 	}
 } catch ( error ) {
