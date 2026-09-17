@@ -64,7 +64,7 @@ final class File_Version_Field {
 						'id'          => 'edd_download_files-' . $key . '-version',
 						'value'       => $version,
 						'placeholder' => __( 'e.g. 1.0.0 or v1.0.0', 'edd-composer' ),
-						'class'       => 'edd-form-group__input edd_repeatable_upload_field edd-composer-file-version__input regular-text',
+						'class'       => 'edd-form-group__input edd-composer-file-version__input regular-text',
 					)
 				);
 				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped

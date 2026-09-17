@@ -58,6 +58,8 @@ final class FileVersionFieldTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'id="edd_download_files-7-version"', $output );
 		$this->assertStringContainsString( 'value="1.2.3"', $output );
 		$this->assertStringContainsString( 'Composer Version', $output );
+		$this->assertStringContainsString( 'edd-composer-file-version__input', $output );
+		$this->assertStringNotContainsString( 'edd_repeatable_upload_field', $output );
 	}
 
 	/**
