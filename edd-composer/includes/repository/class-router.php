@@ -269,11 +269,22 @@ final class Router {
 	 * @return string|false
 	 */
 	public function prevent_canonical_redirect( $redirect_url, $requested_url ) {
-		$requested_path = untrailingslashit( (string) wp_parse_url( $requested_url, PHP_URL_PATH ) );
-		$base_path      = untrailingslashit( (string) wp_parse_url( self::get_base_url(), PHP_URL_PATH ) );
-
-		if ( $requested_path === $base_path || str_starts_with( $requested_path, $base_path . '/' ) ) {
+		if ( '' !== sanitize_key( (string) get_query_var( self::ACTION_QUERY_VAR ) ) ) {
 			return false;
+		}
+
+		$requested_path = untrailingslashit( (string) wp_parse_url( $requested_url, PHP_URL_PATH ) );
+		$base_paths     = array_unique(
+			array(
+				untrailingslashit( (string) wp_parse_url( home_url( '/composer' ), PHP_URL_PATH ) ),
+				untrailingslashit( (string) wp_parse_url( self::get_base_url(), PHP_URL_PATH ) ),
+			)
+		);
+
+		foreach ( array_filter( $base_paths ) as $base_path ) {
+			if ( $requested_path === $base_path || str_starts_with( $requested_path, $base_path . '/' ) ) {
+				return false;
+			}
 		}
 
 		return $redirect_url;

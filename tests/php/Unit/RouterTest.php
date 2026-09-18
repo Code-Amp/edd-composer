@@ -29,9 +29,11 @@ final class RouterTest extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function tear_down() {
+		set_query_var( Router::ACTION_QUERY_VAR, '' );
 		delete_option( Router::REWRITE_VERSION_OPTION );
 		delete_option( Settings::OPTION_NAME );
 		remove_all_filters( 'edd_composer_repository_base_url' );
+		remove_all_filters( 'edd_composer_allowed_repository_origins' );
 		remove_all_filters( 'edd_composer_repository_name' );
 		parent::tear_down();
 	}
@@ -94,6 +96,40 @@ final class RouterTest extends WP_UnitTestCase {
 		$this->assertFalse(
 			$router->prevent_canonical_redirect( home_url( '/composer/packages.json/' ), home_url( '/composer/packages.json' ) )
 		);
+		$this->assertSame(
+			home_url( '/ordinary-page/' ),
+			$router->prevent_canonical_redirect( home_url( '/ordinary-page/' ), home_url( '/ordinary-page' ) )
+		);
+	}
+
+	/**
+	 * Confirms proxy-forwarded internal routes remain exempt from canonical redirects.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function test_prevents_canonical_redirects_for_external_repository_paths() {
+		add_filter( 'edd_composer_repository_base_url', static fn() => 'https://packages.example.com/private-repository' );
+		add_filter(
+			'edd_composer_allowed_repository_origins',
+			static function ( $origins ) {
+				$origins[] = 'https://packages.example.com';
+				return $origins;
+			}
+		);
+
+		$router = $this->router();
+
+		$this->assertFalse(
+			$router->prevent_canonical_redirect( home_url( '/composer/' ), home_url( '/composer/packages.json' ) )
+		);
+
+		set_query_var( Router::ACTION_QUERY_VAR, 'packages' );
+		$this->assertFalse(
+			$router->prevent_canonical_redirect( home_url( '/other/' ), home_url( '/forwarded-internally' ) )
+		);
+
+		set_query_var( Router::ACTION_QUERY_VAR, '' );
 		$this->assertSame(
 			home_url( '/ordinary-page/' ),
 			$router->prevent_canonical_redirect( home_url( '/ordinary-page/' ), home_url( '/ordinary-page' ) )
