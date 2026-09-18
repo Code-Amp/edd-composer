@@ -6,7 +6,13 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 
@@ -33,6 +39,7 @@ const App = () => {
 	const [ loadError, setLoadError ] = useState( '' );
 	const [ isLoading, setIsLoading ] = useState( true );
 	const [ isSaving, setIsSaving ] = useState( false );
+	const saveInProgress = useRef( false );
 	const notices = useSelect(
 		( select ) =>
 			select( noticesStore )
@@ -48,14 +55,13 @@ const App = () => {
 		setLoadError( '' );
 
 		try {
-			const [ settingsResponse, productsResponse ] =
-				await fetchAdminData();
+			const settingsResponse = await fetchAdminData();
 			const loadedSettings = cloneSettings( settingsResponse.settings );
 
 			setSavedSettings( loadedSettings );
 			setSettings( cloneSettings( loadedSettings ) );
 			setRepository( settingsResponse.repository );
-			setProducts( productsResponse.products );
+			setProducts( settingsResponse.products );
 		} catch ( error ) {
 			setLoadError(
 				error?.message ||
@@ -127,6 +133,11 @@ const App = () => {
 	);
 
 	const save = async () => {
+		if ( saveInProgress.current ) {
+			return;
+		}
+
+		saveInProgress.current = true;
 		const submittedSettings = cloneSettings( settings );
 		setIsSaving( true );
 
@@ -154,6 +165,7 @@ const App = () => {
 				{ type: 'snackbar' }
 			);
 		} finally {
+			saveInProgress.current = false;
 			setIsSaving( false );
 		}
 	};

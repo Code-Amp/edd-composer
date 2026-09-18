@@ -1,0 +1,22 @@
+{
+	"minimum": {
+		"port": 8889,
+		"wordpressSource": "https://wordpress.org/wordpress-6.9.zip",
+		"wordpressVersion": "6.9",
+		"wordpressPhpunitVersion": "6.9.0",
+		"phpunitVersion": "9.6.36",
+		"phpVersion": "8.0",
+		"eddVersion": "3.7.0",
+		"softwareLicensingVersion": "3.9.7"
+	},
+	"latest": {
+		"port": 8891,
+		"wordpressSource": "https://wordpress.org/wordpress-7.0.zip",
+		"wordpressVersion": "7.0",
+		"wordpressPhpunitVersion": "7.0.0",
+		"phpunitVersion": "9.6.36",
+		"phpVersion": "8.4",
+		"eddVersion": "3.7.0",
+		"softwareLicensingVersion": "3.9.7"
+	}
+}

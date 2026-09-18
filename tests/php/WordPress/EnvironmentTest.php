@@ -18,9 +18,13 @@ final class EnvironmentTest extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_pinned_environment_is_loaded() {
-		$this->assertSame( '6.9', get_bloginfo( 'version' ) );
-		$this->assertTrue( version_compare( PHP_VERSION, '8.0', '>=' ) );
-		$this->assertSame( '3.7.0', EDD_VERSION );
+		$this->assertTrue( defined( 'EDD_COMPOSER_TEST_EXPECTED_WORDPRESS_VERSION' ) );
+		$this->assertTrue( defined( 'EDD_COMPOSER_TEST_EXPECTED_PHP_VERSION' ) );
+		$this->assertTrue( defined( 'EDD_COMPOSER_TEST_EXPECTED_EDD_VERSION' ) );
+		$this->assertTrue( defined( 'EDD_COMPOSER_TEST_EXPECTED_SL_VERSION' ) );
+		$this->assertSame( EDD_COMPOSER_TEST_EXPECTED_WORDPRESS_VERSION, get_bloginfo( 'version' ) );
+		$this->assertStringStartsWith( EDD_COMPOSER_TEST_EXPECTED_PHP_VERSION, PHP_VERSION );
+		$this->assertSame( EDD_COMPOSER_TEST_EXPECTED_EDD_VERSION, EDD_VERSION );
 		$this->assertContains(
 			WP_PLUGIN_DIR . '/edd-composer/edd-composer.php',
 			get_included_files()
@@ -38,7 +42,7 @@ final class EnvironmentTest extends WP_UnitTestCase {
 
 		$this->assertInstanceOf( EDD_Composer\Dependencies::class, $dependencies );
 		$this->assertTrue( function_exists( 'edd_software_licensing' ) );
-		$this->assertSame( '3.9.7', EDD_SL_VERSION );
+		$this->assertSame( EDD_COMPOSER_TEST_EXPECTED_SL_VERSION, EDD_SL_VERSION );
 		$this->assertTrue( $dependencies->are_met() );
 		$this->assertSame( 1, did_action( 'edd_composer_ready' ) );
 	}

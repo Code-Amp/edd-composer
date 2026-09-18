@@ -12,6 +12,8 @@ The installable plugin is the [`edd-composer/`](edd-composer/) directory. Develo
 - EDD Software Licensing 3.9.7 or newer
 - Node.js matching [`.nvmrc`](.nvmrc), pnpm 12.4.2, Composer 2, and Docker for development
 
+The automated compatibility matrix verifies the minimum WordPress 6.9/PHP 8.0 environment and WordPress 7.0 on PHP 8.4.
+
 ## Install for development
 
 ```sh
@@ -35,6 +37,8 @@ wp-env/plugins/edd-software-licensing/
 ```
 
 These directories are ignored and must never be committed. See [`wp-env/plugins/README.md`](wp-env/plugins/README.md) for the expected entry files.
+
+CI provisions the same directories from private, short-lived archive URLs held in the `EDD_PRO_ZIP_URL` and `EDD_SOFTWARE_LICENSING_ZIP_URL` repository secrets. The provisioning command validates archive paths and entry files without printing either URL. The archives must contain the exact versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json); the test runner rejects version drift.
 
 ```sh
 pnpm run test:start

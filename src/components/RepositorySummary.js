@@ -4,14 +4,22 @@ import { __, sprintf } from '@wordpress/i18n';
 
 const RepositorySummary = ( { repository } ) => {
 	const [ copied, setCopied ] = useState( '' );
+	const [ copyError, setCopyError ] = useState( false );
 	const repositoryUrl = new URL( repository.url );
 	const repositoryCommand = `composer config repositories.edd-composer composer ${ repository.url }`;
 	const authenticationCommand = `composer config --global --auth http-basic.${ repositoryUrl.host } <license-key> <activated-site-url>`;
 
 	const copy = async ( value, key ) => {
-		await navigator.clipboard.writeText( value );
-		setCopied( key );
-		window.setTimeout( () => setCopied( '' ), 2000 );
+		setCopyError( false );
+
+		try {
+			await navigator.clipboard.writeText( value );
+			setCopied( key );
+			window.setTimeout( () => setCopied( '' ), 2000 );
+		} catch {
+			setCopied( '' );
+			setCopyError( true );
+		}
 	};
 
 	return (
@@ -54,6 +62,14 @@ const RepositorySummary = ( { repository } ) => {
 						: __( 'Copy URL', 'edd-composer' ) }
 				</Button>
 			</div>
+			{ copyError && (
+				<p className="description" role="alert">
+					{ __(
+						'Could not copy to the clipboard. Select and copy the value manually.',
+						'edd-composer'
+					) }
+				</p>
+			) }
 
 			<details>
 				<summary>

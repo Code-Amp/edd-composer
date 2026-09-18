@@ -18,7 +18,7 @@ use EDD_Composer\Repository\Responses;
 use EDD_Composer\Repository\Router;
 use EDD_Composer\Repository\URL_Policy;
 use EDD_Composer\Repository\Versioned_Files;
-use EDD_Composer\REST_API\Products_Controller;
+use EDD_Composer\REST_API\Admin_Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -98,8 +98,7 @@ final class Plugin {
 			new Authenticator(),
 			new Entitlements(),
 			new Order_Resolver(),
-			null,
-			$url_policy
+			url_policy: $url_policy
 		);
 
 		$settings->register_hooks();
@@ -107,7 +106,7 @@ final class Plugin {
 		( new File_Version_Field() )->register_hooks();
 		( new Router( $package_index, new Responses( $settings, $url_policy ), $download ) )->register_hooks();
 
-		$rest_controller = new Products_Controller(
+		$rest_controller = new Admin_Controller(
 			$settings,
 			$products,
 			array( $admin_page, 'get_management_capability' )

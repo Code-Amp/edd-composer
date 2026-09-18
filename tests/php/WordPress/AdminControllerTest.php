@@ -12,7 +12,7 @@ use EDD_Composer\Settings;
  *
  * @since 1.0.0
  */
-final class ProductsControllerTest extends WP_UnitTestCase {
+final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * REST server used by each test.
 	 *
@@ -75,16 +75,14 @@ final class ProductsControllerTest extends WP_UnitTestCase {
 		$download_id = $this->create_download_with_version();
 
 		$settings_response = $this->server->dispatch( new WP_REST_Request( 'GET', '/edd-composer/v1/settings' ) );
-		$products_response = $this->server->dispatch( new WP_REST_Request( 'GET', '/edd-composer/v1/products' ) );
 
 		$this->assertSame( 200, $settings_response->get_status() );
 		$this->assertSame( 'EDD Composer Repository', $settings_response->get_data()['settings']['repository_name'] );
 		$this->assertSame( 'vendor', $settings_response->get_data()['settings']['vendor'] );
 		$this->assertStringEndsWith( '/composer', $settings_response->get_data()['repository']['url'] );
-		$this->assertSame( 200, $products_response->get_status() );
 		$this->assertContains(
 			$download_id,
-			wp_list_pluck( $products_response->get_data()['products'], 'id' )
+			wp_list_pluck( $settings_response->get_data()['products'], 'id' )
 		);
 	}
 

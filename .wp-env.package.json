@@ -1,0 +1,14 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "https://wordpress.org/wordpress-6.9.zip",
+	"port": 8890,
+	"phpVersion": "8.0",
+	"testsEnvironment": false,
+	"config": {
+		"WP_ENVIRONMENT_TYPE": "local",
+		"WP_DEBUG": true
+	},
+	"mappings": {
+		"edd-composer.zip": "./edd-composer.zip"
+	}
+}

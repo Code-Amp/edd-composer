@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
-	"core": "WordPress/WordPress#6.9",
+	"core": "https://wordpress.org/wordpress-6.9.zip",
 	"port": 8889,
 	"phpVersion": "8.0",
 	"testsEnvironment": false,
@@ -11,6 +11,10 @@
 	],
 	"config": {
 		"EDD_COMPOSER_ALLOW_INSECURE_HTTP": true,
+		"EDD_COMPOSER_TEST_EXPECTED_WORDPRESS_VERSION": "6.9",
+		"EDD_COMPOSER_TEST_EXPECTED_PHP_VERSION": "8.0",
+		"EDD_COMPOSER_TEST_EXPECTED_EDD_VERSION": "3.7.0",
+		"EDD_COMPOSER_TEST_EXPECTED_SL_VERSION": "3.9.7",
 		"WP_ENVIRONMENT_TYPE": "local",
 		"WP_DEBUG": true,
 		"WP_DEBUG_DISPLAY": true,

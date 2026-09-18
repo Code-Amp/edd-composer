@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 
-import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -8,11 +7,17 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { runPnpm, runProcess, sanitizeProcessOutput } from './lib/process.mjs';
+
 const projectDirectory = resolve(
 	dirname( fileURLToPath( import.meta.url ) ),
 	'..'
 );
-const configPath = resolve( projectDirectory, '.wp-env.tests.json' );
+const configPath = resolve(
+	projectDirectory,
+	process.env.EDD_COMPOSER_TEST_CONFIG ?? '.wp-env.tests.json'
+);
+const environmentConfig = JSON.parse( readFileSync( configPath, 'utf8' ) );
 const setupMarker = '/var/www/html/.edd-composer-test-environment';
 const composerExecutable =
 	process.env.COMPOSER_BINARY ??
@@ -21,80 +26,20 @@ const dependencies = [
 	{
 		name: 'Easy Digital Downloads Pro',
 		path: 'wp-env/plugins/easy-digital-downloads-pro/easy-digital-downloads.php',
-		version: '3.7.0',
+		version:
+			process.env.EDD_COMPOSER_TEST_EDD_VERSION ??
+			environmentConfig.config?.EDD_COMPOSER_TEST_EXPECTED_EDD_VERSION ??
+			'3.7.0',
 	},
 	{
 		name: 'EDD Software Licensing',
 		path: 'wp-env/plugins/edd-software-licensing/edd-software-licenses.php',
-		version: '3.9.7',
+		version:
+			process.env.EDD_COMPOSER_TEST_SL_VERSION ??
+			environmentConfig.config?.EDD_COMPOSER_TEST_EXPECTED_SL_VERSION ??
+			'3.9.7',
 	},
 ];
-
-const runProcess = (
-	executable,
-	args,
-	{
-		allowFailure = false,
-		capture = false,
-		cwd = projectDirectory,
-		env = process.env,
-	} = {}
-) =>
-	new Promise( ( resolveProcess, reject ) => {
-		const child = spawn( executable, args, {
-			cwd,
-			env,
-			stdio: capture ? [ 'ignore', 'pipe', 'pipe' ] : 'inherit',
-		} );
-		let stdout = '';
-		let stderr = '';
-
-		if ( capture ) {
-			child.stdout.setEncoding( 'utf8' );
-			child.stderr.setEncoding( 'utf8' );
-			child.stdout.on( 'data', ( chunk ) => {
-				stdout += chunk;
-			} );
-			child.stderr.on( 'data', ( chunk ) => {
-				stderr += chunk;
-			} );
-		}
-
-		child.on( 'error', reject );
-		child.on( 'exit', ( code, signal ) => {
-			const result = { code: code ?? 1, signal, stderr, stdout };
-
-			if ( code === 0 || allowFailure ) {
-				resolveProcess( result );
-				return;
-			}
-
-			reject(
-				new Error(
-					signal
-						? `${ executable } exited after signal ${ signal }.`
-						: `${ executable } exited with code ${ code }.`
-				)
-			);
-		} );
-	} );
-
-const runPnpm = ( args, options = {} ) => {
-	const pnpmCliPath = process.env.npm_execpath;
-	let executable = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
-	let executableArgs = args;
-
-	if ( pnpmCliPath ) {
-		if ( /\.(?:c?js|mjs)$/.test( pnpmCliPath ) ) {
-			executable = process.execPath;
-			executableArgs = [ pnpmCliPath, ...args ];
-		} else {
-			executable = pnpmCliPath;
-		}
-	}
-
-	return runProcess( executable, executableArgs, options );
-};
 
 const runWpEnv = ( args, options = {} ) =>
 	runPnpm(
@@ -193,11 +138,16 @@ const getEnvironmentStatus = async () => {
 
 const getSetupVersion = () =>
 	createHash( 'sha256' )
-		.update( 'edd-composer-test-setup-v2\0' )
+		.update( 'edd-composer-test-setup-v3\0' )
 		.update( readFileSync( configPath ) )
 		.update(
 			readFileSync(
-				resolve( projectDirectory, 'wp-env/phpunit/composer.lock' )
+				resolve(
+					projectDirectory,
+					environmentConfig.mappings?.[ 'composer.lock' ] ??
+						environmentConfig.mappings?.[ 'composer.json' ] ??
+						'wp-env/phpunit/composer.lock'
+				)
 			)
 		)
 		.digest( 'hex' )
@@ -385,7 +335,7 @@ const runSuccessfulDownloadFixture = async ( action ) => {
 			'cli',
 			'wp',
 			'eval-file',
-			'tests/Integration/class-edd-composer-successful-download-fixture.php',
+			'tests/Fixtures/class-edd-composer-successful-download-fixture.php',
 			action,
 		],
 		{ capture: true }
@@ -668,21 +618,54 @@ const runTestSuite = async () => {
 	}
 };
 
+const runLifecycleCommand = async ( command ) => {
+	const args = 'destroy' === command ? [ command, '--force' ] : [ command ];
+	const result = await runWpEnv( args, {
+		allowFailure: true,
+		capture: true,
+	} );
+	const output = `${ result.stdout }\n${ result.stderr }`;
+
+	if ( result.code === 0 ) {
+		process.stdout.write( result.stdout );
+		return;
+	}
+
+	if ( /environment not initialized/i.test( output ) ) {
+		console.log(
+			`The wp-env test environment needs no ${ command } action.`
+		);
+		return;
+	}
+
+	throw new Error(
+		`The wp-env ${ command } command failed.\n${ sanitizeProcessOutput(
+			output
+		).trim() }`
+	);
+};
+
 const command = process.argv[ 2 ] ?? 'test';
 
 try {
-	if ( command !== 'start' && command !== 'test' ) {
-		throw new Error( `Unknown command "${ command }". Use start or test.` );
+	if ( ! [ 'start', 'test', 'stop', 'destroy' ].includes( command ) ) {
+		throw new Error(
+			`Unknown command "${ command }". Use start, test, stop, or destroy.`
+		);
 	}
 
-	if ( command === 'test' ) {
-		await validateComposer();
-	}
+	if ( command === 'stop' || command === 'destroy' ) {
+		await runLifecycleCommand( command );
+	} else {
+		if ( command === 'test' ) {
+			await validateComposer();
+		}
 
-	await ensureEnvironment();
+		await ensureEnvironment();
 
-	if ( command === 'test' ) {
-		await runTestSuite();
+		if ( command === 'test' ) {
+			await runTestSuite();
+		}
 	}
 } catch ( error ) {
 	console.error( error instanceof Error ? error.message : error );

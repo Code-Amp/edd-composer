@@ -2,6 +2,7 @@ node_modules/
 vendor/
 .DS_Store
 .wp-env.override.json
+.wp-env.generated/
 .phpunit.result.cache
 
 pnpm-debug.log*

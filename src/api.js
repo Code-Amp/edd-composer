@@ -5,13 +5,10 @@ const API_BASE = '/edd-composer/v1';
 /**
  * Loads settings, repository status, and the EDD product catalogue.
  *
- * @return {Promise<Array>} API responses.
+ * @return {Promise<Object>} Administration bootstrap response.
  */
 export const fetchAdminData = () =>
-	Promise.all( [
-		apiFetch( { path: `${ API_BASE }/settings` } ),
-		apiFetch( { path: `${ API_BASE }/products` } ),
-	] );
+	apiFetch( { path: `${ API_BASE }/settings` } );
 
 /**
  * Persists the complete settings document.

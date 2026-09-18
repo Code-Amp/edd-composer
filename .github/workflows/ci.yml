@@ -1,0 +1,141 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    name: Static and package checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          tools: composer:v2
+
+      - name: Install development dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run static checks and JavaScript tests
+        run: |
+          pnpm run validate:composer
+          pnpm run check:versions
+          pnpm run check:diagnostics
+          pnpm run lint
+          pnpm exec wp-scripts test-unit-js --runInBand
+
+      - name: Verify generated assets
+        run: |
+          pnpm run build
+          pnpm run check:assets
+
+      - name: Verify plugin ZIP
+        run: |
+          pnpm run plugin-zip
+          pnpm run check:package
+
+  verify:
+    name: ${{ matrix.profile }} compatibility
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: minimum
+            php: '8.0'
+          - profile: latest
+            php: '8.4'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install development dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Provision licensed test plugins
+        env:
+          EDD_PRO_ZIP_URL: ${{ secrets.EDD_PRO_ZIP_URL }}
+          EDD_SOFTWARE_LICENSING_ZIP_URL: ${{ secrets.EDD_SOFTWARE_LICENSING_ZIP_URL }}
+        run: node scripts/provision-licensed-plugins.mjs
+
+      - name: Generate compatibility profile
+        run: pnpm run test:config ${{ matrix.profile }}
+
+      - name: Validate generated PHPUnit manifest
+        run: composer --working-dir=.wp-env.generated/${{ matrix.profile }}/phpunit validate --strict --no-check-publish
+
+      - name: Run complete release verification
+        if: matrix.profile == 'minimum'
+        env:
+          EDD_COMPOSER_TEST_CONFIG: .wp-env.generated/minimum/wp-env.json
+        run: pnpm run check
+
+      - name: Run latest compatibility suite
+        if: matrix.profile == 'latest'
+        env:
+          EDD_COMPOSER_TEST_CONFIG: .wp-env.generated/latest/wp-env.json
+        run: pnpm run test
+
+      - name: Upload verified plugin ZIP
+        if: matrix.profile == 'minimum' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edd-composer
+          path: edd-composer.zip
+          if-no-files-found: error
+
+      - name: Destroy test environment
+        if: always()
+        env:
+          EDD_COMPOSER_TEST_CONFIG: .wp-env.generated/${{ matrix.profile }}/wp-env.json
+        run: pnpm run test:destroy

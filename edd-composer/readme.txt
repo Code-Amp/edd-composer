@@ -2,7 +2,7 @@
 Contributors: codeamp
 Tags: composer, easy digital downloads, software licensing
 Requires at least: 6.9
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 8.0
 Stable tag: 1.0.0
 License: GPLv2 or later

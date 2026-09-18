@@ -10,19 +10,14 @@ describe( 'admin REST transport', () => {
 	} );
 
 	test( 'loads settings and products through plugin-owned routes', async () => {
-		apiFetch
-			.mockResolvedValueOnce( { settings: {} } )
-			.mockResolvedValueOnce( { products: [] } );
+		apiFetch.mockResolvedValueOnce( { settings: {}, products: [] } );
 
-		await expect( fetchAdminData() ).resolves.toEqual( [
-			{ settings: {} },
-			{ products: [] },
-		] );
-		expect( apiFetch ).toHaveBeenNthCalledWith( 1, {
-			path: '/edd-composer/v1/settings',
+		await expect( fetchAdminData() ).resolves.toEqual( {
+			settings: {},
+			products: [],
 		} );
-		expect( apiFetch ).toHaveBeenNthCalledWith( 2, {
-			path: '/edd-composer/v1/products',
+		expect( apiFetch ).toHaveBeenCalledWith( {
+			path: '/edd-composer/v1/settings',
 		} );
 	} );
 

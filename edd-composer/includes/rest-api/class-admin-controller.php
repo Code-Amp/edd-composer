@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-final class Products_Controller extends \WP_REST_Controller {
+final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * REST namespace.
 	 *
@@ -146,7 +146,15 @@ final class Products_Controller extends \WP_REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_settings() {
-		return rest_ensure_response( $this->prepare_settings_response( $this->settings->get() ) );
+		$settings  = $this->settings->get();
+		$catalogue = $this->products->get_catalogue( $settings );
+
+		return rest_ensure_response(
+			array_merge(
+				$this->prepare_settings_response( $settings, $catalogue ),
+				array( 'products' => $catalogue )
+			)
+		);
 	}
 
 	/**
@@ -231,11 +239,13 @@ final class Products_Controller extends \WP_REST_Controller {
 	 * @return array<string, mixed>
 	 */
 	public function get_settings_schema() {
+		$products_schema = $this->get_products_schema();
+
 		return array(
 			'$schema'              => 'http://json-schema.org/draft-04/schema#',
 			'title'                => 'edd-composer-settings',
 			'type'                 => 'object',
-			'required'             => array( 'settings', 'repository' ),
+			'required'             => array( 'settings', 'repository', 'products' ),
 			'additionalProperties' => false,
 			'properties'           => array(
 				'settings'   => array(
@@ -272,6 +282,7 @@ final class Products_Controller extends \WP_REST_Controller {
 						'cache_state'   => array( 'type' => 'string' ),
 					),
 				),
+				'products'   => $products_schema['properties']['products'],
 			),
 		);
 	}

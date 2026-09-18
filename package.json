@@ -21,11 +21,15 @@
 		"pnpm": "12.4.2"
 	},
 	"jest": {
+		"testEnvironment": "jsdom",
 		"testPathIgnorePatterns": [
 			"<rootDir>/wp-env/plugins/"
 		]
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "6.9.1",
+		"@testing-library/react": "16.3.3",
+		"@testing-library/user-event": "14.6.7",
 		"@wordpress/api-fetch": "7.55.0",
 		"@wordpress/babel-preset-default": "8.55.0",
 		"@wordpress/components": "40.1.0",
@@ -42,15 +46,26 @@
 	"scripts": {
 		"build": "wp-scripts build --output-path=edd-composer/assets",
 		"start": "wp-scripts start --output-path=edd-composer/assets",
-		"format": "wp-scripts format src tests/js scripts/test-environment.mjs webpack.config.js",
+		"format": "wp-scripts format src tests/js scripts webpack.config.js babel.config.js",
 		"lint": "pnpm run lint:js && pnpm run lint:style && pnpm run lint:package && pnpm run lint:php",
-		"lint:js": "wp-scripts lint-js src scripts webpack.config.js",
+		"lint:js": "wp-scripts lint-js src tests/js scripts webpack.config.js babel.config.js",
 		"lint:style": "wp-scripts lint-style 'src/**/*.scss' 'edd-composer/assets/css/**/*.css'",
 		"lint:package": "wp-scripts lint-pkg-json",
-		"lint:php": "composer run phpcs",
+		"lint:php": "pnpm run lint:php-syntax && composer run phpcs",
+		"lint:php-syntax": "node scripts/lint-php.mjs",
+		"validate:composer": "composer validate --strict --no-check-publish && composer --working-dir=wp-env/phpunit validate --strict --no-check-publish",
 		"test": "wp-scripts test-unit-js --passWithNoTests && node scripts/test-environment.mjs test",
 		"test:start": "node scripts/test-environment.mjs start",
+		"test:stop": "node scripts/test-environment.mjs stop",
+		"test:destroy": "node scripts/test-environment.mjs destroy",
+		"test:config": "node scripts/generate-test-config.mjs",
+		"test:provision": "node scripts/provision-licensed-plugins.mjs",
 		"plugin-zip": "pnpm run build && zip -rFS edd-composer.zip edd-composer -x '*/.DS_Store'",
+		"check:assets": "git diff --exit-code -- edd-composer/assets",
+		"check:diagnostics": "node scripts/check-process-diagnostics.mjs",
+		"check:package": "node scripts/verify-package.mjs",
+		"check:versions": "node scripts/check-versions.mjs",
+		"check": "pnpm run validate:composer && pnpm run check:versions && pnpm run check:diagnostics && pnpm run lint && pnpm run test && pnpm run plugin-zip && pnpm run check:assets && pnpm run check:package",
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
 		"env:clean": "wp-env clean all",
