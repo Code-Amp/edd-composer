@@ -86,7 +86,8 @@ final class EDD_Composer_Successful_Download_Fixture {
 		update_option( self::STATE_OPTION, $state, false );
 
 		try {
-			$zip = new ZipArchive();
+			$plugin_contents = "<?php\n/**\n * Plugin Name: EDD Composer Integration Fixture\n */\n";
+			$zip             = new ZipArchive();
 
 			if ( true !== $zip->open( $file_path, ZipArchive::CREATE | ZipArchive::OVERWRITE ) ) {
 				throw new RuntimeException( 'Could not create the integration ZIP fixture.' );
@@ -94,7 +95,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 
 			$zip->addFromString(
 				'edd-composer-integration/edd-composer-integration.php',
-				"<?php\n/** Integration download fixture. */\n"
+				$plugin_contents
 			);
 			$zip->close();
 
@@ -227,12 +228,15 @@ final class EDD_Composer_Successful_Download_Fixture {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Machine-readable CLI-only fixture data.
 			echo wp_json_encode(
 				array(
-					'package_slug' => $package_slug,
-					'version'      => self::VERSION,
-					'license_key'  => $license_key,
-					'site_url'     => home_url(),
-					'file_size'    => filesize( $file_path ),
-					'file_sha256'  => hash_file( 'sha256', $file_path ),
+					'package_slug'  => $package_slug,
+					'package_name'  => 'integration-test/' . $package_slug,
+					'version'       => self::VERSION,
+					'license_key'   => $license_key,
+					'site_url'      => home_url(),
+					'file_size'     => filesize( $file_path ),
+					'file_sha256'   => hash_file( 'sha256', $file_path ),
+					'plugin_file'   => 'edd-composer-integration.php',
+					'plugin_sha256' => hash( 'sha256', $plugin_contents ),
 				)
 			) . "\n";
 		} catch ( Throwable $error ) {

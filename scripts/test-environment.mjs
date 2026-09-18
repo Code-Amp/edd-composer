@@ -3,7 +3,9 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectDirectory = resolve(
@@ -12,6 +14,9 @@ const projectDirectory = resolve(
 );
 const configPath = resolve( projectDirectory, '.wp-env.tests.json' );
 const setupMarker = '/var/www/html/.edd-composer-test-environment';
+const composerExecutable =
+	process.env.COMPOSER_BINARY ??
+	( process.platform === 'win32' ? 'composer.bat' : 'composer' );
 const dependencies = [
 	{
 		name: 'Easy Digital Downloads Pro',
@@ -28,12 +33,17 @@ const dependencies = [
 const runProcess = (
 	executable,
 	args,
-	{ allowFailure = false, capture = false } = {}
+	{
+		allowFailure = false,
+		capture = false,
+		cwd = projectDirectory,
+		env = process.env,
+	} = {}
 ) =>
 	new Promise( ( resolveProcess, reject ) => {
 		const child = spawn( executable, args, {
-			cwd: projectDirectory,
-			env: process.env,
+			cwd,
+			env,
 			stdio: capture ? [ 'ignore', 'pipe', 'pipe' ] : 'inherit',
 		} );
 		let stdout = '';
@@ -137,6 +147,28 @@ const validateDependencies = () => {
 			'Extract the pinned plugin ZIPs into wp-env/plugins and try again.',
 		].join( '\n' )
 	);
+};
+
+const validateComposer = async () => {
+	let result;
+
+	try {
+		result = await runProcess( composerExecutable, [ '--version' ], {
+			capture: true,
+		} );
+	} catch {
+		throw new Error(
+			'Composer 2 is required on the host to run the integration suite.'
+		);
+	}
+
+	if ( ! /Composer(?:\s+version)?\s+2\./i.test( result.stdout ) ) {
+		throw new Error(
+			`Composer 2 is required on the host; detected: ${
+				result.stdout.trim() || 'an unknown version'
+			}`
+		);
+	}
 };
 
 const getEnvironmentStatus = async () => {
@@ -376,6 +408,104 @@ const runSuccessfulDownloadFixture = async ( action ) => {
 	return JSON.parse( jsonLine );
 };
 
+const verifyComposerInstall = async ( fixture, baseUrl ) => {
+	const consumerDirectory = await mkdtemp(
+		join( tmpdir(), 'edd-composer-consumer-' )
+	);
+	const repositoryUrl = `${ baseUrl }/composer`;
+	const packageName = fixture.package_name;
+
+	try {
+		await writeFile(
+			join( consumerDirectory, 'composer.json' ),
+			`${ JSON.stringify(
+				{
+					name: 'integration-test/consumer',
+					description: 'Temporary EDD Composer integration consumer.',
+					type: 'project',
+					license: 'GPL-2.0-or-later',
+					repositories: [
+						{
+							type: 'composer',
+							url: repositoryUrl,
+						},
+					],
+					require: {
+						[ packageName ]: fixture.version,
+					},
+					config: {
+						'allow-plugins': {
+							'composer/installers': true,
+						},
+						'preferred-install': 'dist',
+						'secure-http': false,
+					},
+				},
+				null,
+				'\t'
+			) }\n`,
+			'utf8'
+		);
+
+		await runProcess(
+			composerExecutable,
+			[ 'install', '--no-interaction', '--no-progress', '--prefer-dist' ],
+			{
+				cwd: consumerDirectory,
+				env: {
+					...process.env,
+					COMPOSER_AUTH: JSON.stringify( {
+						'http-basic': {
+							[ new URL( baseUrl ).host ]: {
+								username: fixture.license_key,
+								password: fixture.site_url,
+							},
+						},
+					} ),
+					COMPOSER_HOME: join( consumerDirectory, '.composer' ),
+					COMPOSER_NO_INTERACTION: '1',
+				},
+			}
+		);
+
+		const installedFile = join(
+			consumerDirectory,
+			'wp-content',
+			'plugins',
+			fixture.package_slug,
+			fixture.plugin_file
+		);
+		const installedHash = createHash( 'sha256' )
+			.update( readFileSync( installedFile ) )
+			.digest( 'hex' );
+		const lock = JSON.parse(
+			readFileSync( join( consumerDirectory, 'composer.lock' ), 'utf8' )
+		);
+		const lockedPackage = lock.packages.find(
+			( packageData ) => packageData.name === packageName
+		);
+
+		if (
+			installedHash !== fixture.plugin_sha256 ||
+			! lockedPackage ||
+			lockedPackage.version !== fixture.version ||
+			lockedPackage.dist?.type !== 'zip' ||
+			lockedPackage.dist?.url !==
+				`${ baseUrl }/composer/download/${ fixture.package_slug }/${ fixture.version }`
+		) {
+			throw new Error(
+				`Composer installed an unexpected package result for ${ packageName }.`
+			);
+		}
+
+		console.log(
+			`Composer installed ${ packageName } ${ fixture.version } into wp-content/plugins/${ fixture.package_slug }.`
+		);
+	} finally {
+		await rm( consumerDirectory, { force: true, recursive: true } );
+	}
+};
+
 const verifySuccessfulDownload = async () => {
 	const config = JSON.parse( readFileSync( configPath, 'utf8' ) );
 	const port = config.port ?? 8888;
@@ -437,6 +567,8 @@ const verifySuccessfulDownload = async () => {
 		console.log(
 			'The authenticated Composer route redirects to a signed EDD URL that delivers the expected ZIP.'
 		);
+
+		await verifyComposerInstall( fixture, baseUrl );
 	} catch ( error ) {
 		failure = error;
 	}
@@ -541,6 +673,10 @@ const command = process.argv[ 2 ] ?? 'test';
 try {
 	if ( command !== 'start' && command !== 'test' ) {
 		throw new Error( `Unknown command "${ command }". Use start or test.` );
+	}
+
+	if ( command === 'test' ) {
+		await validateComposer();
 	}
 
 	await ensureEnvironment();

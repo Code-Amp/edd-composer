@@ -12,7 +12,8 @@ wp-env/plugins/edd-software-licensing/edd-software-licenses.php
 ```
 
 The expected versions are Easy Digital Downloads Pro 3.7.0 and Software
-Licensing 3.9.7. The package scripts check both files and versions before use.
+Licensing 3.9.7. Composer 2 must also be available on the host. The package
+scripts check both plugin files and versions before use.
 Starting is idempotent, and container dependencies and plugin activation are
 only provisioned when the environment's setup marker is missing or outdated:
 
@@ -20,3 +21,8 @@ only provisioned when the environment's setup marker is missing or outdated:
 pnpm run test:start
 pnpm run test
 ```
+
+`pnpm run test` creates a licensed EDD fixture and an OS-temporary Composer
+consumer project. It runs a real Composer install against the live wp-env
+repository, verifies the installed WordPress plugin and lock metadata, and
+removes both fixtures afterward. No consumer project is kept in this repository.
