@@ -9,7 +9,9 @@ const projectDirectory = resolve(
 const read = ( path ) => readFile( resolve( projectDirectory, path ), 'utf8' );
 const [
 	packageManifest,
+	composerManifest,
 	pluginSource,
+	phpstanBootstrapSource,
 	readme,
 	dependenciesSource,
 	testConfigSource,
@@ -17,7 +19,9 @@ const [
 	phpunitManifestSource,
 ] = await Promise.all( [
 	read( 'package.json' ),
+	read( 'composer.json' ),
 	read( 'edd-composer/edd-composer.php' ),
+	read( 'phpstan-bootstrap.php' ),
 	read( 'edd-composer/readme.txt' ),
 	read( 'edd-composer/includes/class-dependencies.php' ),
 	read( '.wp-env.tests.json' ),
@@ -25,6 +29,7 @@ const [
 	read( 'wp-env/phpunit/composer.json' ),
 ] );
 const packageData = JSON.parse( packageManifest );
+const composerData = JSON.parse( composerManifest );
 const testConfig = JSON.parse( testConfigSource );
 const matrix = JSON.parse( matrixSource );
 const phpunitManifest = JSON.parse( phpunitManifestSource );
@@ -64,6 +69,15 @@ const stableTag = match(
 
 expectEqual( 'package.json version', packageData.version, pluginVersion );
 expectEqual( 'EDD_COMPOSER_VERSION', constantVersion, pluginVersion );
+expectEqual(
+	'PHPStan bootstrap version',
+	match(
+		phpstanBootstrapSource,
+		/EDD_COMPOSER_VERSION',\s*'([^']+)'/,
+		'the PHPStan bootstrap version'
+	),
+	pluginVersion
+);
 expectEqual( 'readme stable tag', stableTag, pluginVersion );
 
 const minimums = {
@@ -107,6 +121,11 @@ expectEqual(
 	'minimum matrix WordPress',
 	matrix.minimum.wordpressVersion,
 	minimums.wordpress
+);
+expectEqual(
+	'PHPStan WordPress stubs',
+	composerData[ 'require-dev' ][ 'php-stubs/wordpress-stubs' ],
+	`${ matrix.minimum.wordpressVersion }.0`
 );
 expectEqual( 'minimum matrix PHP', matrix.minimum.phpVersion, minimums.php );
 expectEqual( 'minimum matrix EDD', matrix.minimum.eddVersion, minimums.edd );

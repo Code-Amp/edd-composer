@@ -33,6 +33,8 @@ const files = (
 		)
 	)
 ).flat();
+
+files.push( resolve( projectDirectory, 'phpstan-bootstrap.php' ) );
 const failures = [];
 
 for ( const file of files ) {

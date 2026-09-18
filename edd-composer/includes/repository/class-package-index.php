@@ -341,9 +341,26 @@ final class Package_Index {
 		 * @param string               $version Canonical package version.
 		 * @param array<string, mixed> $product Enriched product data.
 		 */
-		$entry = apply_filters( 'edd_composer_package_index_entry', $entry, $product['id'], $version, $product );
+		$entry = $this->filter_version_entry( $entry, $product, $version );
 
 		return is_array( $entry ) ? $entry : null;
+	}
+
+	/**
+	 * Applies the public package-version filter without assuming its return type.
+	 *
+	 * The documented filter contract requires an array, but a defensive boundary
+	 * keeps invalid third-party values out of the public repository response.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, mixed> $entry   Composer version entry.
+	 * @param array<string, mixed> $product Enriched product data.
+	 * @param string               $version Canonical package version.
+	 * @return mixed Filtered value.
+	 */
+	private function filter_version_entry( array $entry, array $product, $version ) {
+		return apply_filters( 'edd_composer_package_index_entry', $entry, $product['id'], $version, $product );
 	}
 
 	/**

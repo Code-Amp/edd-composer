@@ -21,4 +21,6 @@ pnpm run check
 
 For a smaller development loop, use the relevant lint command, JavaScript tests, or `pnpm run test`. Add focused coverage for changed behavior and keep visual-only assertions in manual browser review.
 
+`pnpm run lint` is safe to run without private dependencies. `pnpm run phpstan` uses the real ignored EDD Pro and Software Licensing sources and therefore requires the local test plugins described in the README.
+
 Commits should be focused and use a clear, descriptive imperative message.

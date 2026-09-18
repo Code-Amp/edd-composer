@@ -191,7 +191,7 @@ final class Order_Resolver {
 
 		rsort( $payment_ids, SORT_NUMERIC );
 
-		return array_values( $payment_ids );
+		return $payment_ids;
 	}
 
 	/**

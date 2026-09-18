@@ -36,6 +36,8 @@ wp-env/plugins/easy-digital-downloads-pro/
 wp-env/plugins/edd-software-licensing/
 ```
 
+Yes, the irony is noted: until EDD itself speaks Composer, these test dependencies take the scenic route via a manual install.
+
 These directories are ignored and must never be committed. See [`wp-env/plugins/README.md`](wp-env/plugins/README.md) for the expected entry files.
 
 CI provisions the same directories from private, short-lived archive URLs held in the `EDD_PRO_ZIP_URL` and `EDD_SOFTWARE_LICENSING_ZIP_URL` repository secrets. The provisioning command validates archive paths and entry files without printing either URL. The archives must contain the exact versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json); the test runner rejects version drift.
@@ -53,13 +55,16 @@ pnpm run test:destroy
 
 ```sh
 pnpm run lint
+pnpm run phpstan
 pnpm run test
 pnpm run build
 pnpm run plugin-zip
 pnpm run check
 ```
 
-`pnpm run check` is the complete CI/release verification entry point. It validates manifests and versions, runs syntax and coding-standard checks, exercises the full test suite, rebuilds committed assets, and validates a clean install of the generated plugin ZIP.
+`pnpm run phpstan` analyses the distributable plugin at level 5 against the real, locally installed EDD Pro and Software Licensing sources. It therefore requires the same ignored licensed-plugin directories as the integration tests.
+
+`pnpm run check` is the complete CI/release verification entry point. It validates manifests and versions, runs PHP syntax, PHPCS, PHPCompatibility, PHPStan, JavaScript and stylesheet checks, exercises the full test suite, rebuilds committed assets, and validates a clean install of the generated plugin ZIP.
 
 The release archive is `edd-composer.zip` and contains only the top-level `edd-composer/` plugin directory. Generated production assets are committed so the archive does not require Node.js at runtime.
 

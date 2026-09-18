@@ -3,6 +3,7 @@
 	<description>WordPress coding standards for EDD Composer Extension.</description>
 
 	<file>edd-composer</file>
+	<file>phpstan-bootstrap.php</file>
 	<file>tests/php</file>
 
 	<exclude-pattern>edd-composer/assets/*</exclude-pattern>
@@ -13,9 +14,11 @@
 	<arg value="sp"/>
 	<arg name="extensions" value="php"/>
 
+	<config name="testVersion" value="8.0-"/>
 	<config name="minimum_supported_wp_version" value="6.9"/>
 	<config name="text_domain" value="edd-composer"/>
 
+	<rule ref="PHPCompatibilityWP"/>
 	<rule ref="WordPress"/>
 	<rule ref="WordPress-Docs"/>
 
