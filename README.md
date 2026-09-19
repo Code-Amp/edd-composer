@@ -40,7 +40,9 @@ Yes, the irony is noted: until EDD itself speaks Composer, these test dependenci
 
 These directories are ignored and must never be committed. See [`wp-env/plugins/README.md`](wp-env/plugins/README.md) for the expected entry files.
 
-CI provisions the same directories from private, short-lived archive URLs held in the `EDD_PRO_ZIP_URL` and `EDD_SOFTWARE_LICENSING_ZIP_URL` repository secrets. The provisioning command validates archive paths and entry files without printing either URL. The archives must contain the exact versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json); the test runner rejects version drift.
+Code Amp CI resolves the versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json) from a private dependency catalogue pinned to an exact commit. It authenticates with the read-only `WP_DEPENDENCIES_TOKEN` secret, then verifies each catalogue path, SHA-256 checksum, archive structure, entry file, and WordPress version header before extraction.
+
+Forks do not need access to that catalogue. Their workflows can provide private HTTPS archive URLs through `EDD_PRO_ZIP_URL` and `EDD_SOFTWARE_LICENSING_ZIP_URL`, while local development can continue using the ignored extracted directories above. Fork pull requests never receive Code Amp's secret.
 
 ```sh
 pnpm run test:start

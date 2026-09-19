@@ -15,19 +15,19 @@ concurrency:
 jobs:
   static:
     name: Static and package checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 12.4.2
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -51,6 +51,7 @@ jobs:
           pnpm run check:diagnostics
           pnpm run lint
           pnpm exec wp-scripts test-unit-js --runInBand
+          pnpm run test:scripts
 
       - name: Verify generated assets
         run: |
@@ -65,7 +66,7 @@ jobs:
   verify:
     name: ${{ matrix.profile }} compatibility
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -76,16 +77,16 @@ jobs:
             php: '8.4'
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 12.4.2
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -104,9 +105,10 @@ jobs:
 
       - name: Provision licensed test plugins
         env:
+          WP_DEPENDENCIES_TOKEN: ${{ secrets.WP_DEPENDENCIES_TOKEN }}
           EDD_PRO_ZIP_URL: ${{ secrets.EDD_PRO_ZIP_URL }}
           EDD_SOFTWARE_LICENSING_ZIP_URL: ${{ secrets.EDD_SOFTWARE_LICENSING_ZIP_URL }}
-        run: node scripts/provision-licensed-plugins.mjs
+        run: pnpm run test:provision ${{ matrix.profile }}
 
       - name: Generate compatibility profile
         run: pnpm run test:config ${{ matrix.profile }}

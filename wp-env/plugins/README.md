@@ -14,6 +14,12 @@ wp-env/plugins/edd-software-licensing/edd-software-licenses.php
 The expected versions are Easy Digital Downloads Pro 3.7.0 and Software
 Licensing 3.9.7. Composer 2 must also be available on the host. The package
 scripts check both plugin files and versions before use.
+
+Code Amp CI obtains these versions from its pinned private dependency catalogue.
+Other CI environments can set `EDD_PRO_ZIP_URL` and
+`EDD_SOFTWARE_LICENSING_ZIP_URL` to their own private HTTPS archives and run
+`pnpm run test:provision minimum` before starting the suite.
+
 Starting is idempotent, and container dependencies and plugin activation are
 only provisioned when the environment's setup marker is missing or outdated:
 
