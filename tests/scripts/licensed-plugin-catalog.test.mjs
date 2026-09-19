@@ -6,6 +6,7 @@ import {
 	findArchiveEntry,
 	getCatalogRelease,
 	readPluginVersion,
+	selectPluginInstallSource,
 	validateArchivePaths,
 } from '../../scripts/lib/licensed-plugin-catalog.mjs';
 
@@ -42,6 +43,41 @@ test( 'builds a pinned GitHub Contents API URL', () => {
 				'catalog.json'
 			),
 		/commit SHA/
+	);
+} );
+
+test( 'selects plugin installation sources in precedence order', () => {
+	assert.equal(
+		selectPluginInstallSource( {
+			overrideUrl: 'https://example.com/plugin.zip',
+			catalogToken: 'catalog-token',
+			isGitHubActions: false,
+		} ),
+		'url'
+	);
+	assert.equal(
+		selectPluginInstallSource( {
+			overrideUrl: '',
+			catalogToken: 'catalog-token',
+			isGitHubActions: false,
+		} ),
+		'token'
+	);
+	assert.equal(
+		selectPluginInstallSource( {
+			overrideUrl: '',
+			catalogToken: '',
+			isGitHubActions: false,
+		} ),
+		'github-cli'
+	);
+	assert.equal(
+		selectPluginInstallSource( {
+			overrideUrl: '',
+			catalogToken: '',
+			isGitHubActions: true,
+		} ),
+		null
 	);
 } );
 

@@ -32,6 +32,31 @@ export const buildGitHubContentsUrl = ( repository, ref, path ) => {
 };
 
 /**
+ * Selects the source used to install a licensed test plugin.
+ *
+ * @param {Object}  options                 Source options.
+ * @param {string}  options.overrideUrl     Plugin-specific archive URL.
+ * @param {string}  options.catalogToken    Private catalogue token.
+ * @param {boolean} options.isGitHubActions Whether the command runs in Actions.
+ * @return {string|null} Selected source, or null when none is available.
+ */
+export const selectPluginInstallSource = ( {
+	overrideUrl,
+	catalogToken,
+	isGitHubActions,
+} ) => {
+	if ( overrideUrl ) {
+		return 'url';
+	}
+
+	if ( catalogToken ) {
+		return 'token';
+	}
+
+	return isGitHubActions ? null : 'github-cli';
+};
+
+/**
  * Resolves and validates one plugin release from a dependency catalogue.
  *
  * @param {Object} catalog     Parsed dependency catalogue.

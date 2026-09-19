@@ -106,12 +106,12 @@ jobs:
       - name: Generate compatibility profile
         run: pnpm run test:config ${{ matrix.profile }}
 
-      - name: Provision licensed test plugins
+      - name: Install licensed test plugins
         env:
           WP_DEPENDENCIES_TOKEN: ${{ secrets.WP_DEPENDENCIES_TOKEN }}
           EDD_PRO_ZIP_URL: ${{ secrets.EDD_PRO_ZIP_URL }}
           EDD_SOFTWARE_LICENSING_ZIP_URL: ${{ secrets.EDD_SOFTWARE_LICENSING_ZIP_URL }}
-        run: pnpm run test:provision ${{ matrix.profile }}
+        run: pnpm run test:install-plugins ${{ matrix.profile }}
 
       - name: Validate generated PHPUnit manifest
         run: composer --working-dir=.wp-env.generated/${{ matrix.profile }}/phpunit validate --strict --no-check-publish

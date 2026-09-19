@@ -62,7 +62,7 @@
 		"test:stop": "node scripts/test-environment.mjs stop",
 		"test:destroy": "node scripts/test-environment.mjs destroy",
 		"test:config": "node scripts/generate-test-config.mjs",
-		"test:provision": "node scripts/provision-licensed-plugins.mjs",
+		"test:install-plugins": "node scripts/install-licensed-plugins.mjs",
 		"plugin-zip": "pnpm run build && zip -rFS edd-composer.zip edd-composer -x '*/.DS_Store'",
 		"check:assets": "git diff --exit-code -- edd-composer/assets",
 		"check:diagnostics": "node scripts/check-process-diagnostics.mjs",

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
 import { createHash } from 'node:crypto';
+import { spawn } from 'node:child_process';
 import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -11,6 +12,7 @@ import {
 	findArchiveEntry,
 	getCatalogRelease,
 	readPluginVersion,
+	selectPluginInstallSource,
 	validateArchivePaths,
 } from './lib/licensed-plugin-catalog.mjs';
 import { runProcess } from './lib/process.mjs';
@@ -24,6 +26,8 @@ const catalogSource = {
 	ref: '9ace9fd37db82bee6d515ac15c805116abb73917',
 };
 const maximumDownloadBytes = 100 * 1024 * 1024;
+const maximumGitHubCliResponseBytes =
+	Math.ceil( ( maximumDownloadBytes * 4 ) / 3 ) + 1024 * 1024;
 const profileName = process.argv[ 2 ] ?? 'minimum';
 const testMatrix = JSON.parse(
 	await readFile(
@@ -60,6 +64,145 @@ const plugins = [
 	},
 ];
 let catalogPromise;
+
+/**
+ * Runs a bounded GitHub CLI API request.
+ *
+ * @param {string} endpoint       GitHub API endpoint.
+ * @param {number} maximumBytes   Maximum response size.
+ * @param {string} failureMessage Safe failure message.
+ * @return {Promise<Buffer>} Response body.
+ */
+const runGitHubCliRequest = ( endpoint, maximumBytes, failureMessage ) =>
+	new Promise( ( resolveDownload, reject ) => {
+		const child = spawn(
+			'gh',
+			[
+				'api',
+				'--hostname',
+				'github.com',
+				'--method',
+				'GET',
+				'--header',
+				'X-GitHub-Api-Version: 2022-11-28',
+				endpoint,
+			],
+			{ stdio: [ 'ignore', 'pipe', 'pipe' ] }
+		);
+		const chunks = [];
+		let byteLength = 0;
+		let settled = false;
+
+		const fail = ( message ) => {
+			if ( settled ) {
+				return;
+			}
+
+			settled = true;
+			reject( new Error( message ) );
+		};
+
+		child.stdout.on( 'data', ( chunk ) => {
+			byteLength += chunk.length;
+
+			if ( byteLength > maximumBytes ) {
+				child.kill();
+				fail( failureMessage );
+				return;
+			}
+
+			chunks.push( chunk );
+		} );
+		child.stderr.resume();
+		child.on( 'error', ( error ) => {
+			fail(
+				error.code === 'ENOENT'
+					? 'GitHub CLI is required for Code Amp catalogue access. Install gh, run `gh auth login`, or use private archive URL overrides.'
+					: failureMessage
+			);
+		} );
+		child.on( 'close', ( code ) => {
+			if ( settled ) {
+				return;
+			}
+
+			if ( code !== 0 ) {
+				fail( failureMessage );
+				return;
+			}
+
+			settled = true;
+			resolveDownload( Buffer.concat( chunks ) );
+		} );
+	} );
+
+/**
+ * Downloads a private GitHub file using the developer's existing gh session.
+ *
+ * The credential remains inside GitHub CLI's credential store and is never
+ * returned to this process. Git blobs are transported as JSON-safe base64 so
+ * GitHub CLI does not attempt to render binary archive output.
+ *
+ * @param {string} url   Pinned GitHub Contents API URL.
+ * @param {string} label Safe diagnostic label.
+ * @return {Promise<Buffer>} Response body.
+ */
+const downloadWithGitHubCli = async ( url, label ) => {
+	const parsedUrl = new URL( url );
+	const metadataEndpoint = `${ parsedUrl.pathname.replace( /^\//, '' ) }${ parsedUrl.search }`;
+	const failureMessage =
+		'The Code Amp dependency catalogue could not be accessed with GitHub CLI. Run `gh auth login` with an account that can read Code-Amp/wp-dependencies, install the plugins manually, or use private archive URL overrides.';
+	const metadataResponse = await runGitHubCliRequest(
+		metadataEndpoint,
+		1024 * 1024,
+		failureMessage
+	);
+	let metadata;
+
+	try {
+		metadata = JSON.parse( metadataResponse.toString( 'utf8' ) );
+	} catch {
+		throw new Error( `${ label } metadata contains invalid JSON.` );
+	}
+
+	if (
+		metadata?.type !== 'file' ||
+		! /^[a-f0-9]{40}$/.test( metadata.sha ?? '' ) ||
+		! Number.isSafeInteger( metadata.size ) ||
+		metadata.size < 0
+	) {
+		throw new Error( `${ label } metadata is invalid.` );
+	}
+
+	if ( metadata.size > maximumDownloadBytes ) {
+		throw new Error( `${ label } exceeds the 100 MB download limit.` );
+	}
+
+	const blobResponse = await runGitHubCliRequest(
+		`repos/${ catalogSource.repository }/git/blobs/${ metadata.sha }`,
+		maximumGitHubCliResponseBytes,
+		failureMessage
+	);
+	let blob;
+
+	try {
+		blob = JSON.parse( blobResponse.toString( 'utf8' ) );
+	} catch {
+		throw new Error( `${ label } blob contains invalid JSON.` );
+	}
+
+	if ( blob?.encoding !== 'base64' || typeof blob.content !== 'string' ) {
+		throw new Error( `${ label } blob encoding is invalid.` );
+	}
+
+	const body = Buffer.from( blob.content.replaceAll( /\s/g, '' ), 'base64' );
+
+	if ( body.length !== metadata.size ) {
+		throw new Error( `${ label } blob size does not match its metadata.` );
+	}
+
+	return body;
+};
 
 /**
  * Downloads a bounded response without exposing its source URL in errors.
@@ -113,10 +256,9 @@ const getGitHubHeaders = ( token ) => ( {
 /**
  * Loads the catalogue once for all required plugins.
  *
- * @param {string} token GitHub token.
  * @return {Promise<Object>} Parsed catalogue.
  */
-const getCatalog = ( token ) => {
+const getCatalog = () => {
 	if ( ! catalogPromise ) {
 		catalogPromise = ( async () => {
 			const url = buildGitHubContentsUrl(
@@ -124,11 +266,17 @@ const getCatalog = ( token ) => {
 				catalogSource.ref,
 				'catalog.json'
 			);
-			const body = await download(
-				url,
-				{ headers: getGitHubHeaders( token ) },
-				'Dependency catalogue download'
-			);
+			const token = process.env.WP_DEPENDENCIES_TOKEN;
+			const body = token
+				? await download(
+						url,
+						{ headers: getGitHubHeaders( token ) },
+						'Dependency catalogue download'
+					)
+				: await downloadWithGitHubCli(
+						url,
+						'Dependency catalogue download'
+					);
 
 			try {
 				return JSON.parse( body.toString( 'utf8' ) );
@@ -151,8 +299,14 @@ const getCatalog = ( token ) => {
  */
 const getArchive = async ( plugin ) => {
 	const sourceUrl = process.env[ plugin.environmentVariable ];
+	const token = process.env.WP_DEPENDENCIES_TOKEN;
+	const source = selectPluginInstallSource( {
+		overrideUrl: sourceUrl,
+		catalogToken: token,
+		isGitHubActions: process.env.GITHUB_ACTIONS === 'true',
+	} );
 
-	if ( sourceUrl ) {
+	if ( source === 'url' ) {
 		let parsedUrl;
 
 		try {
@@ -180,15 +334,13 @@ const getArchive = async ( plugin ) => {
 		};
 	}
 
-	const token = process.env.WP_DEPENDENCIES_TOKEN;
-
-	if ( ! token ) {
+	if ( ! source ) {
 		throw new Error(
-			`Set ${ plugin.environmentVariable } to your own private archive URL or provide WP_DEPENDENCIES_TOKEN for the Code Amp dependency catalogue.`
+			`Set ${ plugin.environmentVariable } to your own private archive URL or provide WP_DEPENDENCIES_TOKEN for the Code Amp dependency catalogue. GitHub CLI fallback is intentionally disabled in GitHub Actions.`
 		);
 	}
 
-	const catalog = await getCatalog( token );
+	const catalog = await getCatalog();
 	const release = getCatalogRelease(
 		catalog,
 		plugin.packageSlug,
@@ -202,13 +354,22 @@ const getArchive = async ( plugin ) => {
 	);
 
 	return {
-		body: await download(
-			url,
-			{ headers: getGitHubHeaders( token ) },
-			`${ plugin.name } catalogue archive download`
-		),
+		body:
+			source === 'token'
+				? await download(
+						url,
+						{ headers: getGitHubHeaders( token ) },
+						`${ plugin.name } catalogue archive download`
+					)
+				: await downloadWithGitHubCli(
+						url,
+						`${ plugin.name } catalogue archive download`
+					),
 		checksum: release.sha256,
-		source: 'dependency catalogue',
+		source:
+			source === 'token'
+				? 'dependency catalogue'
+				: 'dependency catalogue via GitHub CLI',
 	};
 };
 
@@ -218,7 +379,7 @@ const getArchive = async ( plugin ) => {
  * @param {Object} plugin Plugin provisioning definition.
  * @return {Promise<void>}
  */
-const provision = async ( plugin ) => {
+const installPlugin = async ( plugin ) => {
 	const archive = await getArchive( plugin );
 	const checksum = createHash( 'sha256' )
 		.update( archive.body )
@@ -297,7 +458,7 @@ const provision = async ( plugin ) => {
 		await rm( destination, { force: true, recursive: true } );
 		await cp( dirname( entryPath ), destination, { recursive: true } );
 		console.log(
-			`Provisioned ${ plugin.name } ${ plugin.version } from ${ archive.source }.`
+			`Installed ${ plugin.name } ${ plugin.version } from ${ archive.source }.`
 		);
 	} finally {
 		await rm( temporaryDirectory, { force: true, recursive: true } );
@@ -305,5 +466,5 @@ const provision = async ( plugin ) => {
 };
 
 for ( const plugin of plugins ) {
-	await provision( plugin );
+	await installPlugin( plugin );
 }

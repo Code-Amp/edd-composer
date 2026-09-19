@@ -1,8 +1,17 @@
 # Licensed EDD test plugins
 
-The wp-env test profile mounts locally supplied plugins from this directory as
-ordinary WordPress plugins. Extract both official plugin ZIPs directly into
-`wp-env/plugins/` from the repository root, for example:
+The wp-env test profile mounts plugins from this directory as ordinary WordPress
+plugins. Code Amp developers can install both pinned versions from the private
+catalogue using their existing GitHub CLI authentication:
+
+```sh
+gh auth login
+gh repo view Code-Amp/wp-dependencies
+pnpm run test:install-plugins minimum
+```
+
+External contributors can instead extract both official plugin ZIPs directly
+into `wp-env/plugins/` from the repository root:
 
 ```sh
 unzip /path/to/easy-digital-downloads-pro-3.7.0.zip -d wp-env/plugins
@@ -23,12 +32,12 @@ The expected versions are Easy Digital Downloads Pro 3.7.0 and Software
 Licensing 3.9.7. Composer 2 must also be available on the host. The package
 scripts check both plugin files and versions before use.
 
-Code Amp CI obtains these versions from its pinned private dependency catalogue.
-Other CI environments can set `EDD_PRO_ZIP_URL` and
+Code Amp CI obtains these versions from its pinned private dependency catalogue
+using `WP_DEPENDENCIES_TOKEN`. Other CI environments can set `EDD_PRO_ZIP_URL` and
 `EDD_SOFTWARE_LICENSING_ZIP_URL` to direct HTTPS archive URLs that require no
-separate authorization header, then run `pnpm run test:provision minimum` before
-starting the suite. The committed GitHub Actions workflow performs this command
-automatically.
+separate authorization header, then run `pnpm run test:install-plugins minimum`
+before starting the suite. The committed GitHub Actions workflow performs this
+command automatically.
 
 Starting is idempotent, and container dependencies and plugin activation are
 only provisioned when the environment's setup marker is missing or outdated:
