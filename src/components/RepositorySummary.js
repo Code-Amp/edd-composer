@@ -1,26 +1,18 @@
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 
-const RepositorySummary = ( { repository } ) => {
-	const [ copied, setCopied ] = useState( '' );
-	const [ copyError, setCopyError ] = useState( false );
+import { getPublishedPackages } from '../utils/installation-guide';
+import CopyButton from './CopyButton';
+import InstallationGuideModal from './InstallationGuideModal';
+
+const RepositorySummary = ( { repository, repositoryName, products } ) => {
+	const [ isGuideOpen, setIsGuideOpen ] = useState( false );
 	const repositoryUrl = new URL( repository.url );
 	const repositoryCommand = `composer config repositories.edd-composer composer ${ repository.url }`;
-	const authenticationCommand = `composer config --global --auth http-basic.${ repositoryUrl.host } <license-key> <activated-site-url>`;
-
-	const copy = async ( value, key ) => {
-		setCopyError( false );
-
-		try {
-			await navigator.clipboard.writeText( value );
-			setCopied( key );
-			window.setTimeout( () => setCopied( '' ), 2000 );
-		} catch {
-			setCopied( '' );
-			setCopyError( true );
-		}
-	};
+	const authenticationCommand = `composer config --auth http-basic.${ repositoryUrl.host } your-license-key https://your-site.example`;
+	const publishedPackages = getPublishedPackages( products );
+	const canShareGuide = publishedPackages.length > 0;
 
 	return (
 		<section
@@ -51,25 +43,42 @@ const RepositorySummary = ( { repository } ) => {
 				</dl>
 			</div>
 
-			<div className="edd-composer-command">
+			<div className="edd-composer-command edd-composer-command--repository">
 				<code>{ repository.url }</code>
-				<Button
-					variant="secondary"
-					onClick={ () => copy( repository.url, 'url' ) }
-				>
-					{ copied === 'url'
-						? __( 'Copied', 'edd-composer' )
-						: __( 'Copy URL', 'edd-composer' ) }
-				</Button>
+				<div className="edd-composer-command__actions">
+					<CopyButton text={ repository.url } variant="secondary">
+						{ __( 'Copy URL', 'edd-composer' ) }
+					</CopyButton>
+					<Button
+						variant="secondary"
+						disabled={ ! canShareGuide }
+						aria-describedby="edd-composer-guide-description"
+						onClick={ () => setIsGuideOpen( true ) }
+					>
+						{ __( 'Share installation guide', 'edd-composer' ) }
+					</Button>
+				</div>
 			</div>
-			{ copyError && (
-				<p className="description" role="alert">
-					{ __(
-						'Could not copy to the clipboard. Select and copy the value manually.',
-						'edd-composer'
-					) }
-				</p>
-			) }
+			<p
+				id="edd-composer-guide-description"
+				className="description edd-composer-guide-description"
+			>
+				{ canShareGuide
+					? sprintf(
+							/* translators: %d: Number of published packages. */
+							_n(
+								'Create a customer-ready Markdown guide for %d published package.',
+								'Create a customer-ready Markdown guide for %d published packages.',
+								publishedPackages.length,
+								'edd-composer'
+							),
+							publishedPackages.length
+						)
+					: __(
+							'Publish at least one valid package to create a customer installation guide.',
+							'edd-composer'
+						) }
+			</p>
 
 			<details>
 				<summary>
@@ -83,29 +92,18 @@ const RepositorySummary = ( { repository } ) => {
 				</p>
 				<div className="edd-composer-command">
 					<code>{ repositoryCommand }</code>
-					<Button
-						variant="secondary"
-						onClick={ () =>
-							copy( repositoryCommand, 'repository' )
-						}
-					>
-						{ copied === 'repository'
-							? __( 'Copied', 'edd-composer' )
-							: __( 'Copy', 'edd-composer' ) }
-					</Button>
+					<CopyButton text={ repositoryCommand } variant="secondary">
+						{ __( 'Copy', 'edd-composer' ) }
+					</CopyButton>
 				</div>
 				<div className="edd-composer-command">
 					<code>{ authenticationCommand }</code>
-					<Button
+					<CopyButton
+						text={ authenticationCommand }
 						variant="secondary"
-						onClick={ () =>
-							copy( authenticationCommand, 'authentication' )
-						}
 					>
-						{ copied === 'authentication'
-							? __( 'Copied', 'edd-composer' )
-							: __( 'Copy', 'edd-composer' ) }
-					</Button>
+						{ __( 'Copy', 'edd-composer' ) }
+					</CopyButton>
 				</div>
 				<p className="description">
 					{ sprintf(
@@ -118,6 +116,15 @@ const RepositorySummary = ( { repository } ) => {
 					) }
 				</p>
 			</details>
+
+			{ isGuideOpen && (
+				<InstallationGuideModal
+					repositoryName={ repositoryName }
+					repositoryUrl={ repository.url }
+					products={ publishedPackages }
+					onClose={ () => setIsGuideOpen( false ) }
+				/>
+			) }
 		</section>
 	);
 };

@@ -99,12 +99,59 @@
 		white-space: nowrap;
 	}
 
-	.components-button {
+	> .components-button,
+	.edd-composer-command__actions .components-button {
 		// Override the component's generated content-box rule inside stacked rows.
 		box-sizing: border-box !important;
 		flex-shrink: 0;
 		border-radius: 0 3px 3px 0;
 	}
+}
+
+.edd-composer-command__actions {
+	display: flex;
+	align-items: stretch;
+
+	.components-button {
+		margin-left: -1px;
+		border-radius: 0;
+
+		&:last-child {
+			border-radius: 0 3px 3px 0;
+		}
+	}
+}
+
+.edd-composer-guide-description {
+	margin: 8px 0 0;
+}
+
+.edd-composer-installation-guide {
+	max-width: 820px;
+
+	h3 {
+		margin-top: 24px;
+	}
+
+	pre {
+		overflow-x: auto;
+		padding: 12px;
+		border: 1px solid var(--edd-composer-border, #dcdcde);
+		border-radius: 3px;
+		background: #f6f7f7;
+		white-space: pre;
+	}
+
+	code {
+		font-size: 12px;
+	}
+}
+
+.edd-composer-installation-guide__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 24px;
 }
 
 .edd-composer-repository-settings {
@@ -239,6 +286,34 @@
 		white-space: normal;
 		word-break: break-all;
 	}
+
+	.edd-composer-command--repository {
+		align-items: stretch;
+		flex-direction: column;
+
+		code {
+			border-right: 1px solid var(--edd-composer-border);
+			border-radius: 3px 3px 0 0;
+		}
+	}
+
+	.edd-composer-command__actions {
+		margin-top: -1px;
+
+		.components-button {
+			flex: 1;
+			justify-content: center;
+
+			&:first-child {
+				margin-left: 0;
+				border-radius: 0 0 0 3px;
+			}
+
+			&:last-child {
+				border-radius: 0 0 3px;
+			}
+		}
+	}
 }
 
 @media (max-width: 480px) {
@@ -252,7 +327,7 @@
 			border-radius: 3px 3px 0 0;
 		}
 
-		.components-button {
+		> .components-button {
 			width: 100%;
 			margin-top: -1px;
 			border-radius: 0 0 3px 3px;

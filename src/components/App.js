@@ -194,7 +194,11 @@ const App = () => {
 
 	return (
 		<div className="edd-composer-app">
-			<RepositorySummary repository={ repository } />
+			<RepositorySummary
+				repository={ repository }
+				repositoryName={ savedSettings.repository_name }
+				products={ products }
+			/>
 
 			<section
 				className="edd-composer-card"

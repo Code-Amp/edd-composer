@@ -34,6 +34,7 @@
 		"@wordpress/api-fetch": "7.55.0",
 		"@wordpress/babel-preset-default": "8.55.0",
 		"@wordpress/components": "40.1.0",
+		"@wordpress/compose": "8.8.0",
 		"@wordpress/data": "10.55.0",
 		"@wordpress/dataviews": "10.1.7",
 		"@wordpress/element": "8.7.0",
