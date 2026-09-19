@@ -29,7 +29,9 @@ The default development environment installs the free Easy Digital Downloads plu
 
 ## Test environment
 
-The integration suite requires locally supplied, licensed EDD Pro 3.7.0 and Software Licensing 3.9.7 directories. Extract them at:
+### Local licensed-plugin setup
+
+The integration suite requires locally supplied EDD Pro 3.7.0 and Software Licensing 3.9.7. Extract both official ZIPs directly into the repository's ignored `wp-env/plugins/` directory so the resulting plugin trees are:
 
 ```text
 wp-env/plugins/easy-digital-downloads-pro/
@@ -38,11 +40,7 @@ wp-env/plugins/edd-software-licensing/
 
 Yes, the irony is noted: until EDD itself speaks Composer, these test dependencies take the scenic route via a manual install.
 
-These directories are ignored and must never be committed. See [`wp-env/plugins/README.md`](wp-env/plugins/README.md) for the expected entry files.
-
-Code Amp CI resolves the versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json) from a private dependency catalogue pinned to an exact commit. It authenticates with the read-only `WP_DEPENDENCIES_TOKEN` secret, then verifies each catalogue path, SHA-256 checksum, archive structure, entry file, and WordPress version header before extraction.
-
-Forks do not need access to that catalogue. Their workflows can provide private HTTPS archive URLs through `EDD_PRO_ZIP_URL` and `EDD_SOFTWARE_LICENSING_ZIP_URL`, while local development can continue using the ignored extracted directories above. Fork pull requests never receive Code Amp's secret.
+These directories are ignored and must never be committed. See the [licensed test-plugin setup](wp-env/plugins/README.md) for example extraction commands, required versions, and the exact entry files checked by the test runner. Once those files are present, `pnpm run test` and `pnpm run check` use them without requiring catalogue credentials or archive URLs.
 
 ```sh
 pnpm run test:start
@@ -52,6 +50,17 @@ pnpm run test:destroy
 ```
 
 `pnpm run test` starts and provisions the dedicated environment when necessary, runs the JavaScript and WordPress test suites, checks the live public and protected endpoints, downloads a real EDD-signed ZIP, and installs a package through Composer 2.
+
+### Fork and external CI setup
+
+Code Amp CI resolves the versions declared in [`scripts/test-matrix.json`](scripts/test-matrix.json) from a private dependency catalogue pinned to an exact commit. It authenticates with the read-only `WP_DEPENDENCIES_TOKEN` secret, then verifies each catalogue path, SHA-256 checksum, archive structure, entry file, and WordPress version header before extraction.
+
+Forks do not need access to that catalogue or the `WP_DEPENDENCIES_TOKEN` secret. To run the licensed GitHub Actions jobs in a fork, add these repository Actions secrets under **Settings → Secrets and variables → Actions**:
+
+- `EDD_PRO_ZIP_URL`: a direct HTTPS download URL for the required EDD Pro ZIP.
+- `EDD_SOFTWARE_LICENSING_ZIP_URL`: a direct HTTPS download URL for the required Software Licensing ZIP.
+
+Each URL must return its ZIP to a normal HTTPS GET without a separate authorization header; a private signed URL is suitable. The archive versions must match the selected profile in [`scripts/test-matrix.json`](scripts/test-matrix.json). The workflow automatically prefers these URL overrides, validates the archives and versions, and extracts them into `wp-env/plugins/`. Pull requests originating from external forks do not receive secrets and skip the licensed compatibility jobs.
 
 ## Verification and packaging
 
