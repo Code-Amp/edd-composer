@@ -130,7 +130,7 @@ jobs:
 
       - name: Upload verified plugin ZIP
         if: matrix.profile == 'minimum' && success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: edd-composer
           path: edd-composer.zip
