@@ -4,6 +4,8 @@ EDD Composer Extension turns selected, licence-protected Easy Digital Downloads 
 
 The installable plugin is the [`edd-composer/`](edd-composer/) directory. Development sources, tests, package-manager files, and local environments deliberately remain outside that directory.
 
+See the concise [architecture notes](docs/architecture.md) for the design boundaries and reasons behind them.
+
 ## Requirements
 
 - WordPress 6.9 or newer

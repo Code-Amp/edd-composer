@@ -2,6 +2,8 @@
 
 Thank you for contributing to EDD Composer Extension.
 
+Read the [architecture notes](docs/architecture.md) before changing package publication, authentication, routing, caching, or repository boundaries.
+
 ## Development expectations
 
 - Keep production plugin files inside `edd-composer/`; keep source, tests, and tooling at the repository root.
