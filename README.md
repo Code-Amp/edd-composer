@@ -21,11 +21,12 @@ The automated compatibility matrix verifies the minimum WordPress 6.9/PHP 8.0 en
 ```sh
 pnpm install --frozen-lockfile
 composer install
+pnpm run test:install-plugins minimum
 pnpm run env:start
 pnpm run start
 ```
 
-The default development environment installs the free Easy Digital Downloads plugin and displays the requirements-only screen until Software Licensing is supplied. Copy [`.wp-env.override.example.json`](.wp-env.override.example.json) to the ignored `.wp-env.override.json` and replace its example path to mount a local Software Licensing checkout.
+The development environment mounts EDD Pro and Software Licensing from the same ignored `wp-env/plugins/` directories used by the integration suite. Code Amp developers can populate them with `pnpm run test:install-plugins minimum`; external contributors can install their own copies as described below. EDD Pro is the complete EDD plugin and must not be mounted alongside the free edition.
 
 `pnpm run start` watches the React application and writes generated assets to `edd-composer/assets/`. `pnpm run env:start` manages the ordinary development WordPress environment; the dedicated test environment uses the separate commands below.
 

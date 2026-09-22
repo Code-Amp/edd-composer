@@ -4,7 +4,8 @@
 	"phpVersion": "8.0",
 	"testsEnvironment": false,
 	"plugins": [
-		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.7.0.zip",
+		"./wp-env/plugins/easy-digital-downloads-pro",
+		"./wp-env/plugins/edd-software-licensing",
 		"./edd-composer"
 	],
 	"config": {
