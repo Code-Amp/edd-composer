@@ -28,8 +28,8 @@ Production repository and download URLs must use HTTPS so Composer credentials a
 == Installation ==
 
 1. Install and activate Easy Digital Downloads and EDD Software Licensing.
-2. Upload the `edd-composer` directory to `/wp-content/plugins/`.
-3. Activate EDD Composer Extension through the Plugins screen.
+2. Download `edd-composer.zip` from https://github.com/Code-Amp/edd-composer/releases/latest.
+3. In WordPress, choose Plugins > Add New > Upload Plugin, select the ZIP, and activate EDD Composer Extension.
 4. Open Downloads > Composer and review the requirements.
 
 == Composer Setup ==

@@ -16,6 +16,10 @@ See the concise [architecture notes](docs/architecture.md) for the design bounda
 
 The automated compatibility matrix verifies the minimum WordPress 6.9/PHP 8.0 environment and WordPress 7.0 on PHP 8.4.
 
+## Install the plugin
+
+Download `edd-composer.zip` from the [latest release](https://github.com/Code-Amp/edd-composer/releases/latest). In WordPress, go to **Plugins → Add New → Upload Plugin**, select the ZIP, and activate EDD Composer Extension. Easy Digital Downloads and EDD Software Licensing must be installed separately. Then open **Downloads → Composer** to configure the repository.
+
 ## Install for development
 
 ```sh
@@ -105,6 +109,8 @@ pnpm run check
 `pnpm run check` is the complete CI/release verification entry point. It validates manifests and versions, runs PHP syntax, PHPCS, PHPCompatibility, PHPStan, JavaScript and stylesheet checks, exercises the full test suite, rebuilds committed assets, and validates a clean install of the generated plugin ZIP.
 
 The release archive is `edd-composer.zip` and contains only the top-level `edd-composer/` plugin directory. Generated production assets are committed so the archive does not require Node.js at runtime.
+
+To publish a release, merge the version and generated assets into `main`, then push a matching `vX.Y.Z` tag from that commit. Tag CI reruns the full matrix and publishes its verified plugin ZIP as a GitHub Release only when every job passes. The tag must point to a commit on `main`.
 
 ## Repository layout
 

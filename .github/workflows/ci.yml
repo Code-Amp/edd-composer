@@ -141,3 +141,46 @@ jobs:
         env:
           EDD_COMPOSER_TEST_CONFIG: .wp-env.generated/${{ matrix.profile }}/wp-env.json
         run: pnpm run test:destroy
+
+  release:
+    name: Publish plugin release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [static, verify]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out tagged commit
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Verify release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          if [[ "$GITHUB_REF_NAME" != "v${version}" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package version ${version}."
+            exit 1
+          fi
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD; then
+            echo "::error::The release tag must point to a commit on main."
+            exit 1
+          fi
+
+      - name: Download verified plugin ZIP
+        uses: actions/download-artifact@v8
+        with:
+          name: edd-composer
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" edd-composer.zip \
+            --verify-tag \
+            --latest \
+            --title "EDD Composer Extension $GITHUB_REF_NAME" \
+            --notes "Install the attached edd-composer.zip through WordPress Plugins > Add New > Upload Plugin. Easy Digital Downloads and EDD Software Licensing are required separately."
