@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Finds the newest deliverable direct or expanded bundle order item.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Order_Resolver {
 	/**
 	 * EDD order lookup callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $order_loader;
@@ -26,7 +26,7 @@ final class Order_Resolver {
 	/**
 	 * EDD SL license lookup callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $license_loader;
@@ -34,7 +34,7 @@ final class Order_Resolver {
 	/**
 	 * Creates the order resolver.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param callable|null $order_loader   Callback receiving an EDD order ID.
 	 * @param callable|null $license_loader Callback receiving an EDD SL license ID.
@@ -61,7 +61,7 @@ final class Order_Resolver {
 	 * EDD's `get_items_with_bundles()` then supplies the supported expanded item
 	 * with the target product and price IDs.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license     Target EDD Software Licensing license.
 	 * @param int    $download_id Requested EDD Download ID.
@@ -138,7 +138,7 @@ final class Order_Resolver {
 	/**
 	 * Gets unique payment IDs from a target license and its parent chain.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license Target license.
 	 * @return array<int, int>
@@ -197,7 +197,7 @@ final class Order_Resolver {
 	/**
 	 * Gets a sortable order creation timestamp.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $order EDD order.
 	 * @return int
@@ -217,7 +217,7 @@ final class Order_Resolver {
 	/**
 	 * Gets a license object's stable ID.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license License object.
 	 * @return int

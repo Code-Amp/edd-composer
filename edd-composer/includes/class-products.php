@@ -14,13 +14,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Discovers EDD Downloads and enriches them for the admin application.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Products {
 	/**
 	 * Versioned-file diagnostics.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Versioned_Files
 	 */
 	private $versioned_files;
@@ -28,7 +28,7 @@ final class Products {
 	/**
 	 * Creates the product catalogue service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Versioned_Files $versioned_files Versioned-file diagnostics.
 	 */
@@ -39,7 +39,7 @@ final class Products {
 	/**
 	 * Gets every editable EDD Download with Composer configuration data.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $settings Current plugin settings.
 	 * @return array<int, array<string, mixed>>
@@ -69,7 +69,7 @@ final class Products {
 	/**
 	 * Gets one product's default and saved configuration.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param \WP_Post             $post     Download post.
 	 * @param array<string, mixed> $settings Current plugin settings.
@@ -130,7 +130,7 @@ final class Products {
 	/**
 	 * Gets a human-readable post status label.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $status Post status key.
 	 * @return string

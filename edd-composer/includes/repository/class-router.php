@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Registers and dispatches the public Composer repository endpoints.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Router {
 	/**
 	 * Rewrite schema version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const REWRITE_VERSION = '1';
@@ -26,7 +26,7 @@ final class Router {
 	/**
 	 * Stored rewrite schema option.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const REWRITE_VERSION_OPTION = 'edd_composer_rewrite_version';
@@ -34,7 +34,7 @@ final class Router {
 	/**
 	 * Repository-action query variable.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const ACTION_QUERY_VAR = 'edd_composer_action';
@@ -42,7 +42,7 @@ final class Router {
 	/**
 	 * Download product query variable.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const PRODUCT_QUERY_VAR = 'edd_composer_product';
@@ -50,7 +50,7 @@ final class Router {
 	/**
 	 * Download version query variable.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const VERSION_QUERY_VAR = 'edd_composer_version';
@@ -58,7 +58,7 @@ final class Router {
 	/**
 	 * Package-index service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Package_Index
 	 */
 	private $package_index;
@@ -66,7 +66,7 @@ final class Router {
 	/**
 	 * Response service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Responses
 	 */
 	private $responses;
@@ -74,7 +74,7 @@ final class Router {
 	/**
 	 * Protected-download service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Download
 	 */
 	private $download;
@@ -82,7 +82,7 @@ final class Router {
 	/**
 	 * Creates the repository router.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Package_Index $package_index Package-index service.
 	 * @param Responses     $responses     Response service.
@@ -97,7 +97,7 @@ final class Router {
 	/**
 	 * Registers public routing hooks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -111,7 +111,7 @@ final class Router {
 	/**
 	 * Registers the base, package-index, and protected-download routes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -140,7 +140,7 @@ final class Router {
 	/**
 	 * Gets the filterable repository base URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string
 	 */
@@ -151,7 +151,7 @@ final class Router {
 	/**
 	 * Gets the public packages document URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string
 	 */
@@ -162,7 +162,7 @@ final class Router {
 	/**
 	 * Gets the protected download URL prefix for a package slug.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $package_slug Package slug.
 	 * @return string
@@ -174,7 +174,7 @@ final class Router {
 	/**
 	 * Flushes rewrite rules once when their schema changes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -190,7 +190,7 @@ final class Router {
 	/**
 	 * Dispatches a parsed Composer repository request.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -230,7 +230,7 @@ final class Router {
 				 * metadata. License keys, customer data, and activated site URLs are
 				 * never exposed to the hook.
 				 *
-				 * @since 1.0.0
+				 * @since 0.1.0
 				 *
 				 * @param int    $download_id EDD Download ID.
 				 * @param string $version Canonical Composer version.
@@ -262,7 +262,7 @@ final class Router {
 	/**
 	 * Prevents WordPress from canonicalizing repository endpoint URLs.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string|false $redirect_url  Proposed canonical URL.
 	 * @param string       $requested_url Requested URL.

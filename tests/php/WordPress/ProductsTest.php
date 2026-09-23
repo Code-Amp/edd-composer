@@ -11,13 +11,13 @@ use EDD_Composer\Repository\Versioned_Files;
 /**
  * Verifies product discovery and enrichment.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class ProductsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms catalogue defaults come from the EDD Download.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_catalogue_uses_download_defaults_and_file_versions() {
@@ -61,7 +61,7 @@ final class ProductsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms saved metadata overrides defaults and drafts cannot be enabled.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_catalogue_applies_saved_configuration_and_status_validation() {
@@ -111,7 +111,7 @@ final class ProductsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms products without Software Licensing cannot be published.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_catalogue_requires_software_licensing_for_product() {
@@ -150,7 +150,7 @@ final class ProductsTest extends WP_UnitTestCase {
 	/**
 	 * Finds a product response by Download ID.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<int, array<string, mixed>> $catalogue  Product catalogue.
 	 * @param int                              $product_id Download ID.

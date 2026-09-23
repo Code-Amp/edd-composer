@@ -14,13 +14,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Removes plugin rewrite rules without deleting product settings.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Deactivator {
 	/**
 	 * Runs plugin deactivation tasks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */

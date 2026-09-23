@@ -10,13 +10,13 @@ use EDD_Composer\Licensing\Order_Resolver;
 /**
  * Verifies newest-order selection and exact product/price matching.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the newest deliverable matching item is selected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_resolves_newest_deliverable_item() {
@@ -50,7 +50,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Confirms another variation of the same product cannot satisfy a license.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_requires_the_license_price_for_variable_products() {
@@ -83,7 +83,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a non-deliverable newer item falls back to a valid older order.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_skips_non_deliverable_order_items() {
@@ -115,7 +115,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Confirms bundle children include parent renewal order history.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_resolves_expanded_bundle_item_from_parent_payment() {
@@ -149,7 +149,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Confirms an order must have a valid customer email and target item.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_missing_deliverable_order_context() {
@@ -176,7 +176,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal expanded order item.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int       $product_id Product ID.
 	 * @param int|false $price_id   Price ID.
@@ -208,7 +208,7 @@ final class OrderResolverTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal EDD order exposing expanded bundle items.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int                $id    Order ID.
 	 * @param string             $date  Creation date.

@@ -10,13 +10,13 @@ use EDD_Composer\Dependencies;
 /**
  * Verifies dependency version handling.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class DependenciesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms all supported minimum versions pass the gate.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_minimum_supported_versions_pass() {
@@ -35,7 +35,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a missing Software Licensing extension fails the gate.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_missing_software_licensing_fails() {
@@ -54,7 +54,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms every below-minimum version fails independently.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @dataProvider provide_outdated_dependencies
 	 *
@@ -80,7 +80,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 	/**
 	 * Supplies unsupported dependency versions.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, array<string, string>>
 	 */
@@ -96,7 +96,7 @@ final class DependenciesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the test runtime detects both required EDD plugins.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_environment_detection_uses_loaded_plugins() {

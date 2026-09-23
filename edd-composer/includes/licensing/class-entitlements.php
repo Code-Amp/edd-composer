@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Resolves direct, parent, child, and sibling bundle license access.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Entitlements {
 	/**
 	 * License lookup callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $license_loader;
@@ -26,7 +26,7 @@ final class Entitlements {
 	/**
 	 * Creates the entitlement resolver.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param callable|null $license_loader Callback receiving a license ID.
 	 */
@@ -41,7 +41,7 @@ final class Entitlements {
 	/**
 	 * Resolves and validates the license that grants a target Download.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $credential_license Authenticated license.
 	 * @param int    $download_id        Requested EDD Download ID.
@@ -100,7 +100,7 @@ final class Entitlements {
 	/**
 	 * Returns licenses reachable through the credential's bundle family.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $credential_license Authenticated license.
 	 * @return array<int, object>
@@ -141,7 +141,7 @@ final class Entitlements {
 	/**
 	 * Gets a parent license's child licenses defensively.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license License object.
 	 * @return array<int, object>
@@ -159,7 +159,7 @@ final class Entitlements {
 	/**
 	 * Gets a license object's stable ID.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license License object.
 	 * @return int
@@ -175,7 +175,7 @@ final class Entitlements {
 	/**
 	 * Creates a forbidden entitlement error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $code    Stable error code.
 	 * @param string $message Human-readable message.

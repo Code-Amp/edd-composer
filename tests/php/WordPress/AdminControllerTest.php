@@ -10,13 +10,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies REST permissions, reads, validation, and persistence.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * REST server used by each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var WP_REST_Server
 	 */
 	private $server;
@@ -24,7 +24,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Creates a fresh REST server and registers plugin routes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function set_up() {
@@ -39,7 +39,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Restores settings and current user after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -52,7 +52,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unauthorized users cannot read administration data.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_routes_reject_unauthorized_users() {
@@ -67,7 +67,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms managers can read settings and product discovery responses.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_manager_can_read_settings_and_products() {
@@ -89,7 +89,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a valid settings document is persisted and returned.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_manager_can_save_valid_settings() {
@@ -131,7 +131,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms failed option persistence produces an explicit server error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_failed_settings_persistence_returns_server_error() {
@@ -169,7 +169,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms malformed settings are rejected without changing the option.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_invalid_settings_are_rejected_without_persistence() {
@@ -204,7 +204,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Confirms an invalid product cannot be newly enabled through the REST API.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_product_without_versioned_files_cannot_be_enabled() {
@@ -254,7 +254,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Creates a user with EDD management access.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private function set_manager_user() {
@@ -267,7 +267,7 @@ final class AdminControllerTest extends WP_UnitTestCase {
 	/**
 	 * Creates a published Download with one valid versioned file.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return int
 	 */
 	private function create_download_with_version() {

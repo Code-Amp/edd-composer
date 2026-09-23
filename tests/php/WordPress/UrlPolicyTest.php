@@ -10,13 +10,13 @@ use EDD_Composer\Repository\URL_Policy;
 /**
  * Verifies HTTPS enforcement, origin allowlisting, and proxy rewriting.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Restores URL filters after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -29,7 +29,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Confirms HTTP is rejected unless the explicit development override is used.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_requires_https_without_development_override() {
@@ -43,7 +43,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a filtered external repository remains blocked without allowlisting.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_external_repository_origin_without_allowlist() {
@@ -58,7 +58,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Confirms an explicit HTTPS proxy can advertise a different public path.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_accepts_allowlisted_external_repository_and_proxy() {
@@ -73,7 +73,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Confirms rewriting changes only the signed URL origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rewrites_store_signed_url_without_changing_path_or_query() {
@@ -91,7 +91,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a signer cannot introduce an arbitrary source URL before rewriting.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_external_signed_url_even_with_proxy_configured() {
@@ -105,7 +105,7 @@ final class UrlPolicyTest extends WP_UnitTestCase {
 	/**
 	 * Registers a complete public proxy configuration.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private function configure_proxy_filters() {

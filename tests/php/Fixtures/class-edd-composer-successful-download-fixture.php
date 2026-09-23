@@ -13,13 +13,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Creates and removes the successful protected-download integration fixture.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Temporary option containing fixture resources and the prior settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	private const STATE_OPTION = 'edd_composer_test_successful_download_fixture';
@@ -27,7 +27,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Fixture package version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	private const VERSION = '1.0.0';
@@ -35,7 +35,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Runs the requested fixture operation.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $action Fixture action.
 	 * @throws RuntimeException When the action is invalid or fixture setup fails.
@@ -57,7 +57,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Creates a real Download, order, license, activation, and ZIP file.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @throws RuntimeException When a fixture resource cannot be created.
 	 * @throws Throwable When a fixture API raises another setup error.
 	 * @return void
@@ -248,7 +248,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Removes all fixture resources and restores the original plugin settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private static function cleanup() {
@@ -303,7 +303,7 @@ final class EDD_Composer_Successful_Download_Fixture {
 	/**
 	 * Persists fixture state after each created resource.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $state Fixture state.
 	 * @return void

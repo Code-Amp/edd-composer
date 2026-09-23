@@ -14,13 +14,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Produces consistent JSON and cache headers for repository endpoints.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Responses {
 	/**
 	 * Settings service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Settings
 	 */
 	private $settings;
@@ -28,7 +28,7 @@ final class Responses {
 	/**
 	 * Public and signed-download URL policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var URL_Policy
 	 */
 	private $url_policy;
@@ -36,7 +36,7 @@ final class Responses {
 	/**
 	 * Creates the response service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Settings        $settings   Settings service.
 	 * @param URL_Policy|null $url_policy Optional URL policy.
@@ -49,7 +49,7 @@ final class Responses {
 	/**
 	 * Returns public repository information.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, string>
 	 */
@@ -57,7 +57,7 @@ final class Responses {
 		/**
 		 * Filters the public Composer repository name.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param string $name Repository name.
 		 */
@@ -76,7 +76,7 @@ final class Responses {
 	/**
 	 * Serves repository information as cacheable JSON.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $ttl Public cache lifetime in seconds.
 	 * @return void
@@ -88,7 +88,7 @@ final class Responses {
 	/**
 	 * Serves the Composer packages document as cacheable JSON.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $payload Composer packages document.
 	 * @param int                  $ttl     Public cache lifetime in seconds.
@@ -101,7 +101,7 @@ final class Responses {
 	/**
 	 * Serves a non-cacheable JSON error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $status  HTTP status.
 	 * @param string $code    Stable error code.
@@ -128,7 +128,7 @@ final class Responses {
 	/**
 	 * Serves an HTTP-aware WordPress error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param \WP_Error $error Repository error.
 	 * @return void
@@ -147,7 +147,7 @@ final class Responses {
 	/**
 	 * Redirects to an EDD-signed URL with protected-response headers.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Validated EDD download-handler URL.
 	 * @return void
@@ -172,7 +172,7 @@ final class Responses {
 	/**
 	 * Applies the cache policy shared by protected redirects and errors.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -184,7 +184,7 @@ final class Responses {
 	/**
 	 * Emits and terminates a JSON response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $data          Response document.
 	 * @param int                  $status        HTTP status.

@@ -17,13 +17,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Authorizes a package request and produces a safe EDD-signed redirect URL.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Download {
 	/**
 	 * Settings service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Settings
 	 */
 	private $settings;
@@ -31,7 +31,7 @@ final class Download {
 	/**
 	 * Versioned-file service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Versioned_Files
 	 */
 	private $versioned_files;
@@ -39,7 +39,7 @@ final class Download {
 	/**
 	 * Request authenticator.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Authenticator
 	 */
 	private $authenticator;
@@ -47,7 +47,7 @@ final class Download {
 	/**
 	 * Product-entitlement resolver.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Entitlements
 	 */
 	private $entitlements;
@@ -55,7 +55,7 @@ final class Download {
 	/**
 	 * Deliverable order resolver.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Order_Resolver
 	 */
 	private $order_resolver;
@@ -63,7 +63,7 @@ final class Download {
 	/**
 	 * EDD signed-URL generator callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $url_signer;
@@ -71,7 +71,7 @@ final class Download {
 	/**
 	 * Public and signed-download URL policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var URL_Policy
 	 */
 	private $url_policy;
@@ -79,7 +79,7 @@ final class Download {
 	/**
 	 * Creates the protected-download service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Settings        $settings        Settings service.
 	 * @param Versioned_Files $versioned_files Versioned-file service.
@@ -114,7 +114,7 @@ final class Download {
 	/**
 	 * Prepares one authorized package redirect without emitting a response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string                    $product_slug Requested configured package slug.
 	 * @param string                    $version      Requested Composer version.
@@ -208,7 +208,7 @@ final class Download {
 	/**
 	 * Confirms a signed URL points to the configured WordPress origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Candidate signed URL.
 	 * @return bool
@@ -220,7 +220,7 @@ final class Download {
 	/**
 	 * Resolves an enabled, published Download from its configured package slug.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $product_slug Package slug.
 	 * @return int|\WP_Error
@@ -267,7 +267,7 @@ final class Download {
 	/**
 	 * Gets a stable ID from an EDD row object.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $row EDD row object.
 	 * @return int
@@ -283,7 +283,7 @@ final class Download {
 	/**
 	 * Creates an HTTP-aware repository error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $code    Stable error code.
 	 * @param string $message Human-readable message.

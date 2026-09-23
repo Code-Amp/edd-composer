@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Parses Composer credentials and validates the supplied EDD SL license.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Authenticator {
 	/**
 	 * License lookup callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $license_loader;
@@ -26,7 +26,7 @@ final class Authenticator {
 	/**
 	 * EDD Software Licensing site-normalization callback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $site_cleaner;
@@ -37,7 +37,7 @@ final class Authenticator {
 	 * Optional callbacks keep the credential policy independently testable while
 	 * production defaults use the supported Software Licensing APIs.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param callable|null $license_loader Callback receiving a license key.
 	 * @param callable|null $site_cleaner   Callback receiving a site URL.
@@ -58,7 +58,7 @@ final class Authenticator {
 	/**
 	 * Authenticates an HTTP request.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed>|null $server Server variables, or null for the current request.
 	 * @return array{license: object, site_url: string}|\WP_Error
@@ -101,7 +101,7 @@ final class Authenticator {
 	 * The license key is the username and the activated site URL is the password.
 	 * Bearer and nonstandard authentication headers are unsupported in v1.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $server Server variables.
 	 * @return array{license_key: string, site_url: string}|\WP_Error
@@ -154,7 +154,7 @@ final class Authenticator {
 	/**
 	 * Checks whether a license status may proceed to site-activation checks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license EDD Software Licensing license.
 	 * @return bool
@@ -168,7 +168,7 @@ final class Authenticator {
 	/**
 	 * Reads a standard Authorization header without mutating its encoded value.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $server Server variables.
 	 * @return string
@@ -186,7 +186,7 @@ final class Authenticator {
 	/**
 	 * Validates and normalizes the required activated site URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $site_url Supplied site URL.
 	 * @return string|\WP_Error
@@ -219,7 +219,7 @@ final class Authenticator {
 	/**
 	 * Gets a license object's stable ID across legacy and current properties.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $license License object.
 	 * @return int
@@ -235,7 +235,7 @@ final class Authenticator {
 	/**
 	 * Detects unsafe control characters in credentials.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $value Credential value.
 	 * @return bool
@@ -247,7 +247,7 @@ final class Authenticator {
 	/**
 	 * Creates the generic missing-credentials response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return \WP_Error
 	 */
@@ -262,7 +262,7 @@ final class Authenticator {
 	/**
 	 * Creates the required-site error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return \WP_Error
 	 */
@@ -277,7 +277,7 @@ final class Authenticator {
 	/**
 	 * Creates an HTTP-aware authentication error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $code    Stable error code.
 	 * @param string $message Human-readable message.

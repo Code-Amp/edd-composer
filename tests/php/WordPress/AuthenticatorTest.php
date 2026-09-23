@@ -10,13 +10,13 @@ use EDD_Composer\Licensing\Authenticator;
 /**
  * Verifies credential parsing, normalization, and license status checks.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Confirms standard PHP Basic variables are accepted and normalized.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_authenticates_php_basic_credentials() {
@@ -48,7 +48,7 @@ final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the fallback header preserves colons inside the site URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_parses_strict_authorization_header() {
@@ -67,7 +67,7 @@ final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Confirms Bearer, malformed Base64, and missing passwords are rejected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_unsupported_or_incomplete_credentials() {
@@ -85,7 +85,7 @@ final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unsupported URL schemes and embedded credentials are rejected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_unsafe_site_urls() {
@@ -111,7 +111,7 @@ final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unknown keys and blocked statuses receive distinct HTTP outcomes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_validates_primary_license_status() {
@@ -135,7 +135,7 @@ final class AuthenticatorTest extends WP_UnitTestCase {
 	/**
 	 * Gets an HTTP status from a WordPress error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $error Candidate WordPress error.
 	 * @return int

@@ -13,13 +13,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies package metadata, filtering, and cache invalidation.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Restores options, transients, and filters after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -35,7 +35,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Confirms enabled valid Downloads produce the proven Composer shape.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_builds_enabled_package_versions_newest_first() {
@@ -74,7 +74,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Confirms disabled and invalid Downloads are omitted from a valid document.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_empty_repository_uses_a_json_object() {
@@ -118,7 +118,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Confirms extension filters can adapt generic generated metadata.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_applies_product_and_version_entry_filters() {
@@ -156,7 +156,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Confirms settings and file mutations invalidate generated metadata.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_relevant_mutations_invalidate_the_transient() {
@@ -208,7 +208,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Confirms plugin upgrades invalidate once and record their version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_plugin_version_change_invalidates_cache_once() {
@@ -225,7 +225,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Creates the package-index service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return Package_Index
 	 */
 	private function index() {
@@ -235,7 +235,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Creates a published EDD Download with file metadata.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string                           $title Download title.
 	 * @param array<int, array<string, mixed>> $files Download files.
@@ -259,7 +259,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Persists one enabled package configuration.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $download_id Download ID.
 	 * @param string $slug        Package slug.
@@ -279,7 +279,7 @@ final class PackageIndexTest extends WP_UnitTestCase {
 	/**
 	 * Persists one or more product configurations.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, array<string, mixed>> $products Product settings keyed by Download ID.
 	 * @return void

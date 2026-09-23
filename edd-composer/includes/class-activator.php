@@ -15,13 +15,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Installs rewrite rules when supported dependencies are active.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Activator {
 	/**
 	 * Runs plugin activation tasks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */

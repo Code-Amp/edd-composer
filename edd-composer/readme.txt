@@ -4,7 +4,7 @@ Tags: composer, easy digital downloads, software licensing
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Expose eligible Easy Digital Downloads products as authenticated Composer packag
 
 EDD Composer Extension adds a Composer package repository to an Easy Digital Downloads store. Store administrators choose which licensed downloads are available and customers authenticate downloads with an EDD Software Licensing key and its activated site URL.
 
-Version 1 requires:
+Version 0.1.0 requires:
 
 * WordPress 6.9 or newer.
 * PHP 8.0 or newer.
@@ -76,6 +76,6 @@ No. The public index contains package metadata. Protected downloads require vali
 
 == Changelog ==
 
-= 1.0.0 =
+= 0.1.0 =
 
 * Initial release.

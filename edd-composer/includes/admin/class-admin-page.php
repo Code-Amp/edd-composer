@@ -15,13 +15,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Registers the plugin screen and dependency notice.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Admin_Page {
 	/**
 	 * Admin script handle.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const SCRIPT_HANDLE = 'edd-composer-admin';
@@ -29,7 +29,7 @@ final class Admin_Page {
 	/**
 	 * Admin stylesheet handle.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const STYLE_HANDLE = 'edd-composer-admin';
@@ -37,7 +37,7 @@ final class Admin_Page {
 	/**
 	 * Admin page slug.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const PAGE_SLUG = 'edd-composer';
@@ -45,7 +45,7 @@ final class Admin_Page {
 	/**
 	 * Runtime dependencies.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Dependencies
 	 */
 	private $dependencies;
@@ -53,7 +53,7 @@ final class Admin_Page {
 	/**
 	 * Public repository URL policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var URL_Policy
 	 */
 	private $url_policy;
@@ -61,7 +61,7 @@ final class Admin_Page {
 	/**
 	 * Registered WordPress admin page hook.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string|false|null
 	 */
 	private $page_hook;
@@ -69,7 +69,7 @@ final class Admin_Page {
 	/**
 	 * Creates the admin page service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Dependencies    $dependencies Runtime dependency evaluator.
 	 * @param URL_Policy|null $url_policy   Optional URL policy.
@@ -82,7 +82,7 @@ final class Admin_Page {
 	/**
 	 * Registers WordPress admin hooks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -100,7 +100,7 @@ final class Admin_Page {
 	/**
 	 * Registers the screen beneath Downloads or the Settings fallback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -133,7 +133,7 @@ final class Admin_Page {
 	/**
 	 * Enqueues the admin application only on the plugin screen.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $hook_suffix Current WordPress admin page hook.
 	 * @return void
@@ -192,7 +192,7 @@ final class Admin_Page {
 	/**
 	 * Gets the capability required to manage the plugin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string
 	 */
@@ -204,7 +204,7 @@ final class Admin_Page {
 		/**
 		 * Filters the capability required to manage EDD Composer Extension.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param string $capability Management capability.
 		 */
@@ -214,7 +214,7 @@ final class Admin_Page {
 	/**
 	 * Renders the plugin admin screen.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -238,7 +238,7 @@ final class Admin_Page {
 	/**
 	 * Renders an actionable missing-dependency notice.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -268,7 +268,7 @@ final class Admin_Page {
 	/**
 	 * Renders the dependency status table.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -317,7 +317,7 @@ final class Admin_Page {
 	/**
 	 * Reports whether dependencies and public transport configuration are ready.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return bool
 	 */

@@ -8,13 +8,13 @@
 /**
  * Verifies the pinned test environment.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class EnvironmentTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the supported WordPress, PHP, EDD, and plugin fixtures load.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_pinned_environment_is_loaded() {
@@ -34,7 +34,7 @@ final class EnvironmentTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the required EDD extensions pass the dependency gate.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_required_extensions_are_ready() {

@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Validates public URLs and narrowly supports explicitly trusted proxy origins.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class URL_Policy {
 	/**
 	 * Test override for the local HTTP allowance.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var bool|null
 	 */
 	private $allow_insecure_http;
@@ -26,7 +26,7 @@ final class URL_Policy {
 	/**
 	 * Creates the URL policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param bool|null $allow_insecure_http Optional test override.
 	 */
@@ -40,7 +40,7 @@ final class URL_Policy {
 	 * Invalid filtered values fall back to the safe default. The runtime gate
 	 * remains closed until the invalid configuration is corrected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string
 	 */
@@ -58,7 +58,7 @@ final class URL_Policy {
 	/**
 	 * Gets the configured download proxy origin, when valid.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string Empty when direct signed redirects are configured.
 	 */
@@ -75,7 +75,7 @@ final class URL_Policy {
 	/**
 	 * Reports whether public URL configuration is safe to expose.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return bool
 	 */
@@ -86,7 +86,7 @@ final class URL_Policy {
 	/**
 	 * Returns the first actionable public URL configuration error.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return true|\WP_Error
 	 */
@@ -117,7 +117,7 @@ final class URL_Policy {
 	/**
 	 * Gets a requirements-table row for the URL policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array{label: string, minimum: string, current: string, met: bool}
 	 */
@@ -138,7 +138,7 @@ final class URL_Policy {
 	 * Only the scheme, host, and port are replaced. The EDD handler path and
 	 * signature query string remain byte-for-byte unchanged.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url EDD-signed URL.
 	 * @return string|\WP_Error
@@ -174,7 +174,7 @@ final class URL_Policy {
 	/**
 	 * Confirms a URL belongs to the configured WordPress home or site origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Candidate URL.
 	 * @return bool
@@ -198,7 +198,7 @@ final class URL_Policy {
 	/**
 	 * Temporarily permits the configured proxy host for wp_safe_redirect().
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<int, string> $hosts Existing allowed redirect hosts.
 	 * @return array<int, string>
@@ -217,7 +217,7 @@ final class URL_Policy {
 	/**
 	 * Reads the repository URL filter without normalizing an invalid value.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $fallback Safe fallback URL.
 	 * @return mixed
@@ -229,7 +229,7 @@ final class URL_Policy {
 		 * External origins must also be added through the
 		 * `edd_composer_allowed_repository_origins` filter.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param string $url Default repository URL.
 		 */
@@ -239,7 +239,7 @@ final class URL_Policy {
 	/**
 	 * Reads the optional download proxy filter.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return mixed
 	 */
@@ -250,7 +250,7 @@ final class URL_Policy {
 		 * Return an origin only, such as `https://downloads.example.com`. The
 		 * origin must also be explicitly allowlisted.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param string $origin Empty for direct EDD-signed redirects.
 		 */
@@ -260,7 +260,7 @@ final class URL_Policy {
 	/**
 	 * Validates the public repository URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $url Candidate URL.
 	 * @return true|\WP_Error
@@ -293,7 +293,7 @@ final class URL_Policy {
 	/**
 	 * Validates the optional signed-download proxy origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $origin Candidate origin.
 	 * @return true|\WP_Error
@@ -326,7 +326,7 @@ final class URL_Policy {
 	/**
 	 * Checks a URL's syntax and optional origin-only constraint.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $url         Candidate URL.
 	 * @param bool  $origin_only Whether the path must be empty or `/`.
@@ -354,7 +354,7 @@ final class URL_Policy {
 	/**
 	 * Checks an origin against the explicit public repository allowlist.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Candidate URL.
 	 * @return bool
@@ -365,7 +365,7 @@ final class URL_Policy {
 		/**
 		 * Filters origins trusted for generated repository and redirect URLs.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param array<int, string> $origins WordPress home and site origins.
 		 */
@@ -388,7 +388,7 @@ final class URL_Policy {
 	/**
 	 * Normalizes a URL to a scheme, host, and effective port tuple.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $url URL to inspect.
 	 * @return string|null
@@ -420,7 +420,7 @@ final class URL_Policy {
 	/**
 	 * Reports whether an explicit local-development HTTP allowance is enabled.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return bool
 	 */
@@ -437,7 +437,7 @@ final class URL_Policy {
 	/**
 	 * Creates the generic signed-download failure used at the public boundary.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return \WP_Error
 	 */

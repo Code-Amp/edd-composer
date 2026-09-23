@@ -1,6 +1,6 @@
 {
 	"name": "edd-composer",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"packageManager": "pnpm@12.4.2",
 	"private": true,
 	"description": "Expose eligible Easy Digital Downloads products as authenticated Composer packages.",

@@ -12,13 +12,13 @@ use EDD_Composer\Repository\URL_Policy;
 /**
  * Verifies administration access decisions.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Admin page instances that registered hooks during a test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var array<int, Admin_Page>
 	 */
 	private $hooked_pages = array();
@@ -26,7 +26,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Restores hooks and registered assets changed by each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -49,7 +49,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms EDD stores use its settings-management capability.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_edd_capability_is_used_when_edd_is_present() {
@@ -61,7 +61,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the requirements fallback remains accessible without EDD.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_wordpress_capability_is_used_when_edd_is_missing() {
@@ -73,7 +73,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms stores can customize the management capability.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_edd_capability_can_be_filtered() {
@@ -89,7 +89,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the capability filter does not change the no-EDD fallback.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_capability_filter_is_not_applied_when_edd_is_missing() {
@@ -105,7 +105,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the full dependency gate registers assets but no warning notice.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_ready_dependencies_register_menu_and_asset_hooks() {
@@ -119,7 +119,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms failed dependencies register the notice but never asset loading.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_failed_dependencies_register_menu_and_notice_hooks() {
@@ -133,7 +133,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unsafe public transport uses the same requirements-only pathway.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_insecure_transport_registers_notice_instead_of_assets() {
@@ -148,7 +148,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the requirements page explains a failed transport policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_insecure_transport_is_shown_in_requirements_table() {
@@ -167,7 +167,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the page is placed below Downloads when EDD is installed.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_menu_is_registered_below_downloads_when_edd_is_present() {
@@ -182,7 +182,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the requirements page falls back below Settings without EDD.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_menu_is_registered_below_settings_when_edd_is_missing() {
@@ -197,7 +197,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms ready stores receive only the React application mount point.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_ready_page_renders_application_mount_point() {
@@ -216,7 +216,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms failed stores receive statuses and no application mount point.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_failed_page_renders_requirements_only() {
@@ -237,7 +237,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unauthorized users cannot render the management screen.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_page_rejects_unauthorized_users() {
@@ -253,7 +253,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms authorized managers see a notice linked to the Downloads page.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_dependency_notice_links_to_downloads_when_edd_is_present() {
@@ -272,7 +272,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms authorized administrators see the Settings fallback notice link.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_dependency_notice_links_to_settings_when_edd_is_missing() {
@@ -289,7 +289,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unauthorized users never receive the dependency notice.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_dependency_notice_is_suppressed_for_unauthorized_users() {
@@ -306,7 +306,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms generated asset metadata is used on the plugin screen.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_assets_are_enqueued_on_plugin_screen() {
@@ -338,7 +338,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the application bundle is absent from unrelated admin screens.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_assets_are_not_enqueued_on_other_admin_screens() {
@@ -356,7 +356,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a failed gate cannot enqueue the application when called directly.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_assets_are_not_enqueued_when_dependencies_fail() {
@@ -373,7 +373,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Supplies a custom management capability.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return string
 	 */
 	public function filter_management_capability() {
@@ -383,7 +383,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Registers a page instance's WordPress hooks for an assertion.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Dependencies $dependencies Runtime dependency evaluator.
 	 * @return Admin_Page
@@ -399,7 +399,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Creates a user who can manage both menu variants.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private function set_manager_user() {
@@ -412,7 +412,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the expected submenu entry exists.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $parent_slug Parent menu slug.
 	 * @param string $capability  Expected management capability.
@@ -437,7 +437,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Creates a fully-supported dependency set.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return Dependencies
 	 */
 	private function ready_dependencies() {
@@ -454,7 +454,7 @@ final class AdminPageTest extends WP_UnitTestCase {
 	/**
 	 * Creates an otherwise-supported dependency set.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string|null $edd_version Detected EDD version.
 	 * @return Dependencies

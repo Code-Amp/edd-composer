@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       EDD Composer Extension
  * Description:       Expose eligible Easy Digital Downloads products as authenticated Composer packages.
- * Version:           1.0.0
+ * Version:           0.1.0
  * Requires at least: 6.9
  * Requires PHP:      8.0
  * Text Domain:       edd-composer
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'EDD_COMPOSER_VERSION', '1.0.0' );
+define( 'EDD_COMPOSER_VERSION', '0.1.0' );
 define( 'EDD_COMPOSER_FILE', __FILE__ );
 define( 'EDD_COMPOSER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EDD_COMPOSER_URL', plugin_dir_url( __FILE__ ) );

@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Validates and normalizes versioned EDD download files.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Versioned_Files {
 	/**
 	 * Strict SemVer 2.0.0 pattern with one optional lowercase v prefix.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	private const VERSION_PATTERN = '/^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/';
@@ -26,7 +26,7 @@ final class Versioned_Files {
 	/**
 	 * Returns the canonical Composer version, or null when invalid.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $version Candidate version.
 	 * @return string|null
@@ -48,7 +48,7 @@ final class Versioned_Files {
 	/**
 	 * Analyzes the Composer-published files attached to a Download.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $download_id EDD Download ID.
 	 * @return array{valid: bool, versions: array<int, string>, count: int, messages: array<int, string>}
@@ -78,7 +78,7 @@ final class Versioned_Files {
 	 * Invalid products, duplicate versions, and price-specific files are never
 	 * returned, keeping download resolution consistent with package discovery.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $download_id Download ID.
 	 * @param string $version     Canonical Composer version.
@@ -103,7 +103,7 @@ final class Versioned_Files {
 	/**
 	 * Inspects raw EDD file rows once for both publication and download lookup.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $download_id Download ID.
 	 * @return array{files: array<string, array{filekey: int|string, file: array<string, mixed>}>, messages: array<int, string>}

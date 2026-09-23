@@ -16,13 +16,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies request-to-signed-URL authorization behavior.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Restores settings after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -35,7 +35,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the complete direct-license flow signs the exact version and price.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_prepares_same_origin_signed_download() {
@@ -76,7 +76,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the supported EDD and Software Licensing APIs work end to end.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_prepares_real_edd_signed_url_for_activated_license() {
@@ -185,7 +185,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms generated URLs cannot leave the configured WordPress origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_external_signed_url() {
@@ -204,7 +204,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the authorized flow can redirect through an explicit proxy origin.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rewrites_signed_download_to_allowlisted_proxy_origin() {
@@ -243,7 +243,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms authentication occurs before protected package discovery.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_requires_authentication_before_product_lookup() {
@@ -258,7 +258,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Confirms malformed versions and disabled products never reach signing.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_invalid_version_and_disabled_product() {
@@ -290,7 +290,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Creates a published, enabled Download with one versioned file.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return int
 	 */
@@ -339,7 +339,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Creates a fully wired download service with controlled external APIs.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object|false $license    License lookup result.
 	 * @param object|false $order      Order lookup result.
@@ -360,7 +360,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal direct-product license.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $download_id Download ID.
 	 * @return object
@@ -395,7 +395,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal deliverable target order item.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $download_id Download ID.
 	 * @return object
@@ -422,7 +422,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal EDD order exposing the target item.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param object $item Target order item.
 	 * @return object
@@ -451,7 +451,7 @@ final class DownloadTest extends WP_UnitTestCase {
 	/**
 	 * Returns valid HTTP Basic server variables.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, string>
 	 */

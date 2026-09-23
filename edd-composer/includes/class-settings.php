@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Owns the versioned EDD Composer settings option.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Settings {
 	/**
 	 * Settings option name.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const OPTION_NAME = 'edd_composer_settings';
@@ -26,7 +26,7 @@ final class Settings {
 	/**
 	 * Public package-index transient name.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const PACKAGE_INDEX_TRANSIENT = 'edd_composer_package_index';
@@ -34,7 +34,7 @@ final class Settings {
 	/**
 	 * Current settings schema version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var int
 	 */
 	public const SCHEMA_VERSION = 1;
@@ -42,7 +42,7 @@ final class Settings {
 	/**
 	 * Composer vendor segment pattern.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	private const VENDOR_PATTERN = '/^[a-z0-9]([_.-]?[a-z0-9]+)*$/';
@@ -50,7 +50,7 @@ final class Settings {
 	/**
 	 * Composer package segment pattern.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	private const PACKAGE_PATTERN = '/^[a-z0-9](([_.]|-{1,2})?[a-z0-9]+)*$/';
@@ -58,7 +58,7 @@ final class Settings {
 	/**
 	 * Maximum public repository-name length.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var int
 	 */
 	private const REPOSITORY_NAME_MAX_LENGTH = 100;
@@ -66,7 +66,7 @@ final class Settings {
 	/**
 	 * Registers settings with WordPress.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -79,7 +79,7 @@ final class Settings {
 	/**
 	 * Registers the plugin option and its REST-independent schema.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -99,7 +99,7 @@ final class Settings {
 	/**
 	 * Gets normalized saved settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -112,7 +112,7 @@ final class Settings {
 	/**
 	 * Gets default settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array{schema_version: int, repository_name: string, vendor: string, products: array<string, array<string, mixed>>}
 	 */
@@ -128,7 +128,7 @@ final class Settings {
 	/**
 	 * Saves settings that have already passed validation.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $settings Validated settings.
 	 * @return bool
@@ -142,7 +142,7 @@ final class Settings {
 	/**
 	 * Removes a Download from settings immediately before permanent deletion.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int      $post_id Download ID.
 	 * @param \WP_Post $post    Post being deleted.
@@ -159,7 +159,7 @@ final class Settings {
 	/**
 	 * Repairs settings left behind when a Download was deleted while inactive.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -181,7 +181,7 @@ final class Settings {
 	/**
 	 * Sanitizes direct option writes without allowing invalid data to replace settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $value Candidate option value.
 	 * @return array<string, mixed>
@@ -205,7 +205,7 @@ final class Settings {
 	/**
 	 * Validates and sanitizes a complete settings payload.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $value Candidate settings payload.
 	 * @return array<string, mixed>|\WP_Error
@@ -307,7 +307,7 @@ final class Settings {
 	/**
 	 * Validates one Composer package-name segment without rewriting it.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param mixed $package_slug Candidate package slug.
 	 * @return bool
@@ -319,7 +319,7 @@ final class Settings {
 	/**
 	 * Performs conservative validation without adding a Composer runtime dependency.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $constraint PHP version constraint.
 	 * @return bool
@@ -334,7 +334,7 @@ final class Settings {
 	/**
 	 * Removes one configured product while preserving the remaining document.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $product_id EDD Download ID.
 	 * @return void
@@ -354,7 +354,7 @@ final class Settings {
 	/**
 	 * Counts Unicode code points consistently with JavaScript's Array.from().
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $value Text to measure.
 	 * @return int

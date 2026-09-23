@@ -10,13 +10,13 @@ use EDD_Composer\Repository\Versioned_Files;
 /**
  * Verifies strict SemVer and file publication rules.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms supported SemVer forms are canonicalized consistently.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @dataProvider provide_valid_versions
 	 *
@@ -33,7 +33,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Supplies supported version strings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return array<string, array<string, string>>
 	 */
 	public function provide_valid_versions() {
@@ -48,7 +48,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms malformed versions are rejected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @dataProvider provide_invalid_versions
 	 *
@@ -64,7 +64,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Supplies rejected version values.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return array<string, array<int, mixed>>
 	 */
 	public function provide_invalid_versions() {
@@ -81,7 +81,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms valid versions are sorted newest-first.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_analyzes_and_sorts_versioned_files() {
@@ -110,7 +110,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms versions that canonicalize to the same key are rejected.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_detects_duplicate_canonical_versions() {
@@ -136,7 +136,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms duplicate detection is independent of file ordering and pricing.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_detects_duplicate_after_an_invalid_price_assignment() {
@@ -165,7 +165,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a version cannot publish without an actual EDD file.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_version_without_a_download_file() {
@@ -188,7 +188,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms protected lookup uses the same canonical version policy.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_finds_exact_canonical_versioned_file() {
@@ -212,7 +212,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms duplicate metadata blocks protected lookup as well as publication.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_find_rejects_product_with_duplicate_versions() {
@@ -235,7 +235,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Confirms variable-price files must apply to every price variation.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_price_specific_versioned_files() {
@@ -259,7 +259,7 @@ final class VersionedFilesTest extends WP_UnitTestCase {
 	/**
 	 * Creates a published EDD Download with file metadata.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<int, array<string, mixed>> $files EDD file data.
 	 * @return int

@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Evaluates the shared minimum-version gate.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Dependencies {
 	/**
 	 * Minimum supported WordPress version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const MINIMUM_WORDPRESS_VERSION = '6.9';
@@ -26,7 +26,7 @@ final class Dependencies {
 	/**
 	 * Minimum supported PHP version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const MINIMUM_PHP_VERSION = '8.0';
@@ -34,7 +34,7 @@ final class Dependencies {
 	/**
 	 * Minimum supported Easy Digital Downloads version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const MINIMUM_EDD_VERSION = '3.7.0';
@@ -42,7 +42,7 @@ final class Dependencies {
 	/**
 	 * Minimum supported Software Licensing version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const MINIMUM_SOFTWARE_LICENSING_VERSION = '3.9.7';
@@ -52,7 +52,7 @@ final class Dependencies {
 	 *
 	 * A null value represents a missing dependency.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var array<string, string|null>
 	 */
 	private $versions;
@@ -60,7 +60,7 @@ final class Dependencies {
 	/**
 	 * Creates a dependency evaluator from explicit versions.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, string|null> $versions Detected dependency versions.
 	 */
@@ -79,7 +79,7 @@ final class Dependencies {
 	/**
 	 * Creates an evaluator using the current WordPress runtime.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return self
 	 */
@@ -99,7 +99,7 @@ final class Dependencies {
 	/**
 	 * Gets the dependency requirements and their current status.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, array<string, string|bool|null>> Requirements keyed by identifier.
 	 */
@@ -138,7 +138,7 @@ final class Dependencies {
 	/**
 	 * Determines whether every runtime requirement is met.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return bool
 	 */
@@ -160,7 +160,7 @@ final class Dependencies {
 	 * The dependency gate runs during plugins_loaded, before just-in-time text
 	 * domain loading is safe. UI labels are added later by get_requirements().
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, string>
 	 */
@@ -179,7 +179,7 @@ final class Dependencies {
 	 * This check is intentionally independent of its supported version so the
 	 * requirements page can remain below the Downloads menu when EDD is old.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return bool
 	 */
@@ -190,7 +190,7 @@ final class Dependencies {
 	/**
 	 * Detects the active EDD Software Licensing version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string|null
 	 */
@@ -213,7 +213,7 @@ final class Dependencies {
 		 * This is primarily a compatibility escape hatch for extension builds
 		 * that expose the public API but omit the usual version metadata.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param string|null $version Detected version, or null when unavailable.
 		 */
@@ -225,7 +225,7 @@ final class Dependencies {
 	/**
 	 * Reads the extension version from the plugin that defines its public API.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return string|null
 	 */

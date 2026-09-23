@@ -6,7 +6,7 @@
  */
 
 if ( ! defined( 'EDD_COMPOSER_VERSION' ) ) {
-	define( 'EDD_COMPOSER_VERSION', '1.0.0' );
+	define( 'EDD_COMPOSER_VERSION', '0.1.0' );
 }
 
 if ( ! defined( 'EDD_COMPOSER_FILE' ) ) {

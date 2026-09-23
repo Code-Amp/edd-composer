@@ -13,13 +13,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies activation and deactivation manage only rewrite-owned state.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class LifecycleTest extends WP_UnitTestCase {
 	/**
 	 * Restores plugin-owned options after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -31,7 +31,7 @@ final class LifecycleTest extends WP_UnitTestCase {
 	/**
 	 * Confirms supported activation installs and versions rewrite rules.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_activation_installs_repository_rewrite_rules() {
@@ -48,7 +48,7 @@ final class LifecycleTest extends WP_UnitTestCase {
 	/**
 	 * Confirms deactivation removes rewrites but preserves product settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_deactivation_removes_rewrites_without_deleting_settings() {

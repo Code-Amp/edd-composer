@@ -16,13 +16,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Exposes settings and EDD product discovery to the admin application.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * REST namespace.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	protected $namespace = 'edd-composer/v1';
@@ -30,7 +30,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Settings service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Settings
 	 */
 	private $settings;
@@ -38,7 +38,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Product catalogue service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Products
 	 */
 	private $products;
@@ -46,7 +46,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Resolves the current management capability.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var callable
 	 */
 	private $capability;
@@ -54,7 +54,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Creates the administration REST controller.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Settings $settings   Settings service.
 	 * @param Products $products   Product catalogue service.
@@ -69,7 +69,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Registers the REST initialization hook.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -80,7 +80,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Registers settings and product catalogue endpoints.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -120,7 +120,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Checks the shared management capability.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return true|\WP_Error
 	 */
@@ -141,7 +141,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Returns the current settings and repository summary.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return \WP_REST_Response
 	 */
@@ -160,7 +160,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Returns the enriched EDD product catalogue.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return \WP_REST_Response
 	 */
@@ -175,7 +175,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Validates and persists a complete settings payload.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param \WP_REST_Request $request REST request.
 	 * @return \WP_REST_Response|\WP_Error
@@ -234,7 +234,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Gets the REST schema for the settings response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -290,7 +290,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Gets the REST schema for the product catalogue response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -360,7 +360,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Gets the schema shared by each persisted product configuration.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -385,7 +385,7 @@ final class Admin_Controller extends \WP_REST_Controller {
 	/**
 	 * Builds the settings response and its non-sensitive repository summary.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed>                  $settings  Current settings.
 	 * @param array<int, array<string, mixed>>|null $catalogue Optional prebuilt catalogue.

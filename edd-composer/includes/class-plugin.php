@@ -25,13 +25,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Coordinates plugin startup and the dependency gate.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Plugin {
 	/**
 	 * Singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var self|null
 	 */
 	private static $instance;
@@ -39,7 +39,7 @@ final class Plugin {
 	/**
 	 * Runtime dependency evaluator.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Dependencies|null
 	 */
 	private $dependencies;
@@ -47,7 +47,7 @@ final class Plugin {
 	/**
 	 * Gets the singleton plugin instance.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return self
 	 */
@@ -62,7 +62,7 @@ final class Plugin {
 	/**
 	 * Registers startup hooks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -73,7 +73,7 @@ final class Plugin {
 	/**
 	 * Boots the requirements experience and conditionally enables features.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -118,7 +118,7 @@ final class Plugin {
 		 *
 		 * Feature services must be registered from this gated action.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param Plugin $plugin Main plugin instance.
 		 */
@@ -128,7 +128,7 @@ final class Plugin {
 	/**
 	 * Gets the evaluated runtime dependencies after startup.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return Dependencies|null
 	 */
@@ -139,7 +139,7 @@ final class Plugin {
 	/**
 	 * Prevents direct construction.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 */
 	private function __construct() {}
 }

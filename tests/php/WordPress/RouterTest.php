@@ -19,13 +19,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies rewrite registration, URLs, and public information.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Restores routing options and filters after each test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -41,7 +41,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms all planned v1 endpoint patterns are registered.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_registers_repository_rewrite_rules_and_query_vars() {
@@ -60,7 +60,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms generated URLs use the current WordPress origin and filters.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_generates_same_origin_repository_urls() {
@@ -84,7 +84,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms canonical redirects are disabled only within the repository path.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_prevents_repository_canonical_redirects() {
@@ -105,7 +105,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms proxy-forwarded internal routes remain exempt from canonical redirects.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_prevents_canonical_redirects_for_external_repository_paths() {
@@ -139,7 +139,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms rewrite schemas flush once and record their version.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_records_rewrite_schema_after_flush() {
@@ -151,7 +151,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the landing document is generic and points at packages.json.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_repository_information_uses_the_configured_title() {
@@ -180,7 +180,7 @@ final class RouterTest extends WP_UnitTestCase {
 	/**
 	 * Creates an isolated router service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return Router
 	 */
 	private function router() {

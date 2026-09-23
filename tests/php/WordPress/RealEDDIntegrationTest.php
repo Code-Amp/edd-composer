@@ -15,13 +15,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies real database models and supported EDD/Software Licensing APIs.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * IDs created by a test, grouped for safe cleanup.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var array<string, array<int, int>>
 	 */
 	private $resources = array();
@@ -29,7 +29,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Creates isolated resource lists and repository settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function set_up() {
@@ -55,7 +55,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Removes all real-plugin rows made by the current test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -87,7 +87,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms parent and child credentials traverse a real bundle family.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_bundle_child_and_sibling_entitlements() {
@@ -114,7 +114,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms all-price files and exact price/order selection use real models.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_variable_product_uses_exact_historical_price_context() {
@@ -147,7 +147,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms revoked and expired submitted credentials cannot proceed.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_revoked_and_expired_credentials_are_rejected() {
@@ -167,7 +167,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unavailable target licences block valid parent credentials.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_unavailable_bundle_target_is_rejected() {
@@ -187,7 +187,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms activation, relationship, publication, and order failures stay closed.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_negative_authorization_paths_fail_closed() {
@@ -217,7 +217,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Confirms invalid versions never call the EDD URL signer.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_real_invalid_version_never_reaches_signer() {
@@ -240,7 +240,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Creates a configured EDD Download.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $slug     Package slug.
 	 * @param bool   $enabled  Whether Composer publication is enabled.
@@ -302,7 +302,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Creates a complete EDD order and product item.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int       $download_id Product ID.
 	 * @param int|false $price_id   Optional variation ID.
@@ -349,7 +349,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Creates a real EDD Software Licensing row and optional activation.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int       $download_id Product ID.
 	 * @param int       $order_id    Order ID.
@@ -403,7 +403,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Creates the production download service with an optional observed signer.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param callable|null $signer URL signer.
 	 * @return Download
@@ -422,7 +422,7 @@ final class RealEDDIntegrationTest extends WP_UnitTestCase {
 	/**
 	 * Builds HTTP Basic server values for the test site.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $license_key Licence key.
 	 * @return array<string, string>

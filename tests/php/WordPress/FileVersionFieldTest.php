@@ -10,13 +10,13 @@ use EDD_Composer\Admin\File_Version_Field;
 /**
  * Verifies the native EDD file-row extension.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class FileVersionFieldTest extends WP_UnitTestCase {
 	/**
 	 * Restores registered styles and the current admin screen.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -29,7 +29,7 @@ final class FileVersionFieldTest extends WP_UnitTestCase {
 	/**
 	 * Confirms saved version metadata is restored into row arguments.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_adds_saved_version_to_file_row_arguments() {
@@ -44,7 +44,7 @@ final class FileVersionFieldTest extends WP_UnitTestCase {
 	/**
 	 * Confirms the exact nested EDD field name is rendered.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_renders_version_inside_edd_file_storage_shape() {
@@ -65,7 +65,7 @@ final class FileVersionFieldTest extends WP_UnitTestCase {
 	/**
 	 * Confirms saving sanitizes but does not silently rewrite invalid input.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_sanitizes_versions_without_changing_storage_shape() {
@@ -87,7 +87,7 @@ final class FileVersionFieldTest extends WP_UnitTestCase {
 	/**
 	 * Confirms file-row styling loads only on Download editors.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_enqueues_style_only_on_download_editors() {

@@ -15,13 +15,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Builds the public Composer packages document from enabled EDD Downloads.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class Package_Index {
 	/**
 	 * Package-index transient name.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const TRANSIENT_NAME = Settings::PACKAGE_INDEX_TRANSIENT;
@@ -29,7 +29,7 @@ final class Package_Index {
 	/**
 	 * Option used to invalidate cached metadata after plugin upgrades.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var string
 	 */
 	public const CACHE_VERSION_OPTION = 'edd_composer_cache_version';
@@ -37,7 +37,7 @@ final class Package_Index {
 	/**
 	 * Default public index cache lifetime.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var int
 	 */
 	public const DEFAULT_CACHE_TTL = HOUR_IN_SECONDS;
@@ -45,7 +45,7 @@ final class Package_Index {
 	/**
 	 * Settings service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Settings
 	 */
 	private $settings;
@@ -53,7 +53,7 @@ final class Package_Index {
 	/**
 	 * Product catalogue service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @var Products
 	 */
 	private $products;
@@ -61,7 +61,7 @@ final class Package_Index {
 	/**
 	 * Creates the package-index service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param Settings $settings Settings service.
 	 * @param Products $products Product catalogue service.
@@ -74,7 +74,7 @@ final class Package_Index {
 	/**
 	 * Registers cache invalidation hooks.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -94,7 +94,7 @@ final class Package_Index {
 	/**
 	 * Returns the package map, using the shared transient when available.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, array<string, array<string, mixed>>>
 	 */
@@ -117,7 +117,7 @@ final class Package_Index {
 	 * An empty package map is represented as an object so Composer receives the
 	 * required `{ "packages": {} }` shape instead of a JSON list.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array{packages: array<string, mixed>|\stdClass}
 	 */
@@ -132,7 +132,7 @@ final class Package_Index {
 	/**
 	 * Gets the cache lifetime shared by the transient and HTTP response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return int
 	 */
@@ -140,7 +140,7 @@ final class Package_Index {
 		/**
 		 * Filters the package-index cache lifetime in seconds.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param int $ttl Cache lifetime in seconds.
 		 */
@@ -152,7 +152,7 @@ final class Package_Index {
 	/**
 	 * Deletes cached package metadata.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -163,7 +163,7 @@ final class Package_Index {
 	/**
 	 * Invalidates metadata after an enabled Download is saved.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int      $post_id Download ID.
 	 * @param \WP_Post $post    Download post object.
@@ -181,7 +181,7 @@ final class Package_Index {
 	/**
 	 * Invalidates metadata when enabled Download files or licensing state change.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $meta_id    Metadata row ID.
 	 * @param int    $object_id  Object ID.
@@ -203,7 +203,7 @@ final class Package_Index {
 	/**
 	 * Invalidates metadata when an enabled Download is trashed or deleted.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $post_id Post ID.
 	 * @return void
@@ -217,7 +217,7 @@ final class Package_Index {
 	/**
 	 * Invalidates metadata once when the installed plugin version changes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -233,7 +233,7 @@ final class Package_Index {
 	/**
 	 * Builds the uncached package map.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @return array<string, array<string, array<string, mixed>>>
 	 */
@@ -267,7 +267,7 @@ final class Package_Index {
 			 * The result is cached. Call `delete_transient( 'edd_composer_package_index' )`
 			 * when external data used by this filter changes.
 			 *
-			 * @since 1.0.0
+			 * @since 0.1.0
 			 *
 			 * @param array<string, mixed> $metadata Composer product metadata.
 			 * @param int                  $download_id EDD Download ID.
@@ -302,7 +302,7 @@ final class Package_Index {
 	/**
 	 * Builds one Composer package-version entry.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $metadata Product metadata.
 	 * @param string               $version  Canonical package version.
@@ -334,7 +334,7 @@ final class Package_Index {
 		/**
 		 * Filters one generated Composer package-version entry.
 		 *
-		 * @since 1.0.0
+		 * @since 0.1.0
 		 *
 		 * @param array<string, mixed> $entry Composer version entry.
 		 * @param int                  $download_id EDD Download ID.
@@ -352,7 +352,7 @@ final class Package_Index {
 	 * The documented filter contract requires an array, but a defensive boundary
 	 * keeps invalid third-party values out of the public repository response.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $entry   Composer version entry.
 	 * @param array<string, mixed> $product Enriched product data.
@@ -366,7 +366,7 @@ final class Package_Index {
 	/**
 	 * Checks whether a Download is currently enabled in plugin settings.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int $download_id EDD Download ID.
 	 * @return bool

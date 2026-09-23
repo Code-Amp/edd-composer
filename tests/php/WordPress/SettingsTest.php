@@ -10,13 +10,13 @@ use EDD_Composer\Settings;
 /**
  * Verifies the versioned settings document.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Removes saved settings after every test.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function tear_down() {
@@ -27,7 +27,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms defaults are stable and versioned.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_returns_versioned_defaults() {
@@ -45,7 +45,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms valid settings are sanitized without rewriting package identity.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_validates_and_sanitizes_settings() {
@@ -79,7 +79,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms repository titles must be present and reasonably sized.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @dataProvider provide_invalid_repository_names
 	 *
@@ -99,7 +99,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms repository title limits count Unicode characters, not UTF-8 bytes.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_repository_name_length_counts_unicode_characters() {
@@ -118,7 +118,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unchanged valid settings count as a successful persisted save.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_save_succeeds_when_settings_are_unchanged() {
@@ -133,7 +133,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms permanently deleted Downloads cannot poison future settings reads.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_permanent_download_deletion_removes_product_settings() {
@@ -149,7 +149,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Supplies invalid repository titles.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return array<string, array{mixed}>
 	 */
 	public function provide_invalid_repository_names() {
@@ -163,7 +163,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms invalid identity values are rejected instead of rewritten.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @dataProvider provide_invalid_identity_settings
 	 *
@@ -185,7 +185,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Supplies invalid vendor and package identity values.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return array<string, array<string, string>>
 	 */
 	public function provide_invalid_identity_settings() {
@@ -200,7 +200,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms configured IDs must remain EDD Downloads.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_non_download_product_ids() {
@@ -216,7 +216,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms enabled packages cannot collide.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_duplicate_enabled_package_slugs() {
@@ -234,7 +234,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Creates a published EDD Download.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return int
 	 */
 	private function create_download() {
@@ -249,7 +249,7 @@ final class SettingsTest extends WP_UnitTestCase {
 	/**
 	 * Creates a complete settings payload.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $download_id Download ID.
 	 * @param string $vendor      Composer vendor.

@@ -31,7 +31,7 @@ require_once $edd_composer_tests_dir . '/includes/functions.php';
 /**
  * Load the plugins required by the test suite.
  *
- * @since 1.0.0
+ * @since 0.1.0
  * @return void
  */
 function edd_composer_tests_load_plugins() {
@@ -47,7 +47,7 @@ function edd_composer_tests_load_plugins() {
 /**
  * Install EDD's component tables after EDD has registered them.
  *
- * @since 1.0.0
+ * @since 0.1.0
  * @return void
  */
 function edd_composer_tests_install_edd_tables() {

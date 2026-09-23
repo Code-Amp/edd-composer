@@ -10,13 +10,13 @@ use EDD_Composer\Licensing\Entitlements;
 /**
  * Verifies direct and bundle-family authorization decisions.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a direct license grants its own activated product.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_resolves_direct_product_license() {
@@ -29,7 +29,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a parent bundle credential can resolve a child product.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_resolves_child_from_parent_bundle_license() {
@@ -45,7 +45,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms a child credential can resolve an activated sibling via its parent.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_resolves_sibling_from_child_license() {
@@ -65,7 +65,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms status is revalidated on the license granting the target product.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_expired_target_even_when_credential_is_valid() {
@@ -83,7 +83,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms activation belongs to the target license, not just the credential.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_target_not_activated_for_site() {
@@ -100,7 +100,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Confirms unrelated products cannot be reached through a bundle family.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	public function test_rejects_unrelated_product() {
@@ -114,7 +114,7 @@ final class EntitlementsTest extends WP_UnitTestCase {
 	/**
 	 * Creates a minimal license double.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param int    $id          License ID.
 	 * @param int    $download_id Download ID.
